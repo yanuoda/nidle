@@ -1,0 +1,15 @@
+{
+  "name": "nidle",
+  "version": "0.0.0",
+  "main": "index.js",
+  "author": "Renguang Han",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yanuoda/nidle.git",
+    "directory": "packages/nidle"
+  },
+  "bugs": {
+    "url": "https://github.com/yanuoda/nidle/issues"
+  }
+}
