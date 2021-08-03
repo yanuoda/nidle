@@ -1,0 +1,14 @@
+{
+  "name": "nidle-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "repository": "git@github.com:yanuoda/nidle.git",
+  "author": "Renguang Han",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
+}
