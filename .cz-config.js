@@ -16,7 +16,7 @@ module.exports = {
   messages: {
     type: "选择需要提交的更改类型 (type):",
     scope: '更改的范围 (scope) (可选):',
-    customScope: '自定义更改的范围 (customScope) (可选):',
+    customScope: '自定义更改的范围 (scope) (可选):',
     subject: '对这次提交填写一个简短准确的描述 (subject):',
     confirmCommit: '确认提交?',
   },
