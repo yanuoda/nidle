@@ -5,11 +5,11 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 module.exports = {
   title: 'Nidle',
   tagline: '基于Node的前端自动化部署工具',
-  url: 'https://github.com/yanuoda',
+  url: 'https://yanuoda.github.io/',
   baseUrl: '/nidle/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'nidle/img/favicon.ico',
+  favicon: 'img/favicon.ico',
   organizationName: 'yanuoda', // Usually your GitHub org/user name.
   projectName: 'nidle', // Usually your repo name.
   themeConfig: {
@@ -48,7 +48,7 @@ module.exports = {
           items: [
             {
               label: 'Tutorial',
-              to: '/docs/intro',
+              to: '/docs/document/intro',
             },
           ],
         },

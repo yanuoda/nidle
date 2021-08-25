@@ -1,6 +1,5 @@
 ---
 id: intro
-slug: intro.html
 sidebar_position: 1
 ---
 
