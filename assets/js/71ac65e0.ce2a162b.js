@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunknidle_site=self.webpackChunknidle_site||[]).push([[603],{5118:function(e){e.exports=JSON.parse('{"permalink":"/nidle/blog","page":1,"postsPerPage":10,"totalPages":1,"totalCount":3,"previousPage":null,"nextPage":null,"blogDescription":"Blog","blogTitle":"Blog"}')}}]);

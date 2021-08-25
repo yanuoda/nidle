@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunknidle_site=self.webpackChunknidle_site||[]).push([[535],{5641:function(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Welcome","permalink":"/nidle/blog/welcome"},{"title":"Hello","permalink":"/nidle/blog/hello-world"},{"title":"Hola","permalink":"/nidle/blog/hola"}]}')}}]);

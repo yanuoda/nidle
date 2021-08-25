@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunknidle_site=self.webpackChunknidle_site||[]).push([[716],{1393:function(e){e.exports=JSON.parse('{"allTagsPath":"/nidle/blog/tags","slug":"hola","name":"hola","count":1,"permalink":"/nidle/blog/tags/hola"}')}}]);
