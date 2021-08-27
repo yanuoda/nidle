@@ -13,16 +13,21 @@ Nidle的任务是通过插件去执行的，可以通过编写插件扩展自己
 * 一个具名 JavaScript 函数。
 * 在它的原型上定义 apply 方法。
 * 在 apply 方法中往调度器 add、addParallel(挂载) 任务处理方法。
-* 方法是个 Promise 对象，内部通过 task 实例可以获取到 构建相关内容，并可进行相应操作。
+* 方法是个通过 `p-cancelable`封装的 可取消Promise 对象(*因为任务基本是异步的，特别是shell命令是在单独进程中异步处理的，需要在取消的时候主动kill掉*)，内部通过 task 实例可以获取到 构建相关内容，并可进行相应操作。
 * 在实现功能后结束 Promise。
 
 ```javascript
+const PCancelable = require('p-cancelable')
+
 class ExamplePlugin {
   apply (scheduler) {
     // 串行任务
     scheduler.add('name', (task, config) => {
-      return new Promise((reject, resolve) => {
-        // ...  
+      return new PCancelable((reject, resolve, onCancel) => {
+        // ... 
+        onCancel(() => {
+          // 取消异步操作
+        })
       })
     })
 

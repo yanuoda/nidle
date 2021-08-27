@@ -74,7 +74,12 @@ module.exports = {
         }
       ]
     }
-  ]
+  ],
+  // 上次发布配置，用于对比参考
+  lastConfig: {
+    time: '',
+    path: ''
+  }
 }
 
 
