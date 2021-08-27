@@ -11,5 +11,15 @@
   },
   "bugs": {
     "url": "https://github.com/yanuoda/nidle/issues"
+  },
+  "dependencies": {
+    "p-cancelable": "^3.0.0",
+    "p-parallel": "^1.0.2",
+    "p-retry": "^4.6.1",
+    "p-series": "^3.0.0",
+    "p-timeout": "^5.0.0"
+  },
+  "devDependencies": {
+    "jest": "^27.0.6"
   }
 }
