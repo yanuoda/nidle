@@ -58,11 +58,26 @@ $ yarn workspace pkgA add pkgB@0.1.1
 
 ### 发布管理
 
-TODO
-
+首先我们需要进行发布前的**构建（build）**，然后再执行发布命令：
 ```bash
-$ lerna publish
+# first
+# 使用 lerna 运行子包的 npm script 是因为 lerna 会根据子包之间的依赖顺序执行命令
+# 避免了某个子包的依赖子包还未构建就先进行构建
+$ lerna run build
+# next
+$ lerna publish [major | minor | patch | premajor | preminor | prepatch | prerelease]
 ```
+通过 `lerna` 的发布命令可以很方便地帮助我们执行一系列任务：
+1. 为每个子包更新版本号
+2. 生成 `changelog`
+3. 自动提交代码，打上 `tag` 并推送到远程仓库
+4. 将子包发布到 `npm`
+
+:::tip
+
+使用了自动生成 `changelog` 的功能后，发布时 `lerna` 不会再询问发布版本号，而是根据 `commit` 信息中的 `type` 去决定增加哪一位的版本号。但这不太符合我们的需求，尽管这符合语义化版本规范。所以使用发布命令时，尽量带上需要增加的版本位（即上面命令后面跟着的 `[major | minor | patch | premajor | preminor | prepatch | prerelease]`）
+
+:::
 
 ### 其他常用命令
 
@@ -70,7 +85,11 @@ $ lerna publish
 ```bash
 $ lerna create <sub-package-name>
 ```
-2. 当我们需要运行所有子包的 `script` 时，可以：
+2. 当我们需要运行某个子包的 `script` 时，可以：
+```bash
+$ yarn workspace <sub-package-name> run <script>
+```
+3. 当我们需要运行所有子包的 `script` 时，可以：
 ```bash
 $ yarn workspaces run <script>
 # 如果某个子包不存在这个 script，yarn 会报错，这种情况下可以使用 lerna
