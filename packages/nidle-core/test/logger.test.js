@@ -3,11 +3,11 @@ const fs = require('fs')
 const root = process.cwd()
 const destination = path.resolve(root, 'test/log')
 const logger = require('../lib/log/logger')
-const { resolve } = require('path')
+
 let log
 let logFile = {}
 
-beforeAll(() => {
+beforeAll(async () => {
   // 创建临时日志文件
   fs.mkdirSync(destination)
   fs.writeFileSync(path.resolve(destination, 'all.log'), '')
@@ -37,13 +37,13 @@ test('log default will output all.log', async () => {
   log.logger.info('info log')
   output = await getLastLine('all')
   expect(output.indexOf('"level":30')).toBe(1)
-  expect(output.indexOf('"msg":info log') > 0)
+  expect(output.indexOf('"msg":"info log"') > 0)
 
   log.logger.warn({ warn: 'warnning' })
   output = await getLastLine('all')
 
   expect(output.indexOf('"level":40')).toBe(1)
-  expect(output.indexOf('"warn":warnning') > 0)
+  expect(output.indexOf('"warn":"warnning"') > 0)
 
   output = await getLastLine('error')
   expect(output).toBeNull()
@@ -54,11 +54,11 @@ test('log error will output all.log and error.log', async () => {
   log.logger.error('error log')
   output = await getLastLine('all')
   expect(output.indexOf('"level":50')).toBe(1)
-  expect(output.indexOf('"msg":error log') > 0)
+  expect(output.indexOf('"msg":"error log"') > 0)
 
   output = await getLastLine('error')
   expect(output.indexOf('"level":50')).toBe(1)
-  expect(output.indexOf('"msg":error log') > 0)
+  expect(output.indexOf('"msg":"error log"') > 0)
 })
 
 test('redaction', async () => {
