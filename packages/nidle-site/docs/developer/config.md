@@ -23,8 +23,6 @@ module.exports = {
   // 日志
   log: {
     path: '/xx/xx/', // 日志存放路径
-    fullFileName: 'full.log', // 全量日志
-    errorFileName: 'error.log', // 异常日志
   },
   // 输出、备份
   output: {
@@ -94,8 +92,6 @@ module.exports = {
   // 日志
   log: {
     path: '/xx/xx/', // 日志存放路径
-    fullFileName: 'full.log', // 全量日志
-    errorFileName: 'error.log', // 异常日志
   },
   // 输出、备份
   output: {
@@ -112,7 +108,7 @@ module.exports = {
     {
       name: 'build',
       timeout: 0, // 超时结束，0则不超时
-	  disabledParallel: false, // 是否关闭并行插件，关闭后并行插件会变成顺序执行
+      disabledParallel: false, // 是否关闭并行插件，关闭后并行插件会变成顺序执行
       steps: [
         {
           name: '',
