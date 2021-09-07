@@ -1,4 +1,3 @@
-import Scheduler from './lib/scheduler.js'
+import Manager from './lib/manager'
 
-export default Scheduler
-// module.exports = require('./lib/scheduler')
+export default Manager

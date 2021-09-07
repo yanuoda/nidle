@@ -1,8 +1,11 @@
-const logger = {}
+const logger = {
+  messages: []
+}
 
 function log (msg) {
   console.log('logger: ', msg)
   logger.message = msg
+  logger.messages.push(msg)
 }
 
 const levels = [

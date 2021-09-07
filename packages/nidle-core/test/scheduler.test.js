@@ -1,4 +1,4 @@
-import Mounter from '../lib/mounter.js'
+import Mounter from '../lib/scheduler/scheduler.js'
 import PQueue from 'p-queue/dist'
 import { task, defaultTask, stepErrorTask, stepTimeoutErrorTask, timeoutErrorTask, retryErrorTask } from './fixtures/config.js'
 

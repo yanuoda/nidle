@@ -3,8 +3,10 @@ import StageQueue from './stage-queue.js'
 import EventEmitter from 'eventemitter3'
 
 // 插件挂载处理
-class Mounter {
+class Mounter extends EventEmitter {
   constructor (task, stages) {
+    super()
+
     this.task = task
     this.logger = task.logger
     this.stages = stages
@@ -25,7 +27,7 @@ class Mounter {
   }
 
   _bind () {
-    const { queue, logger } = this
+    const { queue, logger, _stages } = this
 
     queue.on('active', () => {
       const stage = queue._queue.current
@@ -47,7 +49,11 @@ class Mounter {
       // TODO: 备份、状态等操作
       // TODO: stage complete
 
-      this._add()
+      if (_stages.length) {
+        this._add()
+      } else {
+        this.emit('completed')
+      }
     })
 
     queue.on('error', error => {
