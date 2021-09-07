@@ -1,6 +1,6 @@
-const pino = require('pino')
+import pino from 'pino'
 
-module.exports = (options) => {
+export default (options) => {
   const targets = [
     // 错误日志
     {

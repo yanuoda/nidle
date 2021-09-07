@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   paths: ['password', 'secret.*'],
   censor: (value, path) => {
     if (path === 'password') {

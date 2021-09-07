@@ -1,9 +1,14 @@
 {
   "name": "nidle",
   "version": "0.1.0",
-  "main": "index.js",
   "author": "Renguang Han",
   "license": "MIT",
+  "type": "module",
+  "main": "./index.js",
+  "exports": "./index.js",
+  "engines": {
+    "node": ">=12"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yanuoda/nidle.git",
@@ -13,18 +18,19 @@
     "url": "https://github.com/yanuoda/nidle/issues"
   },
   "scripts": {
-    "test": "jest",
+    "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "cov": "jest --coverage"
   },
   "dependencies": {
     "eventemitter3": "^4.0.7",
     "p-cancelable": "^3.0.0",
-    "p-queue": "^7.1.0",
+    "p-queue": "7.1.0",
     "p-retry": "^4.6.1",
-    "p-timeout": "^5.0.0",
+    "p-timeout": "^4.1.0",
     "pino": "7.0.0-rc.3"
   },
   "devDependencies": {
-    "jest": "^27.0.6"
+    "cross-env": "^7.0.3",
+    "jest": "27.1.0"
   }
 }

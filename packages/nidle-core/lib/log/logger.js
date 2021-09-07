@@ -1,9 +1,9 @@
-const path = require('path')
-const pino = require('pino')
-const redact = require('./redaction')
-const transport = require('./transport')
+import path from 'path'
+import pino from 'pino'
+import redact from './redaction.js'
+import transport from './transport.js'
 
-module.exports = function (options) {
+export default function (options) {
   const { destination } = options
 
   if (!destination) {

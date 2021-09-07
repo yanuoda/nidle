@@ -1,8 +1,8 @@
-const path = require('path')
-const fs = require('fs')
+import path from 'path'
+import fs from 'fs'
 const root = process.cwd()
 const destination = path.resolve(root, 'test/log')
-const logger = require('../lib/log/logger')
+import logger from '../lib/log/logger.js'
 
 let log
 let logFile = {}
