@@ -39,6 +39,7 @@ module.exports = {
   // 插件input
   input: [
     {
+      stage: '', // 阶段名称
       plugin: '', // 插件名称
       options: {
         // 插件要求输入项，参考inquirer
