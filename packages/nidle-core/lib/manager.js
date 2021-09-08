@@ -7,7 +7,6 @@ class Scheduler {
   constructor (config) {
     this.config = config
     this.scheduler = null
-    this.init()
   }
 
   // 初始化
