@@ -1,9 +1,10 @@
+import EventEmitter from 'eventemitter3'
 import { check, input, diff, combine } from './config/index.js'
 import Scheduler from './scheduler/scheduler.js'
 import logger from './log/logger.js'
 
 // 任务管理器
-class Scheduler {
+class Scheduler extends EventEmitter {
   constructor (config) {
     this.config = config
     this.scheduler = null
@@ -39,6 +40,14 @@ class Scheduler {
     const stages = combine(config.stages, inputs)
     this.scheduler = new Scheduler(this, stages)
     this.scheduler.mount()
+
+    this.scheduler.on('completed', () => {
+      this.emit('completed')
+    })
+
+    this.scheduler.on('error', error => {
+      this.emit('error', error)
+    })
   }
 
   // 构建开始

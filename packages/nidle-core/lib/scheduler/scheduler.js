@@ -71,6 +71,7 @@ class Mounter extends EventEmitter {
       queue.clear()
 
       // TODO: 状态
+      this.emit('error', error)
     })
   }
 
