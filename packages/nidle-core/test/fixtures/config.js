@@ -1,22 +1,23 @@
 import path from 'path'
 // const logger = require('./logger')
-import logger from './logger'
+import logger from './logger.js'
 const root = process.cwd()
 
 let _idx = 0
-const taskConfig = {
-  name: 'task success',
-  repository: {},
-  type: 'publish',
-  log: {
-    path: path.resolve(root, 'test/log')
-  },
-  output: {},
-  input: [],
-  logger
-}
 
-export const task = taskConfig
+export const task = function () {
+  return {
+    name: 'task success',
+    repository: {},
+    type: 'publish',
+    log: {
+      path: path.resolve(root, 'test/log')
+    },
+    output: {},
+    input: [],
+    logger: logger()
+  }
+}
 
 export const defaultTask = {
   stages: [
@@ -70,12 +71,12 @@ export const defaultTask = {
             apply (scheduler) {
               scheduler.add('step3', task => {
                 return new Promise((resolve, reject) => {
-                  task.logger.info('step3 info')
+                  task.logger.info('step3 info' + _idx)
 
                   if (!_idx) {
                     task.logger.error('step3 error first time')
-                    ++_idx
-                    // reject(new Error('step3 error first time'))
+                    _idx++
+                    reject(new Error('step3 error first time'))
                   }
 
                   resolve()
@@ -137,9 +138,29 @@ export const stepErrorTask = {
           name: 'step6',
           package: {
             apply (scheduler) {
-              scheduler.add('step6', () => {
+              scheduler.add('step6', task => {
                 return new Promise((resolve, reject) => {
+                  task.logger.info('step6 info')
                   reject(new Error('step6 error'))
+                })
+              })
+            }
+          }
+        }
+      ]
+    },
+    {
+      name: 'stage4 can no run',
+      steps: [
+        {
+          // step error
+          name: 'step7',
+          package: {
+            apply (scheduler) {
+              scheduler.add('step7', task => {
+                return new Promise((resolve, reject) => {
+                  task.logger.info('step7 info')
+                  resolve()
                 })
               })
             }
@@ -164,7 +185,6 @@ export const stepTimeoutErrorTask = {
               scheduler.add('step7', task => {
                 return new Promise(resolve => {
                   setTimeout(() => {
-                    task.logger.info('step7 info')
                     resolve()
                   }, 1500)
                 })
@@ -204,7 +224,6 @@ export const timeoutErrorTask = {
 }
 
 export const retryErrorTask = {
-  ...taskConfig,
   stages: [
     {
       name: 'stage6',
