@@ -19,7 +19,7 @@
   },
   "scripts": {
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
-    "cov": "jest --coverage"
+    "cov": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage"
   },
   "dependencies": {
     "eventemitter3": "^4.0.7",
