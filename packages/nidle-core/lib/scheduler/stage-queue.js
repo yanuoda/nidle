@@ -1,9 +1,7 @@
 // stage queue
-// stage queue item添加必须await等待上一步完成
-// const PQueue = require('p-queue').default
-import PQueue from 'p-queue/dist'
-// const pRetry = require('p-retry')
-// const pTimeout = require('p-timeout')
+import PQueue from 'p-queue'
+import pRetry from 'p-retry'
+import pTimeout from 'p-timeout'
 import StepQueue from './step-queue.js'
 
 class StageQueue {
@@ -12,11 +10,11 @@ class StageQueue {
     this._stepQueue = null
     this._currentAddStep = null
     this._EE = null
+    this._isError = false
     this.logger = null
 	}
 
 	enqueue (run, options) {
-    console.log('stage enqueue', options.stage.name)
     this.task = options.task
     this.logger = options.logger
     this.stepEnqueue(options)
@@ -28,14 +26,11 @@ class StageQueue {
 
   // 添加步骤队列
   stepEnqueue (options) {
-    console.log('step queue', options.stage.name)
-    const { timeout, steps } = options.stage
+    const {  steps } = options.stage
     this._EE = options.event
     this._stepQueue = new PQueue({
       concurrency: 1,
       autoStart: false,
-      timeout: timeout || undefined,
-      throwOnTimeout: true,
       queueClass: StepQueue
     })
 
@@ -43,7 +38,6 @@ class StageQueue {
       if (step.enable === false) {
         return
       }
-      console.log('step apply', step.name)
 
       this._currentAddStep = step
       step.package.apply(this)
@@ -53,7 +47,6 @@ class StageQueue {
   }
 
   _bind () {
-    console.log('step queue bind')
     const EE = this._EE
     const queue = this._stepQueue
     const logger = this.logger
@@ -69,6 +62,10 @@ class StageQueue {
     })
 
     queue.on('completed', result => {
+      if (this._isError) {
+        return
+      }
+
       const step = queue._queue.current
 
       logger.info({
@@ -79,18 +76,27 @@ class StageQueue {
     })
 
     queue.on('error', error => {
+      if (this._isError) {
+        return
+      }
+
       const step = queue._queue.current
 
-      logger.warn({
+      logger.error({
         progress: 'STEP ERROR',
         name: step.name,
-        taskName: step.taskName
+        taskName: step.taskName,
+        error
       })
       EE.emit('error', error)
     })
 
     queue.on('idle', () => {
-      console.log('idle-------------')
+      if (this._isError) {
+        return
+      }
+
+      this._stepQueue.clear()
       this._stepQueue = null
       this._currentAddStep = null
 
@@ -100,43 +106,29 @@ class StageQueue {
 
   // 暴露给插件的挂载钩子
   add (name, fn) {
-    const { task, logger, EE } = this
+    const { task } = this
     const step = this._currentAddStep
     step.taskName = name
-    // let run = ((task, config) => {
-    //   return fn
-    // })(task, step.options)
     let run = () => {
       return fn(task, step.options)
     }
-    console.log('stage add step', step.name, typeof run, step.retry, step.timeout)
-    // if (step.retry) {
-    //   run = () => {
-    //     pRetry(run, {
-    //       retries: step.retry,
-    //       onFailedAttempt: error => {
-    //         logger.warn(`${step.name}任务第${error.attemptNumber}尝试失败, 还剩${error.retriesLeft}次重试.`)
-    //       }
-    //     })
-    //   }
-    // }
 
-    // if (step.timeout) {
-    //   run = () => {
-    //     return pTimeout(run, step.timeout, () => {
-    //       const message = `${step.name}任务超时: ${step.timeout}`
-    //       logger.error(message)
-    //       EE.emit(error, new Error(message))
-    //     })
-    //   }
-    // }
+    if (step.retry) {
+      run = retryRun.call(this, run, step)
+    }
 
-    this._stepQueue.add(run, step)
+    if (step.timeout) {
+      run = timeoutRun.call(this, run, step)
+    }
+
+    this._stepQueue.add(run, step).catch(error => {
+      // 如果不catch错误，在任务中throw错误会导致jest报错
+      console.error('stage error', error)
+    })
   }
 
 	dequeue () {
 		const item = this._current = this._queue.shift()
-    console.log('stage dequeue', item.stage.name)
     return item.run
 	}
 
@@ -157,7 +149,30 @@ class StageQueue {
       return item.stage.name === options.name
     })
 	}
+
+  onFailed () {
+    this._isError = true
+  }
 }
 
-// module.exports = StageQueue
+function retryRun (run, step) {
+  return () => {
+    return pRetry(run, {
+      retries: step.retry,
+      onFailedAttempt: error => {
+        this.logger.warn(`${step.name}任务第${error.attemptNumber}尝试失败, 还剩${error.retriesLeft}次重试.`)
+        return
+      }
+    })
+  }
+}
+
+function timeoutRun (run, step) {
+  return () => {
+    return pTimeout(run(), step.timeout, () => {
+      throw new Error(`${step.name}任务超时: ${step.timeout}`)
+    })
+  }
+}
+
 export default StageQueue
