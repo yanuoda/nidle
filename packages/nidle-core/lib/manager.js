@@ -4,7 +4,7 @@ import Scheduler from './scheduler/scheduler.js'
 import logger from './log/logger.js'
 
 // 任务管理器
-class Scheduler extends EventEmitter {
+class Manager extends EventEmitter {
   constructor (config) {
     this.config = config
     this.scheduler = null
@@ -42,6 +42,9 @@ class Scheduler extends EventEmitter {
     this.scheduler.mount()
 
     this.scheduler.on('completed', () => {
+      this.logger.info({
+        progress: 'SCHEDULER COMPLETE'
+      })
       this.emit('completed')
     })
 
@@ -52,8 +55,12 @@ class Scheduler extends EventEmitter {
 
   // 构建开始
   start (index = 0) {
+    this.logger.info({
+      progress: 'SCHEDULER START',
+      start: index
+    })
     this.scheduler.start(index)
   }
 }
 
-export default Scheduler
+export default Manager
