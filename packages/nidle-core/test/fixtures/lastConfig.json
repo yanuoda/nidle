@@ -1,0 +1,53 @@
+{
+  "name": "app-name",
+  "repository": {
+    "type": "git",
+    "url": "http://xxx.xxx.com/xx/xx.git",
+    "branch": "dev",
+    "userName": ""
+  },
+  "type": "publish",
+  "log": {
+    "path": "/xx/xx/"
+  },
+  "output": {
+    "backup": {
+      "path": "/xx/xx",
+      "maxCount": 3
+    },
+    "cache": {
+      "path": "/xx/xx"
+    },
+    "path": ""
+  },
+  "input": [
+    {
+      "stage": "build",
+      "plugin": "example",
+      "options": [
+        {
+          "type": "input",
+          "name": "test",
+          "message": "Type something"
+        }
+      ]
+    }
+  ],
+  "stages": [
+    {
+      "name": "build",
+      "timeout": 0,
+      "steps": [
+        {
+          "name": "example",
+          "enable": true,
+          "package": "example-plugin",
+          "path": "./plugins/example-plugin.js",
+          "timeout": 0,
+          "retry": 0,
+          "options": {}
+        }
+      ]
+    }
+  ]
+}
