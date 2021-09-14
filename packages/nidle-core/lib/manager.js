@@ -1,5 +1,5 @@
 import EventEmitter from 'eventemitter3'
-import { check, input, diff, combine } from './config/index.js'
+import { check, input, combine } from './config/index.js'
 import Scheduler from './scheduler/scheduler.js'
 import logger from './log/logger.js'
 
@@ -22,11 +22,9 @@ class Manager extends EventEmitter {
 
     // 获取inputs
     const inputs = input(config.stages)
-    const lastConfig = diff(inputs, config.lastConfig)
 
     return {
-      inputs,
-      lastConfig
+      inputs
     }
   }
 
