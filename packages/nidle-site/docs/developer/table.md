@@ -60,7 +60,6 @@ sidebar_position: 4
 * id: uniqueid
 * name: string
 * description: string
-* template: templateId
 * owner: string
 * repositoryType: string
 * repositoryUrl: string
@@ -87,6 +86,7 @@ sidebar_position: 4
 
 ### changelog 构建表（每次构建都会新增记录）
 * id: uniqueid
+* period: string 发布周期ID，用来聚合同一周期发布
 * project: projectId
 * branch: string
 * tag: string
