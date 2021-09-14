@@ -3,28 +3,47 @@
  * @param {Array} stages stage list
  * @returns {Array} inputs 
  */
-export default function collect (stages) {
+ export default async function collect (stages) {
   const inputs = []
 
-  // 这里最好有个数组来缓存插件，如果已经依赖过了，就直接获取input就好了
+  // 缓存
+  const pluginInputCacheMap = new Map()
 
-  stages.forEach(stage => {
-    stage.steps.forEach(step => {
-      // 插件依赖
-      // const Plugin = require(step.package)
+  for (const stage of stages) {
+    const stageName = stage.name
+    for (const step of stage.steps) {
+      if (step.enable) {
+        const plugin = step.name
+        const inputCache = pluginInputCacheMap.get(plugin)
 
-      // new Plugin
-      // const plugin = new Plugin()
+        // 从缓存取
+        if (inputCache) {
+          inputs.push({
+            stage: stageName,
+            plugin,
+            options: inputCache.options
+          })
+          continue
+        }
 
-      // plugin.input()
-      // const input = plugin.input()
-      // inputs.push({
-      //   stage: stage.name,
-      //   plugin: step.name,
-      //   options: input
-      // })
-    })
-  })
+        const pkg = step.package || step.path
+        const PluginClass = (await import(pkg)).default
+        const pluginInstance = new PluginClass()
+        const input = typeof pluginInstance.input === 'function' ? pluginInstance.input() : null
+        if (input) {
+          const inputParam = {
+            stage: stageName,
+            plugin,
+            options: input
+          }
+          inputs.push(inputParam)
+          pluginInputCacheMap.set(plugin, inputParam)
+        }
+      }
+    }
+  }
+
+  pluginInputCacheMap.clear()
 
   return inputs
 }

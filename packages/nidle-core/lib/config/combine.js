@@ -5,5 +5,19 @@
  * @returns stages
  */
 export default function combine (stages, inputs) {
+  stages.forEach(stage => {
+    const { name: stageName } = stage
+    stage.steps.forEach(step => {
+      const { name: pluginName } = step
+      const currentInput = inputs.find(input => {
+        return input.stage === stageName && input.plugin === pluginName
+      })
+
+      if (currentInput) {
+        step.options = currentInput.options
+      }
+    })
+  })
+
   return stages
 }
