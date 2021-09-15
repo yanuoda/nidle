@@ -10,6 +10,7 @@ class Mounter extends EventEmitter {
 
     this.task = task
     this.logger = task.logger
+    this.backup = task.backup
     this.stages = stages
     this._stages = []
     this.queue = null
@@ -28,7 +29,7 @@ class Mounter extends EventEmitter {
   }
 
   _bind () {
-    const { queue, logger } = this
+    const { queue, logger, backup } = this
 
     queue.on('active', () => {
       const stage = queue._queue.current
@@ -40,15 +41,24 @@ class Mounter extends EventEmitter {
       // TODO: 状态
     })
 
-    queue.on('completed', () => {
+    queue.on('completed', async () => {
       const stage = queue._queue.current
+      // TODO: 状态等操作
+
       logger.info({
         progress: 'STAGE COMPLETE',
         name: stage.name
       })
 
-      // TODO: 备份、状态等操作
-      // TODO: stage complete
+      try {
+        await backup.cache()
+      } catch (error) {
+        logger.error({
+          progress: 'CACHE ERROR',
+          error
+        })
+      }
+
       if (this._stages.length) {
         this._add()
       }
@@ -62,7 +72,7 @@ class Mounter extends EventEmitter {
 
     queue.on('error', error => {
       const stage = queue._queue.current
-      logger.warn({
+      logger.error({
         progress: 'STAGE ERROR',
         name: stage.name,
         error
