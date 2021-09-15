@@ -73,7 +73,6 @@ class Mounter extends EventEmitter {
 
       // 清除运行队列
       if (queue._queue.child) {
-        queue.par
         queue._queue.child.clear()
       }
       queue.clear()
