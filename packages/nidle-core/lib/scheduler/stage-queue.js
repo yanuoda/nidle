@@ -1,8 +1,7 @@
 // stage queue
 import PQueue from 'p-queue'
-import pRetry from 'p-retry'
-import pTimeout from 'p-timeout'
 import StepQueue from './step-queue.js'
+import { retryRun, timeoutRun } from './util'
 
 class StageQueue {
 	constructor () {
@@ -152,26 +151,6 @@ class StageQueue {
 
   onFailed () {
     this._isError = true
-  }
-}
-
-function retryRun (run, step) {
-  return () => {
-    return pRetry(run, {
-      retries: step.retry,
-      onFailedAttempt: error => {
-        this.logger.warn(`${step.name}任务第${error.attemptNumber}尝试失败, 还剩${error.retriesLeft}次重试.`)
-        return
-      }
-    })
-  }
-}
-
-function timeoutRun (run, step) {
-  return () => {
-    return pTimeout(run(), step.timeout, () => {
-      throw new Error(`${step.name}任务超时: ${step.timeout}`)
-    })
   }
 }
 

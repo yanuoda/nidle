@@ -1,7 +1,7 @@
 import PQueue from 'p-queue'
-import pTimeout from 'p-timeout'
-import StageQueue from './stage-queue.js'
 import EventEmitter from 'eventemitter3'
+import StageQueue from './stage-queue.js'
+import { timeoutRun } from './util'
 
 // 插件挂载处理
 class Mounter extends EventEmitter {
@@ -132,14 +132,6 @@ class Mounter extends EventEmitter {
     this._stages = this.stages.slice(start)
     this._add()
     this.queue.start()
-  }
-}
-
-function timeoutRun (run, stage) {
-  return () => {
-    return pTimeout(run(), stage.timeout, () => {
-      throw new Error(`${stage.name}任务超时: ${stage.timeout}`)
-    })
   }
 }
 
