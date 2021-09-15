@@ -7,13 +7,13 @@ const dirname = 'test-app.202109141715'
 const options = {
   name: 'test-app',
   backup: {
-    path: path.resolve(root, 'backup'),
+    path: path.resolve(root, '.backup'),
     maxCount: 2
   },
   cache: {
-    path: path.resolve(root, 'cache'),
+    path: path.resolve(root, '.cache'),
   },
-  path: path.resolve(root, `build/${dirname}`)
+  path: path.resolve(root, `.build/${dirname}`)
 }
 
 function start () {
@@ -31,11 +31,10 @@ function end () {
 }
 
 describe('copy & compress & decompress', () => {
-  const output = path.resolve(root, 'compress')
+  const output = path.resolve(root, '.compress')
 
   beforeAll(() => {
     start()
-    fs.mkdirSync(output)
   })
 
   afterAll(() => {
@@ -116,8 +115,6 @@ describe('backup', () => {
   beforeAll(() => {
     // 创建临时目录、文件
     start()
-    fs.mkdirSync(options.backup.path)
-    fs.mkdirSync(options.cache.path)
   })
 
   afterAll(() => {
