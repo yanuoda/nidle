@@ -1,21 +1,37 @@
 import path from 'path'
-// const logger = require('./logger')
 import logger from './logger.js'
-const root = process.cwd()
+const root = path.resolve(process.cwd(), 'test')
 
 let _idx = 0
 
 export const task = function () {
   return {
-    name: 'task success',
+    name: 'test-app',
     repository: {},
     type: 'publish',
     log: {
-      path: path.resolve(root, 'test/log')
+      path: path.resolve(root, 'log')
     },
-    output: {},
+    output: {
+      backup: {
+        path: path.resolve(root, '.backup'),
+        maxCount: 2
+      },
+      cache: {
+        path: path.resolve(root, '.cache')
+      },
+      path: path.resolve(root, `.build/test-app.202109151400`)
+    },
     input: [],
     logger: logger()
+  }
+}
+
+export const action = function () {
+  return {
+    backup: {
+      cache: function () {}
+    }
   }
 }
 
