@@ -23,7 +23,7 @@ class ExamplePlugin {
   apply (scheduler) {
     // 串行任务
     scheduler.add('name', (task, config) => {
-      return new PCancelable((reject, resolve, onCancel) => {
+      return new PCancelable((resolve, reject, onCancel) => {
         // ... 
         onCancel(() => {
           // 取消异步操作
@@ -31,9 +31,9 @@ class ExamplePlugin {
       })
     })
 
-    // 并行任务
+    // 并行任务[Remove]
     scheduler.addParallel('name', (task, config) => {
-      return new Promise((reject, resolve) => {
+      return new Promise((resolve, reject) => {
         // ...  
       })
     })

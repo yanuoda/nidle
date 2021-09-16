@@ -37,22 +37,18 @@ module.exports = {
     path: ''
   },
   // 插件input
-  input: [
+  inputs: [
     {
       stage: '', // 阶段名称
       plugin: '', // 插件名称
-      options: {
+      input: [
         // 插件要求输入项，参考inquirer
-        mode: '', // 发布环境: development/pre/production
-        server: [
-          {
-            host: '10.70.70.140',
-            user: 'root',
-            password: 'xxx',
-            output: '/xxx/xxx'
-          }
-        ]
-      }
+        {
+          type: 'input',
+          name: 'test',
+          message: 'xxx'
+        }
+      ]
     }
   ],
   stages: [
