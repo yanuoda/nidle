@@ -21,7 +21,7 @@
           inputs.push({
             stage: stageName,
             plugin,
-            options: inputCache.options
+            input: inputCache.input
           })
           continue
         }
@@ -34,7 +34,7 @@
           const inputParam = {
             stage: stageName,
             plugin,
-            options: input
+            input
           }
           inputs.push(inputParam)
           pluginInputCacheMap.set(plugin, inputParam)
