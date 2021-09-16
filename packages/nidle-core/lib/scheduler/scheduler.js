@@ -5,12 +5,17 @@ import { timeoutRun } from './util'
 
 // 插件挂载处理
 class Mounter extends EventEmitter {
-  constructor (task, stages) {
+  /**
+   * @param {Object} task 暴露给plugin的调度器task实例
+   * @param {Object} action 内部使用的行为：备份、修改状态
+   * @param {Array} stages
+   */
+  constructor (task, action, stages) {
     super()
 
     this.task = task
     this.logger = task.logger
-    this.backup = task.backup
+    this.backup = action.backup
     this.stages = stages
     this._stages = []
     this.queue = null
@@ -129,7 +134,6 @@ class Mounter extends EventEmitter {
       task,
       stage,
       event: EE,
-      logger
     }).catch(error => {
       // 如果不catch错误，在任务中throw错误会导致jest报错
       console.error('scheduler error', error)

@@ -15,7 +15,7 @@ class StageQueue {
 
 	enqueue (run, options) {
     this.task = options.task
-    this.logger = options.logger
+    this.logger = options.task.logger
     this.stepEnqueue(options)
 		this._queue.push({
       stage: options.stage,
@@ -25,7 +25,7 @@ class StageQueue {
 
   // 添加步骤队列
   stepEnqueue (options) {
-    const {  steps } = options.stage
+    const { steps } = options.stage
     this._EE = options.event
     this._stepQueue = new PQueue({
       concurrency: 1,
