@@ -54,11 +54,11 @@ test('plugin inputs', async () => {
   expect(input2).toEqual([{
     stage: 'stage1',
     plugin: 'plugin1',
-    options: {
+    input: [{
       type: 'input',
       name: 'test',
       message: 'Type something'
-    }
+    }]
   }])
   // 重复插件
   stages.push({
@@ -75,19 +75,19 @@ test('plugin inputs', async () => {
   expect(input3).toEqual([{
     stage: 'stage1',
     plugin: 'plugin1',
-    options: {
+    input: [{
       type: 'input',
       name: 'test',
       message: 'Type something'
-    }
+    }]
   }, {
     stage: 'stage2',
     plugin: 'plugin1',
-    options: {
+    input: [{
       type: 'input',
       name: 'test',
       message: 'Type something'
-    }
+    }]
   }])
 })
 
