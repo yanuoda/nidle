@@ -18,8 +18,9 @@ const options = {
 
 function start () {
   // 创建临时目录、文件
-  fs.mkdirSync(path.dirname(options.path))
-  fs.mkdirSync(options.path)
+  fs.mkdirSync(options.path, {
+    recursive: true
+  })
   fs.writeFileSync(path.resolve(options.path, 'index.js'), 'console.log("test")')
 }
 
