@@ -94,7 +94,7 @@ export const copy = function (input, output = '.', isRemove = false) {
   })
 }
 
-function mkdir (p) {
+export const mkdir = function (p) {
   try {
     fs.accessSync(p)
   } catch (err) {
