@@ -39,7 +39,7 @@ class StageQueue {
       }
 
       this._currentAddStep = step
-      step.package.apply(this)
+      step.module.apply(this)
     })
 
     this._bind()

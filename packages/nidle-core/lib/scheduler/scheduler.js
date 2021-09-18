@@ -10,12 +10,11 @@ class Mounter extends EventEmitter {
    * @param {Object} action 内部使用的行为：备份、修改状态
    * @param {Array} stages
    */
-  constructor (task, action, stages) {
+  constructor (task, stages) {
     super()
 
     this.task = task
     this.logger = task.logger
-    this.backup = action.backup
     this.stages = stages
     this._stages = []
     this.queue = null
@@ -34,7 +33,7 @@ class Mounter extends EventEmitter {
   }
 
   _bind () {
-    const { queue, logger, backup } = this
+    const { queue, logger } = this
 
     queue.on('active', () => {
       const stage = queue._queue.current
@@ -42,27 +41,19 @@ class Mounter extends EventEmitter {
         progress: 'STAGE START',
         name: stage.name
       })
-
-      // TODO: 状态
+      
+      this.emit('stage.active', stage.name)
     })
 
     queue.on('completed', async () => {
       const stage = queue._queue.current
-      // TODO: 状态等操作
 
       logger.info({
         progress: 'STAGE COMPLETE',
         name: stage.name
       })
 
-      try {
-        await backup.cache()
-      } catch (error) {
-        logger.error({
-          progress: 'CACHE ERROR',
-          error
-        })
-      }
+      this.emit('stage.completed')
 
       if (this._stages.length) {
         this._add()
@@ -93,7 +84,7 @@ class Mounter extends EventEmitter {
       queue.clear()
       this.EE.removeListener('error')
       this.EE.removeListener('completed')
-      // TODO: 状态
+
       this.emit('error', error)
     })
   }
