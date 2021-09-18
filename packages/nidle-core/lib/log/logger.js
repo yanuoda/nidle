@@ -6,7 +6,7 @@ import { mkdir } from '../backup/util'
 
 export default class Logger {
   constructor (options) {
-    const { destination } = options
+    const { destination, name } = options
 
     if (!destination) {
       throw new Error('options.destination must required!')
@@ -19,8 +19,8 @@ export default class Logger {
         autoEnd: false
       },
       destination: {
-        all: path.resolve(destination, 'all.log'),
-        error: path.resolve(destination, 'error.log')
+        all: path.resolve(destination, `${name}.all.log`),
+        error: path.resolve(destination, `${name}.error.log`)
         // pretty: path.resolve(destination, 'pretty.log')
       }
     })
