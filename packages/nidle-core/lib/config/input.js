@@ -3,7 +3,7 @@
  * @param {Array} stages stage list
  * @returns {Array} inputs 
  */
- export default async function collect (stages) {
+export default async function collect (stages) {
   const inputs = []
 
   // 缓存
@@ -23,12 +23,13 @@
             plugin,
             input: inputCache.input
           })
+          step.module = new inputCache.module()
           continue
         }
 
         const pkg = step.package || step.path
         const PluginClass = (await import(pkg)).default
-        const pluginInstance = new PluginClass()
+        const pluginInstance = step.module = new PluginClass()
         const input = typeof pluginInstance.input === 'function' ? pluginInstance.input() : null
         if (input) {
           const inputParam = {
@@ -37,7 +38,10 @@
             input
           }
           inputs.push(inputParam)
-          pluginInputCacheMap.set(plugin, inputParam)
+          pluginInputCacheMap.set(plugin, {
+            ...inputParam,
+            module: PluginClass
+          })
         }
       }
     }
