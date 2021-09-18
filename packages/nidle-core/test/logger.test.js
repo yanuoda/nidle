@@ -1,27 +1,24 @@
 import path from 'path'
 import fs from 'fs'
 const root = process.cwd()
-const destination = path.resolve(root, 'test/log')
-import logger from '../lib/log/logger.js'
+const destination = path.resolve(root, 'test/.log')
+import Logger from '../lib/log/logger.js'
 
 let log
 let logFile = {}
 
-beforeAll(async () => {
-  // 创建临时日志文件
-  fs.mkdirSync(destination)
-  fs.writeFileSync(path.resolve(destination, 'all.log'), '')
-  fs.writeFileSync(path.resolve(destination, 'error.log'), '')
-  // fs.writeFileSync(path.resolve(destination, 'pretty.log'), '')
-
-  log = logger({
+beforeAll(() => {
+  log = new Logger({
     destination,
-    worker: {
-      autoEnd: false
-    }
+    name: 'test'
   })
-  logFile.all = fs.openSync(path.resolve(destination, 'all.log'))
-  logFile.error = fs.openSync(path.resolve(destination, 'error.log'))
+
+  // 创建临时日志文件
+  fs.writeFileSync(path.resolve(destination, 'test.all.log'), '')
+  fs.writeFileSync(path.resolve(destination, 'test.error.log'), '')
+  
+  logFile.all = fs.openSync(path.resolve(destination, 'test.all.log'))
+  logFile.error = fs.openSync(path.resolve(destination, 'test.error.log'))
 })
 
 afterAll(() => {
@@ -29,7 +26,7 @@ afterAll(() => {
   fs.rmSync(destination, {
     recursive: true
   })
-  log.transport.end()
+  log.end()
 })
 
 test('log default will output all.log', async () => {
