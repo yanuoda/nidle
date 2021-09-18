@@ -68,25 +68,24 @@ eslint-plugin-prettier 是 Prettier 为 ESLint 开发的插件，使用它，可
 #### 安装依赖
 ```
 yarn add -D -W lint-staged husky 
+npx husky add .husky/pre-commit "yarn lint-staged" 
 ```
 #### 配置相关
 ```
 // package.json
 {
   ...
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+  "scripts": {
+    "prepare": "husky install",
+    "pre-commit": "lint-staged"
   },
   "lint-staged": {
-    "src/*.{js,jsx,mjs,ts,tsx}": [
-      "node_modules/.bin/prettier --write",
-      "node_modules/.bin/eslint --fix",
-      "git add"
+    "*.{js,jsx,mjs,ts,tsx}": [
+      "prettier --write",
+      "eslint"
     ],
-    "src/*.{css,scss,less,json,html,md,markdown}": [
-      "node_modules/.bin/prettier --write",
+    "*.{css,scss,less,json,html,md,markdown}": [
+      "prettier --write",
       "git add"
     ]
   }
@@ -116,9 +115,6 @@ insert_final_newline = false
 # 设为true表示会去除换行行首的任意空白字符
 [*.md]
 trim_trailing_whitespace = false
-# 使用Tab缩进
-[Makefile]
-indent_style = tab
 ```
 
 ### 补充
@@ -126,8 +122,8 @@ indent_style = tab
 
 *  **Replace ↹ with ··** 关于使用tab or 空格以及vs code的问题，参考[
 在tab处理这件事上, 只能说vscode真傻](http://gwiki.cn/2019/04/%E5%9C%A8tab%E5%A4%84%E7%90%86%E8%BF%99%E4%BB%B6%E4%BA%8B%E4%B8%8A,-%E5%8F%AA%E8%83%BD%E8%AF%B4vscode%E7%9C%9F%E5%82%BB)
-*  **Expected to call 'super()'** 参考[
-Verify calls of super() in constructors (constructor-super)](https://eslint.org/docs/rules/constructor-super)
+*  **Expected to call 'super()' 和  'import()' expressions are not supported yet** 参考[
+Verify calls of super() in constructors (constructor-super)](https://eslint.org/docs/rules/constructor-super)，禁用相关规则 -> 'node/no-unsupported-features/es-syntax': [2, { ignores: ['modules', 'dynamicImport'] }]
 *  **Delete ' '** 使用prettier代替eslint做格式检查后，因为prettier没有对应的配置项故报错，目前的解决方案为：
     *   添加eslint规则，让eslint妥协prettier -> 'space-before-function-paren': 'off'
     *   关闭eslint的prettier插件
