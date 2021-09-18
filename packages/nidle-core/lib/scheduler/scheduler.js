@@ -5,11 +5,17 @@ import { timeoutRun } from './util'
 
 // 插件挂载处理
 class Mounter extends EventEmitter {
-  constructor(task, stages) {
+  /**
+   * @param {Object} task 暴露给plugin的调度器task实例
+   * @param {Object} action 内部使用的行为：备份、修改状态
+   * @param {Array} stages
+   */
+  constructor(task, action, stages) {
     super()
 
     this.task = task
     this.logger = task.logger
+    this.backup = action.backup
     this.stages = stages
     this._stages = []
     this.queue = null
@@ -28,7 +34,7 @@ class Mounter extends EventEmitter {
   }
 
   _bind() {
-    const { queue, logger } = this
+    const { queue, logger, backup } = this
 
     queue.on('active', () => {
       const stage = queue._queue.current
@@ -40,15 +46,24 @@ class Mounter extends EventEmitter {
       // TODO: 状态
     })
 
-    queue.on('completed', () => {
+    queue.on('completed', async () => {
       const stage = queue._queue.current
+      // TODO: 状态等操作
+
       logger.info({
         progress: 'STAGE COMPLETE',
         name: stage.name
       })
 
-      // TODO: 备份、状态等操作
-      // TODO: stage complete
+      try {
+        await backup.cache()
+      } catch (error) {
+        logger.error({
+          progress: 'CACHE ERROR',
+          error
+        })
+      }
+
       if (this._stages.length) {
         this._add()
       }
@@ -62,7 +77,7 @@ class Mounter extends EventEmitter {
 
     queue.on('error', error => {
       const stage = queue._queue.current
-      logger.warn({
+      logger.error({
         progress: 'STAGE ERROR',
         name: stage.name,
         error
@@ -119,8 +134,7 @@ class Mounter extends EventEmitter {
       .add(run, {
         task,
         stage,
-        event: EE,
-        logger
+        event: EE
       })
       .catch(error => {
         // 如果不catch错误，在任务中throw错误会导致jest报错

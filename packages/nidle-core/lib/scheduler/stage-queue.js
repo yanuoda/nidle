@@ -15,7 +15,7 @@ class StageQueue {
 
   enqueue(run, options) {
     this.task = options.task
-    this.logger = options.logger
+    this.logger = options.task.logger
     this.stepEnqueue(options)
     this._queue.push({
       stage: options.stage,

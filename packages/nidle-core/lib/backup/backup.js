@@ -6,9 +6,7 @@ const cFileExtname = '.tgz'
 class Backup {
   // options = { name: '', backup: {}, cache: {}, path }
   constructor(options) {
-    this.options = {
-      ...options
-    }
+    this.options = options
   }
 
   /**

@@ -18,6 +18,8 @@ test('check config', () => {
   config.stages = {}
   expect(check(config)).toEqual({ valid: false, message: 'config err: 任务流配置缺失' })
   config.stages = [{}]
+  expect(check(config)).toEqual({ valid: false, message: 'config err: 状态更新方法缺失' })
+  config.update = function () {}
   expect(check(config)).toEqual({ valid: true, message: '' })
   config.type = 'publish'
   expect(check(config)).toEqual({ valid: false, message: 'config err: 应用输出信息缺失' })
@@ -53,11 +55,13 @@ test('plugin inputs', async () => {
     {
       stage: 'stage1',
       plugin: 'plugin1',
-      options: {
-        type: 'input',
-        name: 'test',
-        message: 'Type something'
-      }
+      input: [
+        {
+          type: 'input',
+          name: 'test',
+          message: 'Type something'
+        }
+      ]
     }
   ])
   // 重复插件
@@ -76,20 +80,24 @@ test('plugin inputs', async () => {
     {
       stage: 'stage1',
       plugin: 'plugin1',
-      options: {
-        type: 'input',
-        name: 'test',
-        message: 'Type something'
-      }
+      input: [
+        {
+          type: 'input',
+          name: 'test',
+          message: 'Type something'
+        }
+      ]
     },
     {
       stage: 'stage2',
       plugin: 'plugin1',
-      options: {
-        type: 'input',
-        name: 'test',
-        message: 'Type something'
-      }
+      input: [
+        {
+          type: 'input',
+          name: 'test',
+          message: 'Type something'
+        }
+      ]
     }
   ])
 })

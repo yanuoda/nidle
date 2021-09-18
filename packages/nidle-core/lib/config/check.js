@@ -4,7 +4,7 @@
  * @returns Object
  */
 export default function check(config = {}) {
-  const { name, type, repository, log, output, stages } = config
+  const { name, type, repository, log, output, stages, update } = config
 
   if (!name) {
     return configErrorObj('应用名称缺失')
@@ -31,6 +31,10 @@ export default function check(config = {}) {
     } else if (!checkChainExist(output, 'cache.path')) {
       return configErrorObj('应用缓存路径缺失')
     }
+  }
+
+  if (!update || typeof update !== 'function') {
+    return configErrorObj('状态更新方法缺失')
   }
 
   return { valid: true, message: '' }

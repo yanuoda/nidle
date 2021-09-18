@@ -21,7 +21,7 @@ export default async function collect(stages) {
           inputs.push({
             stage: stageName,
             plugin,
-            options: inputCache.options
+            input: inputCache.input
           })
           continue
         }
@@ -34,7 +34,7 @@ export default async function collect(stages) {
           const inputParam = {
             stage: stageName,
             plugin,
-            options: input
+            input
           }
           inputs.push(inputParam)
           pluginInputCacheMap.set(plugin, inputParam)

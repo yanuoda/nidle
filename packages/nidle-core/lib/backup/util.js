@@ -1,4 +1,5 @@
 import path from 'path'
+import fs from 'fs'
 import execa from 'execa'
 
 /**
@@ -12,6 +13,10 @@ import execa from 'execa'
  */
 export const compress = function (input, output = '.', isRemove = false, extname = '.tgz') {
   return new Promise((resolve, reject) => {
+    if (output !== '.') {
+      mkdir(output)
+    }
+
     const basename = path.basename(input)
     let shell = `cd ${path.dirname(input)} && tar -zcpf ${output}/${basename}${extname} ./${basename}`
 
@@ -41,6 +46,10 @@ export const compress = function (input, output = '.', isRemove = false, extname
  */
 export const decompress = function (input, output = '.', isRemove = false) {
   return new Promise((resolve, reject) => {
+    if (output !== '.') {
+      mkdir(output)
+    }
+
     let shell = `tar -zxpf ${input} -C ${path.dirname(output)}`
 
     if (isRemove) {
@@ -69,6 +78,10 @@ export const decompress = function (input, output = '.', isRemove = false) {
  */
 export const copy = function (input, output = '.', isRemove = false) {
   return new Promise((resolve, reject) => {
+    if (output !== '.' && path.extname(output) === '') {
+      mkdir(output)
+    }
+
     let shell = `cp -rpf ${input} ${output}`
 
     if (isRemove) {
@@ -85,4 +98,14 @@ export const copy = function (input, output = '.', isRemove = false) {
         reject(err)
       })
   })
+}
+
+function mkdir(p) {
+  try {
+    fs.accessSync(p)
+  } catch (err) {
+    fs.mkdirSync(p, {
+      recursive: true
+    })
+  }
 }
