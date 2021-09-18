@@ -5,13 +5,13 @@ import logger from './log/logger.js'
 
 // 任务管理器
 class Manager extends EventEmitter {
-  constructor (config) {
+  constructor(config) {
     this.config = config
     this.scheduler = null
   }
 
   // 初始化
-  init () {
+  init() {
     const { config } = this
     // 检查配置
     const { valid, message } = check(config)
@@ -29,7 +29,7 @@ class Manager extends EventEmitter {
   }
 
   // 挂载 - 用户确认input后
-  mount (inputs) {
+  mount(inputs) {
     const { config } = this
 
     this.logger = logger({
@@ -52,7 +52,7 @@ class Manager extends EventEmitter {
   }
 
   // 构建开始
-  start (index = 0) {
+  start(index = 0) {
     this.logger.info({
       progress: 'SCHEDULER START',
       start: index

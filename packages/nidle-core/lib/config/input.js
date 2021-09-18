@@ -1,9 +1,9 @@
 /**
  * 插件依赖 & 收集input
  * @param {Array} stages stage list
- * @returns {Array} inputs 
+ * @returns {Array} inputs
  */
- export default async function collect (stages) {
+export default async function collect(stages) {
   const inputs = []
 
   // 缓存

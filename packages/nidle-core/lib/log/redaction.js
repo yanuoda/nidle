@@ -12,7 +12,7 @@ export default {
         return value.replace(/^(\d+\.).*(\.\d)$/, '$1**.**$2')
       }
       // if (key === 'path') {
-      //   // return 
+      //   // return
       // }
 
       return value.replace(/./g, '*')

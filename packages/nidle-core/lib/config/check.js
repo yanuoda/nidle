@@ -3,7 +3,7 @@
  * @param {Object} config 应用任务配置
  * @returns Object
  */
-export default function check (config = {}) {
+export default function check(config = {}) {
   const { name, type, repository, log, output, stages } = config
 
   if (!name) {
@@ -41,7 +41,7 @@ export default function check (config = {}) {
  * @param {String} msg 错误消息
  * @returns 错误消息对象
  */
-function configErrorObj (msg) {
+function configErrorObj(msg) {
   return { valid: false, message: `config err: ${msg}` }
 }
 
@@ -51,7 +51,7 @@ function configErrorObj (msg) {
  * @param {String} chain 属性链
  * @returns {Boolean}
  */
-function checkChainExist (source, chain) {
+function checkChainExist(source, chain) {
   if (!source || typeof source !== 'object' || !chain) {
     return false
   }

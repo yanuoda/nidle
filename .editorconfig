@@ -18,7 +18,3 @@ insert_final_newline = false
 # 设为true表示会去除换行行首的任意空白字符
 [*.md]
 trim_trailing_whitespace = false
-
-# 使用Tab缩进
-[Makefile]
-indent_style = tab

@@ -5,7 +5,7 @@ import { timeoutRun } from './util'
 
 // 插件挂载处理
 class Mounter extends EventEmitter {
-  constructor (task, stages) {
+  constructor(task, stages) {
     super()
 
     this.task = task
@@ -17,7 +17,7 @@ class Mounter extends EventEmitter {
     this.EE = new EventEmitter()
   }
 
-  mount () {
+  mount() {
     this.queue = new PQueue({
       concurrency: 1,
       autoStart: false,
@@ -27,7 +27,7 @@ class Mounter extends EventEmitter {
     this._bind()
   }
 
-  _bind () {
+  _bind() {
     const { queue, logger } = this
 
     queue.on('active', () => {
@@ -83,7 +83,7 @@ class Mounter extends EventEmitter {
     })
   }
 
-  _add () {
+  _add() {
     const { task, _stages, queue, _isError, EE, logger } = this
 
     if (_isError) {
@@ -115,19 +115,21 @@ class Mounter extends EventEmitter {
       run = timeoutRun.call(this, run, stage)
     }
 
-    queue.add(run, {
-      task,
-      stage,
-      event: EE,
-      logger
-    }).catch(error => {
-      // 如果不catch错误，在任务中throw错误会导致jest报错
-      console.error('scheduler error', error)
-    })
+    queue
+      .add(run, {
+        task,
+        stage,
+        event: EE,
+        logger
+      })
+      .catch(error => {
+        // 如果不catch错误，在任务中throw错误会导致jest报错
+        console.error('scheduler error', error)
+      })
   }
 
   // 指定开始步骤
-  start (start = 0) {
+  start(start = 0) {
     this._stages = this.stages.slice(start)
     this._add()
     this.queue.start()

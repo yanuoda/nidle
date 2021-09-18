@@ -4,28 +4,28 @@ import StepQueue from './step-queue.js'
 import { retryRun, timeoutRun } from './util'
 
 class StageQueue {
-	constructor () {
-		this._queue = []
+  constructor() {
+    this._queue = []
     this._stepQueue = null
     this._currentAddStep = null
     this._EE = null
     this._isError = false
     this.logger = null
-	}
+  }
 
-	enqueue (run, options) {
+  enqueue(run, options) {
     this.task = options.task
     this.logger = options.logger
     this.stepEnqueue(options)
-		this._queue.push({
+    this._queue.push({
       stage: options.stage,
       run
     })
-	}
+  }
 
   // 添加步骤队列
-  stepEnqueue (options) {
-    const {  steps } = options.stage
+  stepEnqueue(options) {
+    const { steps } = options.stage
     this._EE = options.event
     this._stepQueue = new PQueue({
       concurrency: 1,
@@ -45,7 +45,7 @@ class StageQueue {
     this._bind()
   }
 
-  _bind () {
+  _bind() {
     const EE = this._EE
     const queue = this._stepQueue
     const logger = this.logger
@@ -60,7 +60,7 @@ class StageQueue {
       })
     })
 
-    queue.on('completed', result => {
+    queue.on('completed', () => {
       if (this._isError) {
         return
       }
@@ -104,7 +104,7 @@ class StageQueue {
   }
 
   // 暴露给插件的挂载钩子
-  add (name, fn) {
+  add(name, fn) {
     const { task } = this
     const step = this._currentAddStep
     step.taskName = name
@@ -126,30 +126,30 @@ class StageQueue {
     })
   }
 
-	dequeue () {
-		const item = this._current = this._queue.shift()
+  dequeue() {
+    const item = (this._current = this._queue.shift())
     return item.run
-	}
+  }
 
-	get size () {
-		return this._queue.length
-	}
+  get size() {
+    return this._queue.length
+  }
 
-  get current () {
+  get current() {
     return this._current.stage
   }
 
-  get child () {
+  get child() {
     return this._stepQueue
   }
 
-	filter (options) {
-		return this._queue.filter(item => {
+  filter(options) {
+    return this._queue.filter(item => {
       return item.stage.name === options.name
     })
-	}
+  }
 
-  onFailed () {
+  onFailed() {
     this._isError = true
   }
 }

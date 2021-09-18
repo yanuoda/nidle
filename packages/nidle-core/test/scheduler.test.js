@@ -1,6 +1,13 @@
 import Scheduler from '../lib/scheduler/scheduler.js'
 import PQueue from 'p-queue'
-import { task, defaultTask, stepErrorTask, stepTimeoutErrorTask, timeoutErrorTask, retryErrorTask } from './fixtures/config.js'
+import {
+  task,
+  defaultTask,
+  stepErrorTask,
+  stepTimeoutErrorTask,
+  timeoutErrorTask,
+  retryErrorTask
+} from './fixtures/config.js'
 
 test('constructor test', () => {
   const scheduler = new Scheduler({}, [1])
@@ -23,7 +30,7 @@ test('mount hook', () => {
 
 describe('default task', () => {
   const scheduler = new Scheduler(task(), defaultTask.stages)
-  
+
   test('mount hook', () => {
     scheduler.mount()
     expect(scheduler.queue).toBeInstanceOf(PQueue)

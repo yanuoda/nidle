@@ -19,18 +19,21 @@ export default function (options) {
     }
   })
 
-  const logger = pino({
-    redact,
-    // base: undefined
-    // formatters: {
-    //   level (label, number) {
-    //     return {
-    //       level: number,
-    //       levelLabel: label
-    //     }
-    //   }
-    // }
-  }, transports)
+  const logger = pino(
+    {
+      redact
+      // base: undefined
+      // formatters: {
+      //   level (label, number) {
+      //     return {
+      //       level: number,
+      //       levelLabel: label
+      //     }
+      //   }
+      // }
+    },
+    transports
+  )
 
   return {
     logger,

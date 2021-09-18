@@ -9,16 +9,16 @@ module.exports = {
     { value: 'refactor', name: 'refactor:   代码重构' },
     { value: 'perf', name: 'perf:       性能优化' },
     { value: 'test', name: 'test:       添加测试' },
-    { value: 'revert', name: 'revert:     撤销某个 commit' },
+    { value: 'revert', name: 'revert:     撤销某个 commit' }
   ],
   scopes: [],
   // override the messages, defaults are as follows
   messages: {
-    type: "选择需要提交的更改类型 (type):",
+    type: '选择需要提交的更改类型 (type):',
     scope: '更改的范围 (scope) (可选):',
     customScope: '自定义更改的范围 (scope) (可选):',
     subject: '对这次提交填写一个简短准确的描述 (subject):',
-    confirmCommit: '确认提交?',
+    confirmCommit: '确认提交?'
   },
   allowCustomScopes: false,
   allowBreakingChanges: ['feat', 'fix'],
@@ -26,4 +26,4 @@ module.exports = {
   skipQuestions: ['body', 'footer'],
   // limit subject length
   subjectLimit: 100
-};
+}

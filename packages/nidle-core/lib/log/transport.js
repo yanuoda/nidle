@@ -1,6 +1,6 @@
 import pino from 'pino'
 
-export default (options) => {
+export default options => {
   const targets = [
     // 错误日志
     {

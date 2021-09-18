@@ -49,15 +49,17 @@ test('plugin inputs', async () => {
   // 启用插件
   stages[0].steps[0].enable = true
   const input2 = await input(stages)
-  expect(input2).toEqual([{
-    stage: 'stage1',
-    plugin: 'plugin1',
-    options: {
-      type: 'input',
-      name: 'test',
-      message: 'Type something'
+  expect(input2).toEqual([
+    {
+      stage: 'stage1',
+      plugin: 'plugin1',
+      options: {
+        type: 'input',
+        name: 'test',
+        message: 'Type something'
+      }
     }
-  }])
+  ])
   // 重复插件
   stages.push({
     name: 'stage2',
@@ -70,34 +72,39 @@ test('plugin inputs', async () => {
     ]
   })
   const input3 = await input(stages)
-  expect(input3).toEqual([{
-    stage: 'stage1',
-    plugin: 'plugin1',
-    options: {
-      type: 'input',
-      name: 'test',
-      message: 'Type something'
+  expect(input3).toEqual([
+    {
+      stage: 'stage1',
+      plugin: 'plugin1',
+      options: {
+        type: 'input',
+        name: 'test',
+        message: 'Type something'
+      }
+    },
+    {
+      stage: 'stage2',
+      plugin: 'plugin1',
+      options: {
+        type: 'input',
+        name: 'test',
+        message: 'Type something'
+      }
     }
-  }, {
-    stage: 'stage2',
-    plugin: 'plugin1',
-    options: {
-      type: 'input',
-      name: 'test',
-      message: 'Type something'
-    }
-  }])
+  ])
 })
 
 // combine
 test('combine inputs', () => {
-  const inputs = [{
-    stage: 'stage1',
-    plugin: 'wrongName',
-    options: {
-      input1: 'input1'
+  const inputs = [
+    {
+      stage: 'stage1',
+      plugin: 'wrongName',
+      options: {
+        input1: 'input1'
+      }
     }
-  }]
+  ]
   const stages = [
     {
       name: 'stage1',

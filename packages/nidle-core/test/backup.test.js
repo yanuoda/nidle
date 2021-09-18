@@ -11,19 +11,19 @@ const options = {
     maxCount: 2
   },
   cache: {
-    path: path.resolve(root, 'cache'),
+    path: path.resolve(root, 'cache')
   },
   path: path.resolve(root, `build/${dirname}`)
 }
 
-function start () {
+function start() {
   // 创建临时目录、文件
   fs.mkdirSync(path.dirname(options.path))
   fs.mkdirSync(options.path)
   fs.writeFileSync(path.resolve(options.path, 'index.js'), 'console.log("test")')
 }
 
-function end () {
+function end() {
   // 清除临时目录、文件
   fs.rmSync(path.dirname(options.path), {
     recursive: true
@@ -52,7 +52,7 @@ describe('copy & compress & decompress', () => {
       fs.accessSync(path.resolve(output, dirname))
     })
     expect(() => {
-      fs.accessSync(options.path)  
+      fs.accessSync(options.path)
     })
   })
 
@@ -63,10 +63,10 @@ describe('copy & compress & decompress', () => {
       fs.accessSync(path.resolve(output, `${dirname}.tgz`))
     })
     expect(() => {
-      fs.accessSync(options.path)  
+      fs.accessSync(options.path)
     })
   })
-  
+
   test('compress remove source', async () => {
     await compress(options.path, output, true)
 
@@ -99,7 +99,7 @@ describe('copy & compress & decompress', () => {
       fs.accessSync(options.path)
     }).toThrow()
   })
-  
+
   test('decompress remove source', async () => {
     await decompress(path.resolve(output, `${dirname}.tgz`), options.path, true)
 
@@ -179,8 +179,15 @@ describe('backup', () => {
 
   test('backup out of maxCount', async () => {
     const backup = new Backup(options)
-    copy(path.resolve(options.backup.path, `${dirname}.tgz`), path.resolve(options.backup.path, 'test-app.202109131715.tgz'))
-    copy(path.resolve(options.backup.path, `${dirname}.tgz`), path.resolve(options.backup.path, 'test-app.202109121715.tgz'), true)
+    copy(
+      path.resolve(options.backup.path, `${dirname}.tgz`),
+      path.resolve(options.backup.path, 'test-app.202109131715.tgz')
+    )
+    copy(
+      path.resolve(options.backup.path, `${dirname}.tgz`),
+      path.resolve(options.backup.path, 'test-app.202109121715.tgz'),
+      true
+    )
 
     await backup.cache()
     await backup.backup()
