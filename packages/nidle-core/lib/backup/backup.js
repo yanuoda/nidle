@@ -18,10 +18,8 @@ class Backup {
     const { name, backup, cache, path } = this.options
     const basename = p.basename(path)
 
-    return new Promise(async (resolve, reject) => {
-      try {
-        await copy(`${p.resolve(cache.path, basename)}${cFileExtname}`, backup.path, true)
-
+    return new Promise((resolve, reject) => {
+      copy(`${p.resolve(cache.path, basename)}${cFileExtname}`, backup.path, true).then(() => {
         // 备份数量超过限制将删除老文件
         const files = fs.readdirSync(backup.path)
         const backups = files.filter(item => item.indexOf(name) === 0)
@@ -32,9 +30,9 @@ class Backup {
         }
 
         resolve()
-      } catch (err) {
+      }).catch(err => {
         reject(err)
-      }
+      })
     })
   }
 
