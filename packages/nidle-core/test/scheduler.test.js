@@ -1,13 +1,12 @@
 import Scheduler from '../lib/scheduler/scheduler.js'
 import PQueue from 'p-queue'
-import { task, action, defaultTask, stepErrorTask, stepTimeoutErrorTask, timeoutErrorTask, retryErrorTask } from './fixtures/config.js'
+import { task, defaultTask, stepErrorTask, stepTimeoutErrorTask, timeoutErrorTask, retryErrorTask } from './fixtures/config.js'
 
 test('constructor test', () => {
-  const scheduler = new Scheduler({}, {}, [1])
+  const scheduler = new Scheduler({}, [1])
 
   expect(scheduler).toHaveProperty('task')
   expect(scheduler).toHaveProperty('logger')
-  expect(scheduler).toHaveProperty('backup')
   expect(scheduler).toHaveProperty('stages', [1])
   expect(scheduler).toHaveProperty('_stages', [])
   expect(scheduler).toHaveProperty('queue', null)
@@ -16,14 +15,14 @@ test('constructor test', () => {
 })
 
 test('mount hook', () => {
-  const scheduler = new Scheduler(task(), action(),[1])
+  const scheduler = new Scheduler(task(), [1])
   scheduler.mount()
 
   expect(scheduler.queue).toBeInstanceOf(PQueue)
 })
 
 describe('default task', () => {
-  const scheduler = new Scheduler(task(), action(), defaultTask.stages)
+  const scheduler = new Scheduler(task(), defaultTask.stages)
   
   test('mount hook', () => {
     scheduler.mount()
@@ -76,7 +75,7 @@ describe('default task', () => {
 })
 
 describe('step error task', () => {
-  const scheduler = new Scheduler(task(), action(), stepErrorTask.stages)
+  const scheduler = new Scheduler(task(), stepErrorTask.stages)
   scheduler.mount()
 
   test('task run', done => {
@@ -95,7 +94,7 @@ describe('step error task', () => {
 })
 
 describe('step timeout error task', () => {
-  const scheduler = new Scheduler(task(), action(),stepTimeoutErrorTask.stages)
+  const scheduler = new Scheduler(task(),stepTimeoutErrorTask.stages)
   scheduler.mount()
 
   test('task run', done => {
@@ -113,7 +112,7 @@ describe('step timeout error task', () => {
 })
 
 describe('stage timeout error task', () => {
-  const scheduler = new Scheduler(task(), action(), timeoutErrorTask.stages)
+  const scheduler = new Scheduler(task(), timeoutErrorTask.stages)
   scheduler.mount()
 
   test('task run', done => {
@@ -133,7 +132,7 @@ describe('stage timeout error task', () => {
 })
 
 describe('step retry error task', () => {
-  const scheduler = new Scheduler(task(), action(), retryErrorTask.stages)
+  const scheduler = new Scheduler(task(), retryErrorTask.stages)
   scheduler.mount()
 
   test('task run', done => {
