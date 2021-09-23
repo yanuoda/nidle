@@ -84,7 +84,7 @@ describe('step error task', () => {
       expect(scheduler._stages[0].name).toBe('stage4 can no run')
       expect(scheduler.queue.size).toBe(0)
       expect(scheduler.queue.pending).toBe(1)
-      expect(error.message).toBe('step6 error')
+      expect(error.message).toBe('step step6 error')
 
       done()
     })
@@ -102,7 +102,7 @@ describe('step timeout error task', () => {
       expect(scheduler._stages.length).toBe(0)
       expect(scheduler.queue.size).toBe(0)
       expect(scheduler.queue.pending).toBe(1)
-      expect(error.message).toBe('step7任务超时: 1000')
+      expect(error.message).toBe('step step7 error')
 
       done()
     })
@@ -143,7 +143,7 @@ describe('step retry error task', () => {
       expect(scheduler.logger.messages).toContain('step9任务第1尝试失败, 还剩2次重试.')
       expect(scheduler.logger.messages).toContain('step9任务第2尝试失败, 还剩1次重试.')
       expect(scheduler.logger.messages).toContain('step9任务第3尝试失败, 还剩0次重试.')
-      expect(error.message).toBe('step9 error')
+      expect(error.message).toBe('step step9 error')
 
       setTimeout(() => {
         done()
