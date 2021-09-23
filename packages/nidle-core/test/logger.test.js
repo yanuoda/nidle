@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs'
 const root = process.cwd()
-const destination = path.resolve(root, 'test/.log')
+const destination = path.resolve(root, 'test/.logger_log')
 import Logger from '../lib/log/logger.js'
 
 let log
