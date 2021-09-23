@@ -78,16 +78,18 @@ class StageQueue {
       if (this._isError) {
         return
       }
-
       const step = queue._queue.current
 
       logger.error({
         progress: 'STEP ERROR',
         name: step.name,
         taskName: step.taskName,
-        error
+        error: {
+          message: error.message,
+          stack: error.stack
+        }
       })
-      EE.emit('error', error)
+      EE.emit('error', new Error(`step ${step.name} error`))
     })
 
     queue.on('idle', () => {
@@ -122,7 +124,7 @@ class StageQueue {
 
     this._stepQueue.add(run, step).catch(error => {
       // 如果不catch错误，在任务中throw错误会导致jest报错
-      console.error('stage error', error)
+      // console.error('stage error', error)
     })
   }
 
