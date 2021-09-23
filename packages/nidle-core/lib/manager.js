@@ -8,7 +8,7 @@ import Backup from './backup/backup.js'
 
 // 任务管理器
 class Manager extends EventEmitter {
-  constructor (config) {
+  constructor(config) {
     super()
 
     // 检查配置
@@ -40,7 +40,7 @@ class Manager extends EventEmitter {
   }
 
   // 挂载 - 用户确认input后
-  mount (inputs) {
+  mount(inputs) {
     return new Promise(resolve => {
       const { config, update } = this
       const basename = path.basename(config.output.path)
@@ -126,7 +126,7 @@ class Manager extends EventEmitter {
   }
 
   // 构建开始
-  async start (index = 0) {
+  async start(index = 0) {
     const { logger } = this
 
     if (index !== 0) {
@@ -155,7 +155,7 @@ class Manager extends EventEmitter {
   }
 
   // 回滚
-  async rollback () {
+  async rollback() {
     // 从备份中恢复，然后开始
     const { logger, backup } = this
     

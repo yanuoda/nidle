@@ -1,5 +1,5 @@
 export default class {
-  input () {
+  input() {
     return [
       {
         type: 'input',

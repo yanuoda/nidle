@@ -26,11 +26,13 @@ export const compress = function (input, output = '.', isRemove = false, extname
 
     execa(shell, {
       shell: true
-    }).then(() => {
-      resolve()
-    }).catch(err => {
-      reject(err)
     })
+      .then(() => {
+        resolve()
+      })
+      .catch(err => {
+        reject(err)
+      })
   })
 }
 
@@ -56,11 +58,13 @@ export const decompress = function (input, output = '.', isRemove = false) {
 
     execa(shell, {
       shell: true
-    }).then(() => {
-      resolve()
-    }).catch(err => {
-      reject(err)
     })
+      .then(() => {
+        resolve()
+      })
+      .catch(err => {
+        reject(err)
+      })
   })
 }
 
@@ -86,15 +90,17 @@ export const copy = function (input, output = '.', isRemove = false) {
 
     execa(shell, {
       shell: true
-    }).then(() => {
-      resolve()
-    }).catch(err => {
-      reject(err)
     })
+      .then(() => {
+        resolve()
+      })
+      .catch(err => {
+        reject(err)
+      })
   })
 }
 
-export const mkdir = function (p) {
+export const mkdir = function(p) {
   try {
     fs.accessSync(p)
   } catch (err) {

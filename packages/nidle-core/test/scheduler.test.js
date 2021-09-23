@@ -1,6 +1,13 @@
 import Scheduler from '../lib/scheduler/scheduler.js'
 import PQueue from 'p-queue'
-import { task, defaultTask, stepErrorTask, stepTimeoutErrorTask, timeoutErrorTask, retryErrorTask } from './fixtures/config.js'
+import {
+  task,
+  defaultTask,
+  stepErrorTask,
+  stepTimeoutErrorTask,
+  timeoutErrorTask,
+  retryErrorTask
+} from './fixtures/config.js'
 
 test('constructor test', () => {
   const scheduler = new Scheduler({}, [1])
@@ -94,7 +101,7 @@ describe('step error task', () => {
 })
 
 describe('step timeout error task', () => {
-  const scheduler = new Scheduler(task(),stepTimeoutErrorTask.stages)
+  const scheduler = new Scheduler(task(), stepTimeoutErrorTask.stages)
   scheduler.mount()
 
   test('task run', done => {

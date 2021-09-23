@@ -5,7 +5,7 @@ import transport from './transport.js'
 import { mkdir } from '../backup/util'
 
 export default class Logger {
-  constructor (options) {
+  constructor(options) {
     const { destination, name } = options
 
     if (!destination) {
@@ -40,7 +40,7 @@ export default class Logger {
     this.transport = transports
   }
 
-  end () {
+  end() {
     this.transport.end()
   }
 }

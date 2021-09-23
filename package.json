@@ -14,16 +14,32 @@
     "commitlint-config-cz": "^0.13.2",
     "cz-customizable": "^6.3.0",
     "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.24.0",
-    "husky": "^7.0.0",
-    "lerna": "^4.0.0"
+    "husky": "^7.0.2",
+    "lerna": "^4.0.0",
+    "lint-staged": "^11.1.2",
+    "prettier": "^2.3.2"
   },
   "scripts": {
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "pre-commit": "lint-staged"
   },
   "config": {
     "commitizen": {
       "path": "node_modules/cz-customizable"
     }
+  },
+  "lint-staged": {
+    "*.{js,jsx,mjs,ts,tsx}": [
+      "prettier --write",
+      "eslint"
+    ],
+    "*.{css,scss,less,json,html,md,markdown}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }

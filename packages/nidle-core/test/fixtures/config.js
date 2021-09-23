@@ -38,7 +38,7 @@ export const defaultTask = {
           // 正常step
           name: 'step1',
           module: {
-            apply (scheduler) {
+            apply(scheduler) {
               scheduler.add('step1', (task, config) => {
                 return new Promise(resolve => {
                   task.logger.info({
@@ -59,7 +59,7 @@ export const defaultTask = {
           name: 'step2',
           timeout: 2000,
           module: {
-            apply (scheduler) {
+            apply(scheduler) {
               scheduler.add('step2.1', task => {
                 return new Promise(resolve => {
                   task.logger.info('step2 info 1')
@@ -76,7 +76,7 @@ export const defaultTask = {
           name: 'step3',
           retry: 2,
           module: {
-            apply (scheduler) {
+            apply(scheduler) {
               scheduler.add('step3', task => {
                 return new Promise((resolve, reject) => {
                   task.logger.info('step3 info' + _idx)
@@ -98,9 +98,9 @@ export const defaultTask = {
           name: 'step4',
           enable: false,
           module: {
-            apply (scheduler) {
+            apply(scheduler) {
               scheduler.add('step4', task => {
-                return new Promise((resolve, reject) => {
+                return new Promise(resolve => {
                   task.logger.info('step4 info')
                   resolve()
                 })
@@ -121,16 +121,16 @@ export const defaultTask = {
           retry: 2,
           timeout: 2000,
           module: {
-            apply (scheduler) {
+            apply(scheduler) {
               scheduler.add('step5', task => {
-                return new Promise((resolve, reject) => {
+                return new Promise(resolve => {
                   task.logger.info('step5 info')
                   resolve()
                 })
               })
             }
           }
-        },
+        }
       ]
     }
   ]
@@ -145,7 +145,7 @@ export const stepErrorTask = {
           // step error
           name: 'step6',
           module: {
-            apply (scheduler) {
+            apply(scheduler) {
               scheduler.add('step6', task => {
                 return new Promise((resolve, reject) => {
                   task.logger.info('step6 info')
@@ -164,9 +164,9 @@ export const stepErrorTask = {
           // step error
           name: 'step7',
           module: {
-            apply (scheduler) {
+            apply(scheduler) {
               scheduler.add('step7', task => {
-                return new Promise((resolve, reject) => {
+                return new Promise(resolve => {
                   task.logger.info('step7 info')
                   resolve()
                 })
@@ -189,7 +189,7 @@ export const stepTimeoutErrorTask = {
           name: 'step7',
           timeout: 1000,
           module: {
-            apply (scheduler) {
+            apply(scheduler) {
               scheduler.add('step7', task => {
                 return new Promise(resolve => {
                   setTimeout(() => {
@@ -214,7 +214,7 @@ export const timeoutErrorTask = {
         {
           name: 'step8',
           module: {
-            apply (scheduler) {
+            apply(scheduler) {
               scheduler.add('step8', task => {
                 return new Promise(resolve => {
                   setTimeout(() => {
@@ -237,11 +237,11 @@ export const retryErrorTask = {
       name: 'stage6',
       steps: [
         {
-          // retry error 
+          // retry error
           name: 'step9',
           retry: 2,
           module: {
-            apply (scheduler) {
+            apply(scheduler) {
               scheduler.add('step9', task => {
                 return new Promise((resolve, reject) => {
                   task.logger.error('step9 error')

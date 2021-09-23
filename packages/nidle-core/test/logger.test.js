@@ -90,23 +90,27 @@ const logPosition = {
   error: 0
 }
 
-async function getLastLine (type) {
+async function getLastLine(type) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      fs.read(logFile[type], {
-        position: logPosition[type]
-      }, function (err, bytesRead, buffer) {
-        if (err) {
-          reject(err)
-        }
+      fs.read(
+        logFile[type],
+        {
+          position: logPosition[type]
+        },
+        function (err, bytesRead, buffer) {
+          if (err) {
+            reject(err)
+          }
 
-        if (bytesRead) {
-          logPosition[type] += bytesRead
-          resolve(buffer.toString())
-        } else {
-          resolve(null)
+          if (bytesRead) {
+            logPosition[type] += bytesRead
+            resolve(buffer.toString())
+          } else {
+            resolve(null)
+          }
         }
-      })
+      )
     }, 1000)
   })
 }
