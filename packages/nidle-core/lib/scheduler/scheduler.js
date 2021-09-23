@@ -61,7 +61,7 @@ class Mounter extends EventEmitter {
     })
 
     queue.on('idle', () => {
-      if (!this._stages.length) {
+      if (!this._isError && !this._stages.length) {
         this.emit('completed')
       }
     })
@@ -71,7 +71,9 @@ class Mounter extends EventEmitter {
       logger.error({
         progress: 'STAGE ERROR',
         name: stage.name,
-        error
+        error: {
+          message: error.message
+        }
       })
 
       this._isError = true
@@ -127,7 +129,7 @@ class Mounter extends EventEmitter {
       event: EE,
     }).catch(error => {
       // 如果不catch错误，在任务中throw错误会导致jest报错
-      console.error('scheduler error', error)
+      // console.error('scheduler error', error)
     })
   }
 
