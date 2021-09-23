@@ -7,13 +7,13 @@ const dirname = 'test-app.202109141715'
 const options = {
   name: 'test-app',
   backup: {
-    path: path.resolve(root, '.backup'),
+    path: path.resolve(root, '.backup_backup'),
     maxCount: 2
   },
   cache: {
-    path: path.resolve(root, '.cache'),
+    path: path.resolve(root, '.backup_cache'),
   },
-  path: path.resolve(root, `.build/${dirname}`)
+  path: path.resolve(root, `.backup_build/${dirname}`)
 }
 
 function start () {
@@ -48,31 +48,21 @@ describe('copy & compress & decompress', () => {
   test('copy no remove source', async () => {
     await copy(options.path, output)
 
-    expect(() => {
-      fs.accessSync(path.resolve(output, dirname))
-    })
-    expect(() => {
-      fs.accessSync(options.path)  
-    })
+    expect(fs.accessSync(path.resolve(output, dirname))).toBeUndefined()
+    expect(fs.accessSync(options.path)).toBeUndefined()
   })
 
   test('compress no remove source', async () => {
     await compress(options.path, output)
 
-    expect(() => {
-      fs.accessSync(path.resolve(output, `${dirname}.tgz`))
-    })
-    expect(() => {
-      fs.accessSync(options.path)  
-    })
+    expect(fs.accessSync(path.resolve(output, `${dirname}.tgz`))).toBeUndefined()
+    expect(fs.accessSync(options.path)).toBeUndefined()
   })
   
   test('compress remove source', async () => {
     await compress(options.path, output, true)
 
-    expect(() => {
-      fs.accessSync(path.resolve(output, `${dirname}.tgz`))
-    })
+    expect(fs.accessSync(path.resolve(output, `${dirname}.tgz`))).toBeUndefined()
     expect(() => {
       fs.accessSync(options.path)
     }).toThrow()
@@ -81,20 +71,14 @@ describe('copy & compress & decompress', () => {
   test('decompress no remove source', async () => {
     await decompress(path.resolve(output, `${dirname}.tgz`), options.path)
 
-    expect(() => {
-      fs.accessSync(path.resolve(options.path, 'index.js'))
-    })
-    expect(() => {
-      fs.accessSync(path.resolve(output, `${dirname}.tgz`))
-    })
+    expect(fs.accessSync(path.resolve(options.path, 'index.js'))).toBeUndefined()
+    expect(fs.accessSync(path.resolve(output, `${dirname}.tgz`))).toBeUndefined()
   })
 
   test('copy remove source', async () => {
     await copy(options.path, output, true)
 
-    expect(() => {
-      fs.accessSync(path.resolve(output, dirname))
-    })
+    expect(fs.accessSync(path.resolve(output, dirname))).toBeUndefined()
     expect(() => {
       fs.accessSync(options.path)
     }).toThrow()
@@ -103,9 +87,7 @@ describe('copy & compress & decompress', () => {
   test('decompress remove source', async () => {
     await decompress(path.resolve(output, `${dirname}.tgz`), options.path, true)
 
-    expect(() => {
-      fs.accessSync(path.resolve(options.path, 'index.js'))
-    })
+    expect(fs.accessSync(path.resolve(options.path, 'index.js'))).toBeUndefined()
     expect(() => {
       fs.accessSync(path.resolve(output, `${dirname}.tgz`))
     }).toThrow()
@@ -139,26 +121,20 @@ describe('backup', () => {
     const backup = new Backup(options)
 
     await backup.cache()
-    expect(() => {
-      fs.accessSync(path.resolve(options.cache.path, `${dirname}.tgz`))
-    })
+    expect(fs.accessSync(path.resolve(options.cache.path, `${dirname}.tgz`))).toBeUndefined()
 
     fs.rmSync(options.path, {
       recursive: true
     })
     await backup.restore()
-    expect(() => {
-      fs.accessSync(options.path)
-    })
+    expect(fs.accessSync(options.path)).toBeUndefined()
   })
 
   test('cache when publish end', async () => {
     const backup = new Backup(options)
 
     await backup.cache(true)
-    expect(() => {
-      fs.accessSync(path.resolve(options.cache.path, `${dirname}.tgz`))
-    })
+    expect(fs.accessSync(path.resolve(options.cache.path, `${dirname}.tgz`))).toBeUndefined()
     expect(() => {
       fs.accessSync(options.path)
     }).toThrow()
@@ -170,24 +146,19 @@ describe('backup', () => {
 
     await backup.cache()
     await backup.backup()
-    expect(() => {
-      fs.accessSync(path.resolve(options.backup.path, `${dirname}.tgz`))
-    })
+    expect(fs.accessSync(path.resolve(options.backup.path, `${dirname}.tgz`))).toBeUndefined()
   })
 
   test('backup out of maxCount', async () => {
     const backup = new Backup(options)
-    copy(path.resolve(options.backup.path, `${dirname}.tgz`), path.resolve(options.backup.path, 'test-app.202109131715.tgz'))
-    copy(path.resolve(options.backup.path, `${dirname}.tgz`), path.resolve(options.backup.path, 'test-app.202109121715.tgz'), true)
 
+    await copy(path.resolve(options.backup.path, `${dirname}.tgz`), path.resolve(options.backup.path, 'test-app.202109131715.tgz'))
+    await copy(path.resolve(options.backup.path, `${dirname}.tgz`), path.resolve(options.backup.path, 'test-app.202109121715.tgz'), true)
     await backup.cache()
     await backup.backup()
-    expect(() => {
-      fs.accessSync(path.resolve(options.backup.path, `${dirname}.tgz`))
-    })
-    expect(() => {
-      fs.accessSync(path.resolve(options.backup.path, 'test-app.202109131715.tgz'))
-    })
+
+    expect(fs.accessSync(path.resolve(options.backup.path, `${dirname}.tgz`))).toBeUndefined()
+    expect(fs.accessSync(path.resolve(options.backup.path, 'test-app.202109131715.tgz'))).toBeUndefined()
     expect(() => {
       fs.accessSync(path.resolve(options.backup.path, 'test-app.202109121715.tgz'))
     }).toThrow()
@@ -200,8 +171,6 @@ describe('backup', () => {
       recursive: true
     })
     await backup.rollback()
-    expect(() => {
-      fs.accessSync(options.path)
-    })
+    expect(fs.accessSync(options.path)).toBeUndefined()
   })
 })
