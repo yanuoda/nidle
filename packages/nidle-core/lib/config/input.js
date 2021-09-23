@@ -27,21 +27,25 @@ export default async function collect(stages) {
           continue
         }
 
-        const pkg = step.package || step.path
-        const PluginClass = (await import(pkg)).default
-        const pluginInstance = step.module = new PluginClass()
-        const input = typeof pluginInstance.input === 'function' ? pluginInstance.input() : null
-        if (input) {
-          const inputParam = {
-            stage: stageName,
-            plugin,
-            input
+        try {
+          const pkg = step.package || step.path
+          const PluginClass = (await import(pkg)).default
+          const pluginInstance = step.module = new PluginClass()
+          const input = typeof pluginInstance.input === 'function' ? pluginInstance.input() : null
+          if (input) {
+            const inputParam = {
+              stage: stageName,
+              plugin,
+              input
+            }
+            inputs.push(inputParam)
+            pluginInputCacheMap.set(plugin, {
+              ...inputParam,
+              module: PluginClass
+            })
           }
-          inputs.push(inputParam)
-          pluginInputCacheMap.set(plugin, {
-            ...inputParam,
-            module: PluginClass
-          })
+        } catch (err) {
+          throw err
         }
       }
     }
