@@ -19,6 +19,7 @@ module.exports = {
     'node/no-unsupported-features/es-syntax': [2, { ignores: ['modules', 'dynamicImport'] }],
     'node/no-missing-import': 0,
     'constructor-super': 0,
-    'no-this-before-super': 0
+    'no-this-before-super': 0,
+    'no-useless-catch': 0
   }
 }
