@@ -190,7 +190,7 @@ export const stepTimeoutErrorTask = {
           timeout: 1000,
           module: {
             apply(scheduler) {
-              scheduler.add('step7', task => {
+              scheduler.add('step7', () => {
                 return new Promise(resolve => {
                   setTimeout(() => {
                     resolve()
@@ -264,12 +264,8 @@ export const options = {
     branch: 'dev',
     userName: 'chb.wang'
   },
-  type: 'publish',
   log: {
-    path: path.resolve(root, '.log'),
-    worker: {
-      autoEnd: false
-    }
+    path: path.resolve(root, '.log')
   },
   output: {
     backup: {
@@ -297,7 +293,7 @@ export const options = {
       ]
     }
   ],
-  update (model) {
+  update(model) {
     console.log('update: ', model)
   }
 }
@@ -310,12 +306,8 @@ export const retryOptions = {
     branch: 'dev',
     userName: 'chb.wang'
   },
-  type: 'publish',
   log: {
-    path: path.resolve(root, '.log'),
-    worker: {
-      autoEnd: false
-    }
+    path: path.resolve(root, '.log')
   },
   output: {
     backup: {
@@ -354,7 +346,7 @@ export const retryOptions = {
       ]
     }
   ],
-  update (model) {
+  update(model) {
     console.log('update: ', model)
   }
 }
