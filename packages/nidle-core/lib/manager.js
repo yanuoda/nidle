@@ -52,6 +52,7 @@ class Manager extends EventEmitter {
         destination: config.log.path,
         name: basename
       }))
+      // pino transport is a async stream
       log.transport.on('ready', () => {
         resolve()
       })
