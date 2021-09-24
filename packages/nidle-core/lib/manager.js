@@ -1,15 +1,18 @@
-import path, { resolve } from 'path'
+import path from 'path'
 import fs from 'fs'
 import EventEmitter from 'eventemitter3'
 import { check, input, combine } from './config/index.js'
 import Scheduler from './scheduler/scheduler.js'
 import Logger from './log/logger.js'
 import Backup from './backup/backup.js'
+import defaults from './config'
 
 // 任务管理器
 class Manager extends EventEmitter {
   constructor(config) {
     super()
+
+    config = Object.assign({}, defaults, config)
 
     // 检查配置
     const { valid, message } = check(config)
@@ -17,14 +20,14 @@ class Manager extends EventEmitter {
     if (!valid) {
       throw new Error(message)
     }
-  
+
     this.config = config
     this.update = config.update
     this.scheduler = null
   }
 
   // 初始化
-  async init () {
+  async init() {
     const { config } = this
 
     // 获取inputs
@@ -45,28 +48,31 @@ class Manager extends EventEmitter {
       const { config, update } = this
       const basename = path.basename(config.output.path)
 
-      const log = this.log = new Logger({
+      const log = (this.log = new Logger({
         destination: config.log.path,
         name: basename
-      })
+      }))
       log.transport.on('ready', () => {
         resolve()
       })
-      const logger = this.logger = log.logger
-      const backup = this.backup = new Backup({
+      const logger = (this.logger = log.logger)
+      const backup = (this.backup = new Backup({
         name: config.name,
         ...config.output
-      })
+      }))
       const stages = combine(config.stages, inputs)
-      const scheduler = this.scheduler = new Scheduler({
-        name: config.name,
-        repository: config.repository,
-        type: config.type,
-        output: {
-          path: config.output.path
+      const scheduler = (this.scheduler = new Scheduler(
+        {
+          name: config.name,
+          repository: config.repository,
+          type: config.type,
+          output: {
+            path: config.output.path
+          },
+          logger
         },
-        logger
-      }, stages)
+        stages
+      ))
       scheduler.mount()
 
       scheduler.on('completed', async () => {
@@ -78,7 +84,7 @@ class Manager extends EventEmitter {
         logger.info({
           progress: 'SCHEDULER COMPLETE'
         })
-        
+
         try {
           await backup.backup()
           fs.rmSync(config.output.path, {
@@ -158,7 +164,7 @@ class Manager extends EventEmitter {
   async rollback() {
     // 从备份中恢复，然后开始
     const { logger, backup } = this
-    
+
     try {
       await backup.rollback()
 
