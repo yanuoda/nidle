@@ -1,8 +1,6 @@
 {
   "version": "0.1.0",
-  "packages": [
-    "packages/*"
-  ],
+  "packages": ["packages/*"],
   "useWorkspaces": true,
   "npmClient": "yarn",
   "command": {
@@ -15,9 +13,7 @@
       "allowBranch": ["main"],
       "registry": "https://registry.npmjs.org/",
       "conventionalCommits": true,
-      "ignoreChanges": [
-        "**/*.md"
-      ]
+      "ignoreChanges": ["**/*.md"]
     }
   }
 }

@@ -25,7 +25,9 @@
   },
   "scripts": {
     "prepare": "husky install",
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged",
+    "auto-lint": "eslint ./**/*.{js,jsx,mjs,ts,tsx}",
+    "auto-fix": "prettier --write ./**/*.{js,jsx,mjs,ts,tsx} ./**/*.{css,scss,less,json,html,md,markdown} && eslint ./**/*.{js,jsx,mjs,ts,tsx}"
   },
   "config": {
     "commitizen": {
@@ -35,7 +37,8 @@
   "lint-staged": {
     "*.{js,jsx,mjs,ts,tsx}": [
       "prettier --write",
-      "eslint"
+      "eslint",
+      "git add"
     ],
     "*.{css,scss,less,json,html,md,markdown}": [
       "prettier --write",
