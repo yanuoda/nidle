@@ -4,7 +4,7 @@ const logger = function () {
   }
 
   function log(msg) {
-    console.log('logger: ', msg)
+    // console.log('logger: ', msg)
     logger.messages.push(msg)
   }
 

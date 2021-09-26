@@ -20,7 +20,8 @@ module.exports = {
     'node/no-missing-import': 0,
     'constructor-super': 0,
     'no-this-before-super': 0,
-    'react/prop-types': 0 //防止在react组件定义中缺少props验证
+    'react/prop-types': 0, //防止在react组件定义中缺少props验证
+    'no-useless-catch': 0
   },
   settings: {
     react: {

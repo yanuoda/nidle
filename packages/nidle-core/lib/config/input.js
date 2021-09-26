@@ -23,21 +23,29 @@ export default async function collect(stages) {
             plugin,
             input: inputCache.input
           })
+          step.module = new inputCache.module()
           continue
         }
 
-        const pkg = step.package || step.path
-        const PluginClass = (await import(pkg)).default
-        const pluginInstance = new PluginClass()
-        const input = typeof pluginInstance.input === 'function' ? pluginInstance.input() : null
-        if (input) {
-          const inputParam = {
-            stage: stageName,
-            plugin,
-            input
+        try {
+          const pkg = step.package || step.path
+          const PluginClass = (await import(pkg)).default
+          const pluginInstance = (step.module = new PluginClass())
+          const input = typeof pluginInstance.input === 'function' ? pluginInstance.input() : null
+          if (input) {
+            const inputParam = {
+              stage: stageName,
+              plugin,
+              input
+            }
+            inputs.push(inputParam)
+            pluginInputCacheMap.set(plugin, {
+              ...inputParam,
+              module: PluginClass
+            })
           }
-          inputs.push(inputParam)
-          pluginInputCacheMap.set(plugin, inputParam)
+        } catch (err) {
+          throw err
         }
       }
     }

@@ -27,14 +27,6 @@ export const task = function () {
   }
 }
 
-export const action = function () {
-  return {
-    backup: {
-      cache: function () {}
-    }
-  }
-}
-
 export const defaultTask = {
   stages: [
     {
@@ -45,7 +37,7 @@ export const defaultTask = {
         {
           // 正常step
           name: 'step1',
-          package: {
+          module: {
             apply(scheduler) {
               scheduler.add('step1', (task, config) => {
                 return new Promise(resolve => {
@@ -66,7 +58,7 @@ export const defaultTask = {
           // timeout、持续输出日志
           name: 'step2',
           timeout: 2000,
-          package: {
+          module: {
             apply(scheduler) {
               scheduler.add('step2.1', task => {
                 return new Promise(resolve => {
@@ -83,7 +75,7 @@ export const defaultTask = {
           // retry
           name: 'step3',
           retry: 2,
-          package: {
+          module: {
             apply(scheduler) {
               scheduler.add('step3', task => {
                 return new Promise((resolve, reject) => {
@@ -105,7 +97,7 @@ export const defaultTask = {
           // enable = false
           name: 'step4',
           enable: false,
-          package: {
+          module: {
             apply(scheduler) {
               scheduler.add('step4', task => {
                 return new Promise(resolve => {
@@ -128,7 +120,7 @@ export const defaultTask = {
           name: 'step5',
           retry: 2,
           timeout: 2000,
-          package: {
+          module: {
             apply(scheduler) {
               scheduler.add('step5', task => {
                 return new Promise(resolve => {
@@ -152,7 +144,7 @@ export const stepErrorTask = {
         {
           // step error
           name: 'step6',
-          package: {
+          module: {
             apply(scheduler) {
               scheduler.add('step6', task => {
                 return new Promise((resolve, reject) => {
@@ -171,7 +163,7 @@ export const stepErrorTask = {
         {
           // step error
           name: 'step7',
-          package: {
+          module: {
             apply(scheduler) {
               scheduler.add('step7', task => {
                 return new Promise(resolve => {
@@ -196,7 +188,7 @@ export const stepTimeoutErrorTask = {
           // time out
           name: 'step7',
           timeout: 1000,
-          package: {
+          module: {
             apply(scheduler) {
               scheduler.add('step7', () => {
                 return new Promise(resolve => {
@@ -221,7 +213,7 @@ export const timeoutErrorTask = {
       steps: [
         {
           name: 'step8',
-          package: {
+          module: {
             apply(scheduler) {
               scheduler.add('step8', task => {
                 return new Promise(resolve => {
@@ -248,7 +240,7 @@ export const retryErrorTask = {
           // retry error
           name: 'step9',
           retry: 2,
-          package: {
+          module: {
             apply(scheduler) {
               scheduler.add('step9', task => {
                 return new Promise((resolve, reject) => {
@@ -262,4 +254,99 @@ export const retryErrorTask = {
       ]
     }
   ]
+}
+
+export const options = {
+  name: 'test-app',
+  repository: {
+    type: 'git',
+    url: 'http://xxx.xxx.com/xx/xx.git',
+    branch: 'dev',
+    userName: 'chb.wang'
+  },
+  log: {
+    path: path.resolve(root, '.log')
+  },
+  output: {
+    backup: {
+      path: path.resolve(root, '.backup'),
+      maxCount: 2
+    },
+    cache: {
+      path: path.resolve(root, '.cache')
+    },
+    path: path.resolve(root, `.build/test-app.202109161400`)
+  },
+  stages: [
+    {
+      name: 'build',
+      timeout: 0,
+      steps: [
+        {
+          name: 'download',
+          enable: true,
+          path: path.resolve(root, 'fixtures/plugin-init.js'),
+          options: {
+            test: 'dev'
+          }
+        }
+      ]
+    }
+  ],
+  update(model) {
+    console.log('update: ', model)
+  }
+}
+
+export const retryOptions = {
+  name: 'test-app',
+  repository: {
+    type: 'git',
+    url: 'http://xxx.xxx.com/xx/xx.git',
+    branch: 'dev',
+    userName: 'chb.wang'
+  },
+  log: {
+    path: path.resolve(root, '.log')
+  },
+  output: {
+    backup: {
+      path: path.resolve(root, '.backup'),
+      maxCount: 2
+    },
+    cache: {
+      path: path.resolve(root, '.cache')
+    },
+    path: path.resolve(root, `.build/test-app.202109181400`)
+  },
+  stages: [
+    {
+      name: 'build',
+      timeout: 0,
+      steps: [
+        {
+          name: 'download',
+          enable: true,
+          path: path.resolve(root, 'fixtures/plugin-init.js'),
+          options: {
+            test: 'dev'
+          }
+        }
+      ]
+    },
+    {
+      name: 'publish',
+      timeout: 0,
+      steps: [
+        {
+          name: 'publish',
+          enable: true,
+          path: path.resolve(root, 'fixtures/plugin-retry.js')
+        }
+      ]
+    }
+  ],
+  update(model) {
+    console.log('update: ', model)
+  }
 }

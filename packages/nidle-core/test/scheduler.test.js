@@ -2,7 +2,6 @@ import Scheduler from '../lib/scheduler/scheduler.js'
 import PQueue from 'p-queue'
 import {
   task,
-  action,
   defaultTask,
   stepErrorTask,
   stepTimeoutErrorTask,
@@ -11,11 +10,10 @@ import {
 } from './fixtures/config.js'
 
 test('constructor test', () => {
-  const scheduler = new Scheduler({}, {}, [1])
+  const scheduler = new Scheduler({}, [1])
 
   expect(scheduler).toHaveProperty('task')
   expect(scheduler).toHaveProperty('logger')
-  expect(scheduler).toHaveProperty('backup')
   expect(scheduler).toHaveProperty('stages', [1])
   expect(scheduler).toHaveProperty('_stages', [])
   expect(scheduler).toHaveProperty('queue', null)
@@ -24,14 +22,14 @@ test('constructor test', () => {
 })
 
 test('mount hook', () => {
-  const scheduler = new Scheduler(task(), action(), [1])
+  const scheduler = new Scheduler(task(), [1])
   scheduler.mount()
 
   expect(scheduler.queue).toBeInstanceOf(PQueue)
 })
 
 describe('default task', () => {
-  const scheduler = new Scheduler(task(), action(), defaultTask.stages)
+  const scheduler = new Scheduler(task(), defaultTask.stages)
 
   test('mount hook', () => {
     scheduler.mount()
@@ -84,7 +82,7 @@ describe('default task', () => {
 })
 
 describe('step error task', () => {
-  const scheduler = new Scheduler(task(), action(), stepErrorTask.stages)
+  const scheduler = new Scheduler(task(), stepErrorTask.stages)
   scheduler.mount()
 
   test('task run', done => {
@@ -93,7 +91,7 @@ describe('step error task', () => {
       expect(scheduler._stages[0].name).toBe('stage4 can no run')
       expect(scheduler.queue.size).toBe(0)
       expect(scheduler.queue.pending).toBe(1)
-      expect(error.message).toBe('step6 error')
+      expect(error.message).toBe('step step6 error')
 
       done()
     })
@@ -103,7 +101,7 @@ describe('step error task', () => {
 })
 
 describe('step timeout error task', () => {
-  const scheduler = new Scheduler(task(), action(), stepTimeoutErrorTask.stages)
+  const scheduler = new Scheduler(task(), stepTimeoutErrorTask.stages)
   scheduler.mount()
 
   test('task run', done => {
@@ -111,7 +109,7 @@ describe('step timeout error task', () => {
       expect(scheduler._stages.length).toBe(0)
       expect(scheduler.queue.size).toBe(0)
       expect(scheduler.queue.pending).toBe(1)
-      expect(error.message).toBe('step7任务超时: 1000')
+      expect(error.message).toBe('step step7 error')
 
       done()
     })
@@ -121,7 +119,7 @@ describe('step timeout error task', () => {
 })
 
 describe('stage timeout error task', () => {
-  const scheduler = new Scheduler(task(), action(), timeoutErrorTask.stages)
+  const scheduler = new Scheduler(task(), timeoutErrorTask.stages)
   scheduler.mount()
 
   test('task run', done => {
@@ -141,7 +139,7 @@ describe('stage timeout error task', () => {
 })
 
 describe('step retry error task', () => {
-  const scheduler = new Scheduler(task(), action(), retryErrorTask.stages)
+  const scheduler = new Scheduler(task(), retryErrorTask.stages)
   scheduler.mount()
 
   test('task run', done => {
@@ -152,7 +150,7 @@ describe('step retry error task', () => {
       expect(scheduler.logger.messages).toContain('step9任务第1尝试失败, 还剩2次重试.')
       expect(scheduler.logger.messages).toContain('step9任务第2尝试失败, 还剩1次重试.')
       expect(scheduler.logger.messages).toContain('step9任务第3尝试失败, 还剩0次重试.')
-      expect(error.message).toBe('step9 error')
+      expect(error.message).toBe('step step9 error')
 
       setTimeout(() => {
         done()
