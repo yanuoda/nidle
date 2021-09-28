@@ -30,6 +30,7 @@ sidebar_position: 4
 * name: string
 * ip: string
 * description: string
+* environment: string
 * username: string
 * password: string
 * status: int - 0: 禁用 1: 启用
@@ -37,6 +38,7 @@ sidebar_position: 4
 * updatedTime: date-time
 
 ### role 角色表
+默认有admin和developer角色
 * id: uniqueid
 * name: string
 * code: string
@@ -61,7 +63,7 @@ sidebar_position: 4
 * name: string
 * description: string
 * owner: string
-* repositoryType: string
+* repositoryType: string - 默认GIT
 * repositoryUrl: string
 * postEmails: string - 邮件通知列表
 * createdTime: date-time
@@ -89,10 +91,12 @@ sidebar_position: 4
 * period: string 发布周期ID，用来聚合同一周期发布
 * project: projectId
 * branch: string
-* tag: string
+* commitId: string
 * developer: memberId
 * source: string - 触发方式: CLI、webhook、web
-* status: int - 0: 进行中 1: 成功 2: 失败、3: Unstable、4: Aborted、5: Pause
+* status: int - 0: 进行中 1: 成功 2: 失败 3: Aborted取消中止 4: Pause暂停\
+这里不再保留`unstable`状态，因为也无法区别哪里出问题，而是再前台根据`log.warn`判断存在警告，可能不稳定来标识
+* codeReviewStatus: int - 0: 未审核 1: 通过 2: 拒绝
 * environment: string - 发布环境
 * stage: string
 * duration: number - 持续时间
