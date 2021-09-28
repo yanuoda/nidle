@@ -69,6 +69,16 @@ module.exports = {
         }
       ]
     }
+  ],
+  // 用户input，这个只是保存下来
+  options: [
+    {
+      stage: '', // 阶段名称
+      plugin: '', // 插件名称
+      options: {
+        // ...
+      }
+    }
   ]
 }
 
@@ -100,7 +110,7 @@ module.exports = {
     {
       name: 'build',
       timeout: 0, // 超时结束，0则不超时
-      disabledParallel: false, // 是否关闭并行插件，关闭后并行插件会变成顺序执行
+      // disabledParallel: false, // 是否关闭并行插件，关闭后并行插件会变成顺序执行
       steps: [
         {
           name: '',
@@ -126,8 +136,10 @@ module.exports = {
   name: '应用名称',
   extend: '', // 模块扩展
   log: {},
-  output: {},
-  stages: [], // 不扩展的情况可以配
+  output: {
+    path: ''
+  },
+  stages: [], // 不扩展的情况可以不配
   chain: (config) => {
     // 可以像数组一样移除，新增
     config.stages.push({})
