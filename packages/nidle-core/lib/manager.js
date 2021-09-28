@@ -94,7 +94,10 @@ class Manager extends EventEmitter {
         } catch (error) {
           logger.error({
             progress: 'BACKUP ERROR',
-            error
+            error: {
+              message: error.message,
+              stack: error.stack
+            }
           })
         }
 
@@ -125,7 +128,10 @@ class Manager extends EventEmitter {
         } catch (error) {
           logger.error({
             progress: 'CACHE ERROR',
-            error
+            error: {
+              message: error.message,
+              stack: error.stack
+            }
           })
         }
       })
@@ -148,7 +154,10 @@ class Manager extends EventEmitter {
       } catch (error) {
         logger.error({
           progress: 'RESTORE ERROR',
-          error
+          error: {
+            message: error.message,
+            stack: error.stack
+          }
         })
         throw new Error('缓存恢复失败，请重新开始构建！')
       }
@@ -178,7 +187,10 @@ class Manager extends EventEmitter {
     } catch (error) {
       logger.error({
         progress: 'ROLLBACK ERROR',
-        error
+        error: {
+          message: error.message,
+          stack: error.stack
+        }
       })
       throw new Error('备份还原失败，请重新开始分支发布')
     }
