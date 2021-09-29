@@ -5,9 +5,17 @@
   "repository": "git@github.com:yanuoda/nidle.git",
   "author": "Renguang Han",
   "license": "MIT",
-  "workspaces": [
-    "packages/**/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/**/*"
+    ],
+    "nohoist": [
+      "**/egg",
+      "**/egg/**",
+      "**/egg-*",
+      "**/egg-*/**"
+    ]
+  },
   "devDependencies": {
     "@commitlint/cli": "^13.1.0",
     "commitizen": "^4.2.4",

@@ -1,0 +1,51 @@
+{
+  "name": "nidle-web",
+  "version": "0.1.0",
+  "description": "nidle web application",
+  "dependencies": {
+    "egg": "^2.10.0",
+    "egg-scripts": "^2.5.0",
+    "egg-sequelize": "^6.0.0",
+    "mysql2": "^2.3.0"
+  },
+  "devDependencies": {
+    "autod": "^3.0.1",
+    "autod-egg": "^1.0.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^10.0.0",
+    "egg-bin": "^4.3.7",
+    "egg-mock": "^3.19.2",
+    "factory-girl": "^5.0.2",
+    "sequelize-cli": "^6.2.0"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "dev": "egg-bin dev",
+    "autod": "autod",
+    "test": "cross-env NODE_ENV=test egg-bin test",
+    "cov": "cross-env NODE_ENV=test egg-bin cov",
+    "ci": "cross-env NODE_ENV=test yarn sequelize db:migrate && yarn cov",
+    "db:create": "yarn sequelize db:create && yarn sequelize db:migrate",
+    "test:db:create": "cross-env NODE_ENV=test yarn sequelize db:create && yarn sequelize db:migrate",
+    "db:migrate": "yarn sequelize db:migrate",
+    "db:migrate:undo": "yarn sequelize db:migrate:undo",
+    "db:migrate:undo:all": "yarn sequelize db:migrate:undo:all",
+    "test:db:migrate": "cross-env NODE_ENV=test yarn sequelize db:migrate",
+    "test:db:migrate:undo": "cross-env NODE_ENV=test yarn sequelize db:migrate:undo",
+    "test:db:migrate:undo:all": "cross-env NODE_ENV=test yarn sequelize db:migrate:undo:all"
+  },
+  "ci": {
+    "version": "10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yanuoda/nidle.git"
+  },
+  "files": [
+    "lib",
+    "index.js"
+  ],
+  "private": true
+}
