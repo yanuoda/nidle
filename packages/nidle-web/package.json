@@ -2,10 +2,14 @@
   "name": "nidle-web",
   "version": "0.1.0",
   "description": "nidle web application",
+  "private": true,
   "dependencies": {
     "egg": "^2.10.0",
+    "egg-redis": "^2.4.0",
     "egg-scripts": "^2.5.0",
     "egg-sequelize": "^6.0.0",
+    "egg-session-redis": "^2.1.0",
+    "egg-view-nunjucks": "^2.3.0",
     "mysql2": "^2.3.0"
   },
   "devDependencies": {
@@ -42,10 +46,5 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yanuoda/nidle.git"
-  },
-  "files": [
-    "lib",
-    "index.js"
-  ],
-  "private": true
+  }
 }

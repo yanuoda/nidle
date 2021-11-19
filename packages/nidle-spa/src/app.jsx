@@ -1,9 +1,10 @@
 import { PageLoading } from '@ant-design/pro-layout'
 import { history } from 'umi'
 import RightContent from '@/components/RightContent'
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api'
+import { queryCurrentUser } from './services/user'
 import { setTwoToneColor } from '@ant-design/icons'
 import settings from '../config/defaultSettings'
+import { getCookie } from '@/utils'
 
 const loginPath = '/user/login'
 
@@ -20,9 +21,9 @@ export const initialStateConfig = {
  * 初始化获取一些全局共享的数据，例如用户信息
  * */
 export async function getInitialState() {
-  const fetchUserInfo = async () => {
+  const fetchUserInfo = async (requestOptions = {}) => {
     try {
-      const msg = await queryCurrentUser()
+      const msg = await queryCurrentUser(requestOptions)
       return msg.data
     } catch (error) {
       history.push(loginPath)
@@ -32,8 +33,13 @@ export async function getInitialState() {
   }
 
   // 当前页不是登录页
-  if (history.location.pathname !== loginPath) {
-    const currentUser = await fetchUserInfo()
+  const requestOptions = {}
+  if (history.location.pathname === loginPath) {
+    // 登录页不需要展示未登录错误提示
+    requestOptions.skipErrorHandler = true
+  }
+  const currentUser = await fetchUserInfo(requestOptions)
+  if (currentUser) {
     return {
       fetchUserInfo,
       currentUser,
@@ -57,10 +63,15 @@ export const layout = ({ initialState }) => {
     },
     // footerRender: () => <div>Nidle</div>,
     onPageChange: () => {
-      const { location } = history // 如果没有登录，重定向到 login
-
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
+      const { pathname } = history.location
+      const { currentUser } = initialState || {}
+      // 如果没有登录，重定向到 login
+      if (!currentUser && pathname !== loginPath) {
         history.push(loginPath)
+      }
+      // 如果已经登录且在登录页，则重定向到首页
+      if (currentUser && pathname === loginPath) {
+        history.push('/')
       }
     },
     links: [],
@@ -68,5 +79,11 @@ export const layout = ({ initialState }) => {
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
     ...initialState?.settings
+  }
+}
+
+export const request = {
+  headers: {
+    'x-csrf-token': getCookie('csrfToken')
   }
 }

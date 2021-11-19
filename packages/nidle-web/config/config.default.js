@@ -2,7 +2,7 @@
 
 require('../.dotenv.js')
 
-const { DB_USER, DB_PASS, DB_HOST } = process.env
+const { DB_USER, DB_PASS, DB_HOST, REDIS_HOST, REDIS_PORT, REDIS_PASSWORD, REDIS_DB_INDEX } = process.env
 
 module.exports = appInfo => {
   // eslint-disable-next-line node/no-exports-assign
@@ -29,6 +29,29 @@ module.exports = appInfo => {
       createdAt: 'createdTime',
       updatedAt: 'updatedTime'
     }
+  }
+
+  config.view = {
+    mapping: {
+      '.nj': 'nunjucks'
+    }
+  }
+
+  config.session = {
+    key: 'NIDLE_SESSION',
+    maxAge: 7 * 24 * 3600 * 1000,
+    httpOnly: true,
+    encrypt: true
+  }
+
+  config.redis = {
+    client: {
+      host: REDIS_HOST,
+      port: REDIS_PORT,
+      password: REDIS_PASSWORD,
+      db: REDIS_DB_INDEX
+    },
+    agent: true
   }
 
   return config

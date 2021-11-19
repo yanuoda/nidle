@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>oauth</title>
+  </head>
+  <body>
+    {% if type === 'success' %}
+      <p>登录成功，跳转中...</p>
+    {% else %}
+      <p>登录失败，正在跳转回登录页...</p>
+    {% endif %}
+    <script>
+      setTimeout(() => {
+        window.location.href = '{{ FECallbackURL }}'
+      }, 2000)
+    </script>
+  </body>
+</html>
