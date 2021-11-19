@@ -49,7 +49,7 @@
       "eslint",
       "git add"
     ],
-    "*.{css,scss,less,json,html,md,markdown}": [
+    "*.{css,scss,less,json,html}": [
       "prettier --write",
       "git add"
     ]
