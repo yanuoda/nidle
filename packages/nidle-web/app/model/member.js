@@ -5,9 +5,10 @@ module.exports = app => {
 
   const Member = app.model.define('member', {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
+    gitlabUserId: { type: INTEGER, unique: true },
     login: STRING(30),
-    name: STRING(30),
-    password: STRING(20),
+    name: { type: STRING(30), allowNull: false, unique: true },
+    password: STRING(32),
     role: INTEGER,
     status: INTEGER,
     createdTime: DATE,
