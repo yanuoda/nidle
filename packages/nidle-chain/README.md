@@ -50,10 +50,11 @@ config
     path: 'a.log'
   })
   // 修改 output 配置
-  .output.path('dist')
-  .backup({
-    path: '/xx/xx/'
-  })
+  .output
+    .path('dist')
+    .backup({
+      path: '/xx/xx/'
+    })
 
 // 创建 stage
 config
@@ -61,14 +62,14 @@ config
   .timeout(10000)
   // 创建 step
   .step('lint')
-  .package('nidle-plugin-lint')
-  // 修改插件配置
-  .tap(options => {
-    return {
-      ...options,
-      newOption: 'test'
-    }
-  })
+    .package('nidle-plugin-lint')
+    // 修改插件配置
+    .tap(options => {
+      return {
+        ...options,
+        newOption: 'test'
+      }
+    })
 
 // 导出这个修改完成的要被webpack使用的配置对象
 module.exports = config.toConfig()
@@ -205,19 +206,20 @@ config
   .log({
     ...logConfig
   })
-  .output.backup({})
-  .cache({})
-  .path('')
+  .output
+    .backup({})
+    .cache({})
+    .path('')
   .end()
   .stage(stageName)
-  .timeout(0)
-  .step(stepName)
-  .timeout(0)
-  .retry(0)
-  .enable(true)
-  .tap(options => {
-    return modifyOptions
-  })
+    .timeout(0)
+    .step(stepName)
+      .timeout(0)
+      .retry(0)
+      .enable(true)
+      .tap(options => {
+        return modifyOptions
+      })
 ```
 
 #### 配置 stage step 插入顺序
