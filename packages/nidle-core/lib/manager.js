@@ -1,4 +1,3 @@
-import path from 'path'
 import fs from 'fs'
 import EventEmitter from 'eventemitter3'
 import { check, input, combine } from './config/index.js'
@@ -46,12 +45,8 @@ class Manager extends EventEmitter {
   mount(inputs) {
     return new Promise(resolve => {
       const { config, update } = this
-      const basename = path.basename(config.output.path)
 
-      const log = (this.log = new Logger({
-        destination: config.log.path,
-        name: basename
-      }))
+      const log = (this.log = new Logger(config.log))
       // pino transport is a async stream
       log.transport.on('ready', () => {
         resolve()

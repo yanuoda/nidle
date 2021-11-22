@@ -9,8 +9,9 @@ let logFile = {}
 
 beforeAll(() => {
   log = new Logger({
-    destination,
-    name: 'test'
+    path: destination,
+    all: path.resolve(destination, 'test.all.log'),
+    error: path.resolve(destination, 'test.error.log')
   })
 
   // 创建临时日志文件

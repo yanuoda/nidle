@@ -11,7 +11,7 @@ test('check config', () => {
   expect(check(config)).toEqual({ valid: false, message: 'config err: 应用仓库信息缺失' })
   config.repository = { url: 'https://test.url', branch: 'dev' }
   expect(check(config)).toEqual({ valid: false, message: 'config err: 应用仓库日志配置缺失' })
-  config.log = { path: '/log/path' }
+  config.log = { path: '/log/path', all: '/log/path/all.log', error: '/log/path/error.log' }
   expect(check(config)).toEqual({ valid: false, message: 'config err: 任务流配置缺失' })
   config.stages = {}
   expect(check(config)).toEqual({ valid: false, message: 'config err: 任务流配置缺失' })

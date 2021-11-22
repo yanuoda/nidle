@@ -265,7 +265,9 @@ export const options = {
     userName: 'chb.wang'
   },
   log: {
-    path: path.resolve(root, '.log')
+    path: path.resolve(root, '.log'),
+    all: path.resolve(root, '.log', 'test.all.log'),
+    error: path.resolve(root, '.log', 'test.error.log')
   },
   output: {
     backup: {
@@ -307,7 +309,9 @@ export const retryOptions = {
     userName: 'chb.wang'
   },
   log: {
-    path: path.resolve(root, '.log')
+    path: path.resolve(root, '.log'),
+    all: path.resolve(root, '.log', 'test-retry.all.log'),
+    error: path.resolve(root, '.log', 'test-retry.error.log')
   },
   output: {
     backup: {
