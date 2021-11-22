@@ -24,6 +24,7 @@
   "dependencies": {
     "eventemitter3": "^4.0.7",
     "execa": "^5.1.1",
+    "extend": "^3.0.2",
     "p-cancelable": "^3.0.0",
     "p-queue": "7.1.0",
     "p-retry": "^4.6.1",
