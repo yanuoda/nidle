@@ -174,8 +174,7 @@ test('stage retry success', done => {
       .then(() => {
         manager.start(1).then(() => {
           manager.on('completed', () => {
-            const basename = path.basename(retryOptions.output.path)
-            const log = fs.readFileSync(path.resolve(retryOptions.log.path, `${basename}.all.log`), {
+            const log = fs.readFileSync(retryOptions.log.all, {
               encoding: 'utf-8'
             })
             expect(log.indexOf('RESTORE COMPLETE') > -1)
@@ -206,8 +205,7 @@ test('rollback', done => {
       .then(() => {
         manager.rollback().then(() => {
           manager.on('completed', () => {
-            const basename = path.basename(options.output.path)
-            const log = fs.readFileSync(path.resolve(options.log.path, `${basename}.all.log`), {
+            const log = fs.readFileSync(retryOptions.log.all, {
               encoding: 'utf-8'
             })
             expect(log.indexOf('ROLLBACK COMPLETE') > -1)
