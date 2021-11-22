@@ -1,3 +1,5 @@
+import extend from 'extend'
+
 /**
  * 将用户input结合到stages插件配置中
  * @param {Array} stages
@@ -14,7 +16,7 @@ export default function combine(stages, inputs) {
       })
 
       if (currentInput) {
-        step.options = currentInput.options
+        step.options = extend(true, {}, step.options || {}, currentInput.options)
       }
     })
   })
