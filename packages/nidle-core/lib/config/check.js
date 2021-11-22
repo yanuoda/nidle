@@ -14,7 +14,7 @@ export default function check(config = {}) {
     return configErrorObj('应用仓库信息缺失')
   }
 
-  if (!log || typeof log !== 'object' || !log.path) {
+  if (!log || typeof log !== 'object' || !log.path || !log.all || !log.error) {
     return configErrorObj('应用仓库日志配置缺失')
   }
 
