@@ -3883,6 +3883,14 @@
   dependencies:
     "@octokit/openapi-types" "^11.2.0"
 
+"@okbeng03/p-queue@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.npmmirror.com/@okbeng03/p-queue/download/@okbeng03/p-queue-7.1.0.tgz#2e093e67e39f42e3084cef15a08f8b1eb61fe866"
+  integrity sha512-MxviDvYnf9F4dpdwWN8c8dIngzbAeyp7sGiIDKJfnXqX/qkSxJHDr1hmWSLNThlIgOj7zKvtXCIg6uSA71sACA==
+  dependencies:
+    eventemitter3 "^4.0.7"
+    p-timeout "^5.0.0"
+
 "@polka/url@^1.0.0-next.20":
   version "1.0.0-next.21"
   resolved "https://registry.npmmirror.com/@polka/url/download/@polka/url-1.0.0-next.21.tgz?cache=0&sync_timestamp=1633093101880&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40polka%2Furl%2Fdownload%2F%40polka%2Furl-1.0.0-next.21.tgz#5de5a2385a35309427f6011992b544514d559aa1"
@@ -11712,12 +11720,7 @@ extend2@1.0.0, extend2@^1.0.0:
   resolved "https://registry.npm.taobao.org/extend2/download/extend2-1.0.0.tgz#0425a989b4dac2a486a32257f5140103756a7a3c"
   integrity sha1-BCWpibTawqSGoyJX9RQBA3Vqejw=
 
-extend@^3.0.0, extend@^3.0.1, extend@~3.0.2:
-  version "3.0.2"
-  resolved "https://registry.npm.taobao.org/extend/download/extend-3.0.2.tgz?cache=0&sync_timestamp=1589682707348&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fextend%2Fdownload%2Fextend-3.0.2.tgz#f8b1136b4071fbd8eb140aff858b1019ec2915fa"
-  integrity sha1-+LETa0Bx+9jrFAr/hYsQGewpFfo=
-
-extend@^3.0.2:
+extend@^3.0.0, extend@^3.0.1, extend@^3.0.2, extend@~3.0.2:
   version "3.0.2"
   resolved "https://registry.nlark.com/extend/download/extend-3.0.2.tgz#f8b1136b4071fbd8eb140aff858b1019ec2915fa"
   integrity sha1-+LETa0Bx+9jrFAr/hYsQGewpFfo=
@@ -18705,14 +18708,6 @@ p-pipe@^3.1.0:
   version "3.1.0"
   resolved "https://registry.nlark.com/p-pipe/download/p-pipe-3.1.0.tgz#48b57c922aa2e1af6a6404cb7c6bf0eb9cc8e60e"
   integrity sha1-SLV8kiqi4a9qZATLfGvw65zI5g4=
-
-p-queue@7.1.0:
-  version "7.1.0"
-  resolved "https://registry.npm.taobao.org/p-queue/download/p-queue-7.1.0.tgz?cache=0&sync_timestamp=1617771975644&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fp-queue%2Fdownload%2Fp-queue-7.1.0.tgz#c2bb28f8dc0ebf3fadb985b8706cf2ce5fe5f275"
-  integrity sha1-wrso+NwOvz+tuYW4cGzyzl/l8nU=
-  dependencies:
-    eventemitter3 "^4.0.7"
-    p-timeout "^5.0.0"
 
 p-queue@^6.6.2:
   version "6.6.2"
