@@ -4,9 +4,9 @@
 
 第一次运行项目前，需要做数据库的初始化操作：
 
-1. 启动 `mysql` 服务
-2. 在 `nidle-web` 目录下，根据运行环境，创建 `.env.[local|test|prod]` 文件
-3. 复制 `.env.example` 内容到你创建的 `.env.xxx` 文件里，并修改其中的配置项
+1. 启动 `mysql` 服务，`redis` 服务
+2. 在 `nidle-web` 目录下，创建 `.env` 文件
+3. 复制 `.env.example` 内容到你创建的 `.env` 文件里，并修改其中的配置项
 4. 在 `nidle-web` 目录下依次运行以下命令即可启动服务：
 
 ```bash
