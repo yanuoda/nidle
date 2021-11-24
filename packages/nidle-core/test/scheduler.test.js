@@ -1,5 +1,5 @@
 import Scheduler from '../lib/scheduler/scheduler.js'
-import PQueue from 'p-queue'
+import PQueue from '@okbeng03/p-queue'
 import {
   task,
   defaultTask,
