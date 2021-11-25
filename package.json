@@ -10,10 +10,8 @@
       "packages/**/*"
     ],
     "nohoist": [
-      "**/egg",
-      "**/egg/**",
-      "**/egg-*",
-      "**/egg-*/**"
+      "nidle-web/**",
+      "nidle-web/**/**"
     ]
   },
   "devDependencies": {
