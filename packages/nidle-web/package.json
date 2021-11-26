@@ -10,7 +10,11 @@
     "egg-sequelize": "^6.0.0",
     "egg-session-redis": "^2.1.0",
     "egg-view-nunjucks": "^2.3.0",
-    "mysql2": "^2.3.0"
+    "extend": "^3.0.2",
+    "lodash": "^4.17.21",
+    "mysql2": "^2.3.0",
+    "nidle-chain": "0.1.1",
+    "node-gitlab": "^1.6.1"
   },
   "devDependencies": {
     "autod": "^3.0.1",
