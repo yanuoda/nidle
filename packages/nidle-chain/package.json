@@ -11,7 +11,6 @@
   "author": "okbeng03 <okbeng03@live.com>",
   "homepage": "https://github.com/yanuoda/nidle#readme",
   "license": "MIT",
-  "type": "module",
   "main": "./dist/index.js",
   "module": "./index.js",
   "directories": {
