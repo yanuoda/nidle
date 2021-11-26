@@ -54,5 +54,11 @@ module.exports = appInfo => {
     agent: true
   }
 
+  // node gitlab api
+  config.gitlab = {
+    api: 'http://gitbj.haihangyun.com/api/v4',
+    privateToken: 'zxwDdcKGhwwxBGyS6D1y'
+  }
+
   return config
 }

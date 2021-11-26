@@ -12,4 +12,8 @@ module.exports = app => {
   router.get('/api/user', controller.user.index)
   router.post('/api/user/login', controller.user.login)
   router.get('/api/user/logout', controller.user.logout)
+
+  // 配置信息
+  router.post('/api/config/getByApp', controller.config.getByApp)
+  router.post('/api/config/getByCreate', controller.config.getByCreate)
 }

@@ -1,6 +1,6 @@
 {
   "name": "nidle-chain",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Use a chaining API to generate and simplify the modification of nidle configurations.",
   "keywords": [
     "nidle",
@@ -12,8 +12,8 @@
   "homepage": "https://github.com/yanuoda/nidle#readme",
   "license": "MIT",
   "type": "module",
-  "main": "./index.js",
-  "exports": "./index.js",
+  "main": "./dist/index.js",
+  "module": "./index.js",
   "directories": {
     "lib": "lib",
     "test": "tests"
@@ -24,7 +24,9 @@
   },
   "scripts": {
     "test": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
-    "cov": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage"
+    "cov": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "build": "rm -rf ./dist && rollup -c",
+    "prepublishOnly": "npm run build"
   },
   "bugs": {
     "url": "https://github.com/yanuoda/nidle/issues"
