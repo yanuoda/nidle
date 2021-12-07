@@ -8,6 +8,7 @@ export default [
     ]
   },
   { path: '/welcome', name: '欢迎', icon: 'smile', component: './Welcome' },
+  { path: '/input', name: 'Input', icon: 'smile', component: './Input' },
   {
     path: '/admin',
     name: '管理页',
