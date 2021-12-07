@@ -16,15 +16,22 @@ class UserController extends Controller {
 
   async login() {
     const { ctx } = this
-    const user = await ctx.service.user.find(ctx.request.body)
 
-    if (user) {
-      const { id, name, gitlabUserId } = user
-      this.setSession('user', { id, name, gitlabUserId })
-      this.success(this.user)
-    } else {
+    try {
+      const user = await ctx.service.user.find(ctx.request.body)
+
+      if (user) {
+        const { id, name, gitlabUserId } = user
+        this.setSession('user', { id, name, gitlabUserId })
+        this.success(this.user)
+      } else {
+        this.failed({
+          msg: '用户名或密码错误！'
+        })
+      }
+    } catch (err) {
       this.failed({
-        msg: '用户名或密码错误！'
+        msg: err.message
       })
     }
   }

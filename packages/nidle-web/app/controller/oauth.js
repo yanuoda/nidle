@@ -51,7 +51,7 @@ class OAuthController extends Controller {
       const userInfo = await ctx.curl(`${OAUTH_GITLAB_BASEURL}/api/v4/user`, {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${tokenRes.data.access_token}`
+          Authorization: `Bearer ${tokenRes?.data?.access_token}`
         },
         dataType: 'json'
       })
@@ -66,6 +66,9 @@ class OAuthController extends Controller {
       const { id } = currentUser
       ctx.session.user = { id, name, gitlabUserId }
     } catch (err) {
+      console.log('GitLab OAuth failed >>>>> \n')
+      console.error(err)
+      console.log()
       ctx.logger.error(new Error('GitLab OAuth failed >>>>> ', err.message))
     }
     ctx.redirect('/api/oauth/redirect')
