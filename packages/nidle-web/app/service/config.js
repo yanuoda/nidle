@@ -6,6 +6,7 @@ const Service = require('egg').Service
 const extend = require('extend')
 const _ = require('lodash')
 const NildeChain = require('nidle-chain')
+const inputParse = require('../../lib/inquirer')
 
 class ConfigService extends Service {
   // 获取应用对应环境配置
@@ -87,6 +88,24 @@ class ConfigService extends Service {
 
     // 通过路径查找配置文件
     return changelogId
+  }
+
+  // 获取配置
+  async getInput({ id, source = 'WEB' }) {
+    const inputs = require('../mock/config/input')
+    const input = inputs[id]
+
+    if (source === 'CLI') {
+      return input
+    }
+
+    try {
+      const result = inputParse(input)
+
+      return result
+    } catch (err) {
+      throw err
+    }
   }
 }
 

@@ -16,4 +16,7 @@ module.exports = app => {
   // 配置信息
   router.post('/api/config/getByApp', controller.config.getByApp)
   router.post('/api/config/getByCreate', controller.config.getByCreate)
+
+  // input
+  router.post('/api/config/getInput', controller.config.getInput)
 }
