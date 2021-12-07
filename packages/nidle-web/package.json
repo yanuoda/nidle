@@ -4,6 +4,7 @@
   "description": "nidle web application",
   "private": true,
   "dependencies": {
+    "ajv": "^8.8.2",
     "egg": "^2.10.0",
     "egg-redis": "^2.4.0",
     "egg-scripts": "^2.5.0",
@@ -11,10 +12,12 @@
     "egg-session-redis": "^2.1.0",
     "egg-view-nunjucks": "^2.3.0",
     "extend": "^3.0.2",
+    "inquirer": "^8.2.0",
     "lodash": "^4.17.21",
     "mysql2": "^2.3.0",
     "nidle-chain": "0.1.1",
-    "node-gitlab": "^1.6.1"
+    "node-gitlab": "^1.6.1",
+    "swagger-egg": "^1.2.1"
   },
   "devDependencies": {
     "autod": "^3.0.1",

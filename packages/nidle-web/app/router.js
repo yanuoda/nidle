@@ -19,6 +19,11 @@ module.exports = app => {
   router.post('/api/config/getByApp', controller.config.getByApp)
   router.post('/api/config/getByCreate', controller.config.getByCreate)
 
+<<<<<<< HEAD
   // 服务器
   router.post('/api/server', controller.server.index)
+=======
+  // input
+  router.post('/api/config/getInput', controller.config.getInput)
+>>>>>>> 0bdc251ba4738cc3a4866c7b03dbb3d7ccdbba47
 }

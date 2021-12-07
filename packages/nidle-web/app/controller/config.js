@@ -43,6 +43,21 @@ class ConfigController extends Controller {
       })
     }
   }
+
+  // 获取配置插件input
+  async getInput() {
+    const { ctx } = this
+
+    try {
+      const result = await ctx.service.config.getInput(ctx.request.body)
+
+      this.success(result)
+    } catch (err) {
+      this.failed({
+        msg: err.message
+      })
+    }
+  }
 }
 
 module.exports = ConfigController
