@@ -63,14 +63,23 @@ class ExamplePlugin {
 ### input说明
 input输入需要同时支持 `CLI` 和 `SPA` 端，所以我们进行了以下技术选型：
 * `CLI端` - 基于强大的 [inquirer](https://www.npmjs.com/package/inquirer) 交互式命令行
-* `SPA端` - 基于阿里的 [XRender](https://x-render.gitee.io/form-render) 配置化表单生成方案
+* `SPA端` - 基于antd-pro的 [schema-form](https://procomponents.ant.design/components/schema-form) 配置化表单生成方案
 
 为了同一配置支持两端，我们做了以下取舍
 * `inquirer`的输入类型相对于 `form` 少，为了减少适配成本，所以优先考虑支持 `inquirer`
 * 在 `SPA端` 我们需要对 `inquirer question` 进行一次转换，转换成 `schema`
 * 因为每个插件都可能有 `input`，输入的时候需要进行分组，所以
-  * `inquirer` 需要在 `question name` = `${plugin.name}-${question.name}`
-  * `SPA端` 需要对输入项进行分组
+  * `inquirer` 需要在 `question name` = `${plugin.name}.${question.name}`
+  * `CLI端`、`SPA端` 需要对输入项进行分组
+
+#### inquirer支持特殊说明
+Form表单并不能完全支持inquirer的所有场景，所以我们进行了以下取舍（*未特殊说明则默认支持*）
+
+* 不支持editor类型，实在是想不到使用场景
+* message、default、choices不支持Function类型，也就是不支持基于前面回答动态修改这些值
+* 不支持filter、transformer、when，因为Form不支持
+* 不支持pageSize、prefix、suffix、askAnswered、mask，因为Form不支持
+* 不支持choices的checked属性设置选中项，请使用default
 
 ### task实例
 ```js
