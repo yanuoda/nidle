@@ -1,5 +1,6 @@
 import check from './check'
 import parse from './parse'
+import { getGroupValues } from './value'
 
 export default function (questions = []) {
   const { validate, message } = check(questions)
@@ -15,3 +16,4 @@ export default function (questions = []) {
     columns
   }
 }
+export { getGroupValues }

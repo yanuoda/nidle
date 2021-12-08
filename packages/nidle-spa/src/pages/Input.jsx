@@ -2,8 +2,8 @@ import { useRequest } from 'umi'
 import { Form } from 'antd'
 import { PageContainer } from '@ant-design/pro-layout'
 import { BetaSchemaForm } from '@ant-design/pro-form'
-import { getInput } from '@/services/config'
-import inputParse from '@/utils/inquirer'
+import { getInput, setInput } from '@/services/config'
+import inputParse, { getGroupValues } from '@/utils/inquirer'
 
 const Input = () => {
   const [form] = Form.useForm()
@@ -35,8 +35,10 @@ const Input = () => {
 
         column.formItemProps.rules.push({
           validator: (rule, value) => {
+            // 为了避免多个插件中input key冲突，所以都加上了stage.step.key
+            // 但是input的校验中却还保留原始key，所以需要处理
             const values = form.getFieldsValue(true)
-            const validate = validator(value, values)
+            const validate = validator(value, getGroupValues(values, rule.field))
 
             if (validate === true) {
               return Promise.resolve()
@@ -49,8 +51,12 @@ const Input = () => {
     })
   }
 
-  function submit(values) {
+  async function submit(values) {
     console.log(2222, values)
+    await setInput({
+      values,
+      groups: input
+    })
   }
 
   return (

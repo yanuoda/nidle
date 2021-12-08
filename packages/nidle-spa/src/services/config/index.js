@@ -7,3 +7,11 @@ export async function getInput(params) {
     data: params
   })
 }
+
+// 设置input
+export async function setInput(params) {
+  return request('/api/config/setInput', {
+    method: 'POST',
+    data: params
+  })
+}

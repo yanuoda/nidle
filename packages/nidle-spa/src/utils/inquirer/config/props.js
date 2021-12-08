@@ -40,8 +40,8 @@ const password = {
 }
 
 const group = {
-  props: ['type', 'name', 'message', 'items'],
-  required: ['type', 'name', 'message', 'items']
+  props: ['type', 'message', 'items'],
+  required: ['type', 'message', 'items']
 }
 
 // 暂时不支持
