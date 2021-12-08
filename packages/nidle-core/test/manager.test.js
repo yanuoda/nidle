@@ -159,14 +159,16 @@ test('stage retry success', done => {
       .mount([
         {
           stage: 'build',
-          plugin: 'download',
+          step: 'download',
+          plugin: path.resolve(root, 'fixtures/plugin-init.js'),
           options: {
             test: 'dev'
           }
         },
         {
           stage: 'publish',
-          plugin: 'publish',
+          step: 'publish',
+          plugin: path.resolve(root, 'fixtures/plugin-retry.js'),
           options: {
             development: 'PRODUCTION'
           }
@@ -197,7 +199,8 @@ test('rollback', done => {
       .mount([
         {
           stage: 'build',
-          plugin: 'download',
+          step: 'download',
+          plugin: path.resolve(root, 'fixtures/plugin-init.js'),
           options: {
             test: 'dev'
           }

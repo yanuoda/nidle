@@ -10,9 +10,9 @@ export default function combine(stages, inputs) {
   stages.forEach(stage => {
     const { name: stageName } = stage
     stage.steps.forEach(step => {
-      const { name: pluginName } = step
+      const { name: stepName } = step
       const currentInput = inputs.find(input => {
-        return input.stage === stageName && input.plugin === pluginName
+        return input.stage === stageName && input.step === stepName
       })
 
       if (currentInput) {

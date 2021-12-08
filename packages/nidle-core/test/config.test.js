@@ -96,7 +96,8 @@ test('combine inputs', () => {
   const inputs = [
     {
       stage: 'stage1',
-      plugin: 'wrongName',
+      step: 'wrongName',
+      plugin: 'plugin1',
       options: {
         input1: 'input1'
       }
@@ -119,7 +120,7 @@ test('combine inputs', () => {
   ]
 
   expect(combine(stages, inputs)).toEqual(stages)
-  inputs[0].plugin = 'plugin1'
+  inputs[0].step = 'plugin1'
   expect(combine(stages, inputs)).toEqual([
     {
       name: 'stage1',
