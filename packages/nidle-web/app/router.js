@@ -5,10 +5,12 @@
  */
 module.exports = app => {
   const { router, controller } = app
+  // 授权登录
   router.get('/api/oauth', controller.oauth.index)
   router.get('/api/oauth/redirect', controller.oauth.redirect)
   router.get('/api/oauth/callback', controller.oauth.oauth)
 
+  // 用户
   router.get('/api/user', controller.user.index)
   router.post('/api/user/login', controller.user.login)
   router.get('/api/user/logout', controller.user.logout)
@@ -17,6 +19,11 @@ module.exports = app => {
   router.post('/api/config/getByApp', controller.config.getByApp)
   router.post('/api/config/getByCreate', controller.config.getByCreate)
 
+<<<<<<< HEAD
+  // 服务器
+  router.post('/api/server', controller.server.index)
+=======
   // input
   router.post('/api/config/getInput', controller.config.getInput)
+>>>>>>> 0bdc251ba4738cc3a4866c7b03dbb3d7ccdbba47
 }
