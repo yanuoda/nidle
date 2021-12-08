@@ -1,5 +1,5 @@
 const parse = require('./parse')
 
-module.exports = function (questions = []) {
-  return parse(questions)
+module.exports = function (inputs = []) {
+  return parse(inputs)
 }
