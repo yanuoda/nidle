@@ -58,6 +58,20 @@ class ConfigController extends Controller {
       })
     }
   }
+
+  // 提交inputs
+  async setInput() {
+    const { ctx } = this
+
+    try {
+      const result = await ctx.service.config.setInput(ctx.request.body)
+      this.success(result)
+    } catch (err) {
+      this.failed({
+        msg: err.message
+      })
+    }
+  }
 }
 
 module.exports = ConfigController

@@ -23,4 +23,5 @@ module.exports = app => {
   router.post('/api/server', controller.server.index)
   // input
   router.post('/api/config/getInput', controller.config.getInput)
+  router.post('/api/config/setInput', controller.config.setInput)
 }

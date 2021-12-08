@@ -100,9 +100,20 @@ class ConfigService extends Service {
     }
 
     try {
-      const result = inputParse(input)
+      const result = inputParse.parse(input)
 
       return result
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async setInput({ values, groups }) {
+    try {
+      const result = inputParse.transform(values, groups)
+      console.log('input values::: ', result)
+
+      return true
     } catch (err) {
       throw err
     }

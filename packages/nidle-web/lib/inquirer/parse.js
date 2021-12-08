@@ -9,12 +9,12 @@ module.exports = function (inputs = []) {
     const newGroup = {
       type: 'group',
       message: description || parent,
-      name: parent
+      __name: parent,
+      __plugin: plugin
     }
 
     newGroup.items = input.map(question => {
       question.name = `${parent}.${question.name}`
-      question.__plugin = plugin
 
       return parse(question)
     })
