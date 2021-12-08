@@ -44,7 +44,8 @@ test('init', async () => {
   expect(inputs).toEqual([
     {
       stage: 'build',
-      plugin: 'download',
+      step: 'download',
+      plugin: path.resolve(root, 'fixtures/plugin-init.js'),
       input: [
         {
           type: 'input',
@@ -244,7 +245,8 @@ test('plugin inputs', async () => {
   expect(input2).toEqual([
     {
       stage: 'stage1',
-      plugin: 'plugin1',
+      step: 'plugin1',
+      plugin: path.resolve(root, 'fixtures/plugin.js'),
       input: [
         {
           type: 'input',
@@ -269,7 +271,8 @@ test('plugin inputs', async () => {
   expect(input3).toEqual([
     {
       stage: 'stage1',
-      plugin: 'plugin1',
+      step: 'plugin1',
+      plugin: path.resolve(root, 'fixtures/plugin.js'),
       input: [
         {
           type: 'input',
@@ -280,7 +283,8 @@ test('plugin inputs', async () => {
     },
     {
       stage: 'stage2',
-      plugin: 'plugin1',
+      step: 'plugin1',
+      plugin: path.resolve(root, 'fixtures/plugin.js'),
       input: [
         {
           type: 'input',
