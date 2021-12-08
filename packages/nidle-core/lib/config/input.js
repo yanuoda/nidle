@@ -22,6 +22,7 @@ export default async function collect(stages) {
           inputs.push({
             stage: stageName,
             step: stepName,
+            description: step.description,
             plugin,
             input: inputCache.input
           })
@@ -37,6 +38,7 @@ export default async function collect(stages) {
             const inputParam = {
               stage: stageName,
               step: stepName,
+              description: step.description,
               plugin,
               input
             }
