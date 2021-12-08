@@ -17,27 +17,36 @@ const Input = () => {
   if (input) {
     try {
       schema = inputParse(input)
-      schema.columns.forEach(column => {
-        if (column.validate) {
-          const validator = column.validate
-
-          column.formItemProps.rules.push({
-            validator: (rule, value) => {
-              const values = form.getFieldsValue(true)
-              const validate = validator(value, values)
-
-              if (validate === true) {
-                return Promise.resolve()
-              }
-
-              return Promise.reject(new Error(validate))
-            }
-          })
-        }
-      })
+      handleValidate(schema.columns)
     } catch (err) {
       throw err
     }
+  }
+
+  function handleValidate(columns = []) {
+    columns.forEach(column => {
+      if (column.columns) {
+        handleValidate(column.columns)
+        return
+      }
+
+      if (column.validate) {
+        const validator = column.validate
+
+        column.formItemProps.rules.push({
+          validator: (rule, value) => {
+            const values = form.getFieldsValue(true)
+            const validate = validator(value, values)
+
+            if (validate === true) {
+              return Promise.resolve()
+            }
+
+            return Promise.reject(new Error(validate))
+          }
+        })
+      }
+    })
   }
 
   function submit(values) {

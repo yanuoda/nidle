@@ -1,1 +1,1 @@
-export default ['list', 'rawlist', 'expand', 'checkbox', 'confirm', 'input', 'number', 'password']
+export default ['list', 'rawlist', 'expand', 'checkbox', 'confirm', 'input', 'number', 'password', 'group']

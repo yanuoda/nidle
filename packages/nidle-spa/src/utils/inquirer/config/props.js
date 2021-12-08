@@ -39,6 +39,11 @@ const password = {
   required: ['type', 'name', 'message']
 }
 
+const group = {
+  props: ['type', 'name', 'message', 'items'],
+  required: ['type', 'name', 'message', 'items']
+}
+
 // 暂时不支持
 // exports.editor = {
 //   props: [
@@ -65,5 +70,6 @@ export default {
   confirm,
   input,
   number,
-  password
+  password,
+  group
 }

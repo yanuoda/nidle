@@ -1,3 +1,5 @@
+import parse from '../parse'
+
 const type = {
   key: 'valueType',
   type: 'string',
@@ -35,6 +37,12 @@ const type = {
     if (value === 'confirm') {
       return {
         valueType: 'switch'
+      }
+    }
+
+    if (value === 'group') {
+      return {
+        valueType: 'group'
       }
     }
   }
@@ -77,6 +85,15 @@ const validate = {
   }
 }
 
+const items = {
+  type: 'array',
+  parse(items) {
+    return {
+      columns: parse(items)
+    }
+  }
+}
+
 // exports.filter = {
 //   key: '',
 //   type: 'function'
@@ -104,5 +121,6 @@ export default {
   default: defaultValue,
   choices,
   validate,
-  loop
+  loop,
+  items
 }
