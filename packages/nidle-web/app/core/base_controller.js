@@ -14,6 +14,15 @@ class BaseController extends Controller {
     }
   }
 
+  // 分页列表需要传 total
+  successList(data, total) {
+    this.ctx.body = {
+      success: true,
+      data,
+      total
+    }
+  }
+
   failed(options) {
     const { data, msg, showType = 2 } = options
     this.ctx.body = {

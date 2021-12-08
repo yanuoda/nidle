@@ -3,24 +3,23 @@ export default [
     path: '/user',
     layout: false,
     routes: [
-      { path: '/user', routes: [{ name: '登录', path: '/user/login', component: './user/Login' }] },
+      { path: '/user', routes: [{ name: '登录', path: '/user/login', component: './User/Login' }] },
       { component: './404' }
     ]
   },
   { path: '/welcome', name: '欢迎', icon: 'smile', component: './Welcome' },
   { path: '/input', name: 'Input', icon: 'smile', component: './Input' },
   {
-    path: '/admin',
-    name: '管理页',
+    path: '/project',
+    name: '应用管理',
     icon: 'crown',
-    access: 'canAdmin',
-    component: './Admin',
     routes: [
-      { path: '/admin/sub-page', name: '二级管理页', icon: 'smile', component: './Welcome' },
+      { path: '/project/list', name: '应用列表', icon: 'smile', component: './Project/List' },
+      { path: '/project/settings', name: '应用配置', component: './Project/Settings', hideInMenu: true },
+      { path: '/project', redirect: '/project/list' },
       { component: './404' }
     ]
   },
-  { name: '查询表格', icon: 'table', path: '/list', component: './TableList' },
   { path: '/', redirect: '/welcome' },
   { component: './404' }
 ]
