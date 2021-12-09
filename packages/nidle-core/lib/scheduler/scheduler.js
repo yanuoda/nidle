@@ -12,7 +12,6 @@ class Mounter extends EventEmitter {
    */
   constructor(task, stages) {
     super()
-
     this.task = task
     this.logger = task.logger
     this.stages = stages

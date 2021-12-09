@@ -1,12 +1,13 @@
 import p from 'path'
 import fs from 'fs'
-import { copy, compress, decompress } from './util'
+import { copy, compress, decompress, mkdir } from './util'
 const cFileExtname = '.tgz'
 
 class Backup {
   // options = { name: '', backup: {}, cache: {}, path }
   constructor(options) {
     this.options = options
+    mkdir(options.path)
   }
 
   /**

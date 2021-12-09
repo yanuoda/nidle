@@ -122,6 +122,9 @@ class StageQueue {
       run = timeoutRun.call(this, run, step)
     }
 
+    delete step.retry
+    delete step.timeout
+
     this._stepQueue.add(run, step).catch(() => {
       // 如果不catch错误，在任务中throw错误会导致jest报错
       // console.error('stage error', error)
