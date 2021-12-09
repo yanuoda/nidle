@@ -1,1 +1,2 @@
 **/*.test.js
+**/rollup.config.js
