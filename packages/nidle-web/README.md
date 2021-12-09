@@ -12,6 +12,8 @@
 ```bash
 # 第一次启动需要进行数据库创建
 $ yarn db:create
+# 每次更新代码后最好都跑一下 migrate
+$ yarn db:migrate
 $ yarn dev
 ```
 
@@ -19,7 +21,7 @@ $ yarn dev
 
 ```bash
 # 生成新的迁移脚本
-$ yarn sequelize migration:generate
+$ yarn db:migration:generate --name <文件名时间戳后边跟着的部分>
 # 执行所有未执行过的迁移脚本的 up 函数
 $ yarn db:migrate
 # 同上，但做的是测试数据库的迁移
