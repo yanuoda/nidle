@@ -22,7 +22,7 @@ import styles from './index.less'
 const ProjectSettings = props => {
   // 获取环境配置信息
   const { initialState } = useModel('@@initialState')
-  const { environmentList } = initialState || []
+  const { environmentList } = initialState || { environmentList: [] }
 
   const { name: projectName, id } = props.location.query
   const [pageLoading, setPageLoading] = useState(true)
