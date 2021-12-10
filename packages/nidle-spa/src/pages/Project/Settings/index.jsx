@@ -2,7 +2,7 @@ import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
 import ProForm, { ProFormText, ProFormTextArea, ModalForm, ProFormSelect } from '@ant-design/pro-form'
 import { Tabs, Button, List, Avatar, Skeleton, message } from 'antd'
-import { Link } from 'umi'
+import { Link, useModel } from 'umi'
 import { useState, useEffect } from 'react'
 import { PlusOutlined, UserOutlined } from '@ant-design/icons'
 
@@ -20,6 +20,10 @@ import {
 import styles from './index.less'
 
 const ProjectSettings = props => {
+  // 获取环境配置信息
+  const { initialState } = useModel('@@initialState')
+  const { environmentList } = initialState || []
+
   const { name: projectName, id } = props.location.query
   const [pageLoading, setPageLoading] = useState(true)
   const [projectData, setProjectData] = useState({})
@@ -117,22 +121,20 @@ const ProjectSettings = props => {
   /* 发布配置 */
   const ConfigInfo = (
     <ProCard title="发布配置" headerBordered collapsible bordered type="inner">
-      <Tabs defaultActiveKey="test">
-        <Tabs.TabPane tab="测试" key="test">
-          <ConfigBlock configRaw={'测试'} />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="预发布" key="pre">
-          <ConfigBlock configRaw={'预发布'} />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="生产" key="prod">
-          <ConfigBlock configRaw={'生产'} />
-        </Tabs.TabPane>
-      </Tabs>
+      {environmentList.length > 0 && (
+        <Tabs defaultActiveKey={environmentList[0]?.key}>
+          {environmentList.map(env => (
+            <Tabs.TabPane tab={env.name} key={env.key}>
+              <ConfigBlock configRaw={env.name} />
+            </Tabs.TabPane>
+          ))}
+        </Tabs>
+      )}
     </ProCard>
   )
 
   /* 服务器信息 */
-  const [serverTab, setServerTab] = useState('test')
+  const [serverTab, setServerTab] = useState(environmentList.length > 0 ? environmentList[0]?.key : '')
   const [serverModalVisible, setServerModalVisible] = useState(false)
   const [currentEditServer, setCurrentEditServer] = useState(null)
 
@@ -210,65 +212,55 @@ const ProjectSettings = props => {
 
   const ServerInfo = (
     <ProCard title="服务器管理" headerBordered collapsible bordered type="inner">
-      <Tabs defaultActiveKey="test" onChange={setServerTab}>
-        <Tabs.TabPane tab="测试" key="test">
-          <ServerList
-            data={servers['test'] || []}
-            serverList={serverList.filter(({ environment }) => environment === 'test')}
-            modifyMethod={handleTriggerModifyModal}
-            delMethod={delServer}
-          />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="预发布" key="pre">
-          <ServerList
-            data={servers['pre'] || []}
-            serverList={serverList.filter(({ environment }) => environment === 'pre')}
-            modifyMethod={handleTriggerModifyModal}
-            delMethod={delServer}
-          />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="生产" key="prod">
-          <ServerList
-            data={servers['prod'] || []}
-            serverList={serverList.filter(({ environment }) => environment === 'prod')}
-            modifyMethod={handleTriggerModifyModal}
-            delMethod={delServer}
-          />
-        </Tabs.TabPane>
-      </Tabs>
-      <Button className={styles.addServerBtn} type="primary" onClick={handleTriggerAddModal}>
-        <PlusOutlined />
-        新增机器
-      </Button>
-      <ModalForm
-        title={`${currentEditServer ? '编辑' : '新增'}机器`}
-        width={500}
-        layout="horizontal"
-        visible={serverModalVisible}
-        modalProps={{ destroyOnClose: true }}
-        onVisibleChange={setServerModalVisible}
-        onFinish={handleAddOrModifyServer}
-        initialValues={{
-          server: currentEditServer?.server ? `${currentEditServer.server}` : null,
-          output: currentEditServer?.output
-        }}
-      >
-        <ProFormSelect
-          name="server"
-          label="选择机器"
-          valueEnum={serverListMap[serverTab]}
-          placeholder="请选择机器"
-          required
-          rules={[{ required: true, message: '请选择一个机器！' }]}
-        />
-        <ProFormText
-          name="output"
-          label="部署目录"
-          placeholder="请输入部署目录"
-          required
-          rules={[{ required: true, message: '请输入部署目录！' }]}
-        />
-      </ModalForm>
+      {environmentList.length > 0 && (
+        <>
+          <Tabs defaultActiveKey={environmentList[0]?.key} onChange={setServerTab}>
+            {environmentList.map(env => (
+              <Tabs.TabPane tab={env.name} key={env.key}>
+                <ServerList
+                  data={servers[env.key] || []}
+                  serverList={serverList.filter(({ environment }) => environment === env.key)}
+                  modifyMethod={handleTriggerModifyModal}
+                  delMethod={delServer}
+                />
+              </Tabs.TabPane>
+            ))}
+          </Tabs>
+          <Button className={styles.addServerBtn} type="primary" onClick={handleTriggerAddModal}>
+            <PlusOutlined />
+            新增机器
+          </Button>
+          <ModalForm
+            title={`${currentEditServer ? '编辑' : '新增'}机器`}
+            width={500}
+            layout="horizontal"
+            visible={serverModalVisible}
+            modalProps={{ destroyOnClose: true }}
+            onVisibleChange={setServerModalVisible}
+            onFinish={handleAddOrModifyServer}
+            initialValues={{
+              server: currentEditServer?.server ? `${currentEditServer.server}` : null,
+              output: currentEditServer?.output
+            }}
+          >
+            <ProFormSelect
+              name="server"
+              label="选择机器"
+              valueEnum={serverListMap[serverTab]}
+              placeholder="请选择机器"
+              required
+              rules={[{ required: true, message: '请选择一个机器！' }]}
+            />
+            <ProFormText
+              name="output"
+              label="部署目录"
+              placeholder="请输入部署目录"
+              required
+              rules={[{ required: true, message: '请输入部署目录！' }]}
+            />
+          </ModalForm>
+        </>
+      )}
     </ProCard>
   )
 
