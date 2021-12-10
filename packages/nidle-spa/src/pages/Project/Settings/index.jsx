@@ -1,10 +1,10 @@
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
 import ProForm, { ProFormText, ProFormTextArea, ModalForm, ProFormSelect } from '@ant-design/pro-form'
-import { Tabs, Button, message } from 'antd'
+import { Tabs, Button, List, Avatar, Skeleton, message } from 'antd'
 import { Link } from 'umi'
 import { useState, useEffect } from 'react'
-import { PlusOutlined } from '@ant-design/icons'
+import { PlusOutlined, UserOutlined } from '@ant-design/icons'
 
 import ConfigBlock from './components/ConfigBlock'
 import ServerList from './components/ServerList'
@@ -85,7 +85,7 @@ const ProjectSettings = props => {
         layout="vertical"
         submitter={{
           searchConfig: {
-            submitText: '保存并同步'
+            submitText: '保存'
           }
         }}
         onFinish={async values => {
@@ -273,9 +273,31 @@ const ProjectSettings = props => {
   )
 
   /* 项目成员 */
+  const { memberList } = projectData
   const MemberInfo = (
     <ProCard title="项目成员" headerBordered collapsible bordered type="inner">
-      内容
+      <List
+        itemLayout="horizontal"
+        dataSource={memberList}
+        renderItem={item => (
+          <List.Item>
+            <Skeleton avatar title={false} loading={item.loading} active>
+              <List.Item.Meta
+                avatar={<Avatar src={item.avatar_url} icon={<UserOutlined />} />}
+                title={
+                  <>
+                    <a href={item.web_url} target="_blank" rel="noreferrer">
+                      {item.name}
+                    </a>
+                    <span className={styles.memberUsername}> @{item.username}</span>
+                  </>
+                }
+              />
+              <div>{item.role}</div>
+            </Skeleton>
+          </List.Item>
+        )}
+      />
     </ProCard>
   )
 
