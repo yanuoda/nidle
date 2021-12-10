@@ -20,13 +20,9 @@ class ProjectController extends Controller {
   // 获取服务器分页列表
   async list() {
     const { ctx } = this
-    const body = { ...ctx.request.body }
-    const { current, pageSize } = body
+    const { current, pageSize, ...body } = { ...ctx.request.body }
 
     try {
-      delete body.current
-      delete body.pageSize
-
       const { count, rows } = await ctx.model.Server.findAndCountAll({
         where: body,
         offset: (current - 1) * pageSize,
