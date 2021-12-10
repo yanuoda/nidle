@@ -69,7 +69,7 @@ class ProjectController extends Controller {
       } else {
         // 修改
         await ctx.model.Project.update(data, { where: { id } })
-        res = { id, projectName }
+        res = { id, name: projectName }
       }
 
       this.success(res)
