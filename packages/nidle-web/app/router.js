@@ -21,6 +21,10 @@ module.exports = app => {
 
   // 服务器
   router.post('/api/server', controller.server.index)
+  router.post('/api/server/list', controller.server.list)
+  router.post('/api/server/add', controller.server.add)
+  router.post('/api/server/delete', controller.server.delete)
+  router.post('/api/server/modify', controller.server.modify)
 
   // input
   router.post('/api/config/getInput', controller.config.getInput)
