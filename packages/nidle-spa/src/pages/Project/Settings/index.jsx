@@ -27,9 +27,6 @@ const ProjectSettings = props => {
   const { name: projectName, id } = props.location.query
   const [pageLoading, setPageLoading] = useState(true)
   const [projectData, setProjectData] = useState({})
-  // 所有的服务器列表
-  const [serverList, setServerList] = useState([])
-  const [serverListMap, setServerListMap] = useState({})
   // 应用服务器
   const [servers, setServers] = useState({})
 
@@ -42,22 +39,6 @@ const ProjectSettings = props => {
         setProjectData(data)
         setServers(data.serverList)
       }
-    }
-
-    // 请求服务器数据
-    const serverRes = await queryServerList()
-    const { success: serverSuccess, data: serverData } = serverRes || {}
-    setServerList(serverData)
-    // 按环境区分机器
-    const serverMap = {}
-    serverData.forEach(({ id, ip, environment }) => {
-      if (!serverMap[environment]) {
-        serverMap[environment] = Object.create(null)
-      }
-      serverMap[environment][id] = ip
-    })
-    if (serverSuccess) {
-      setServerListMap(serverMap)
     }
 
     setPageLoading(false)
@@ -137,6 +118,27 @@ const ProjectSettings = props => {
   const [serverTab, setServerTab] = useState(environmentList.length > 0 ? environmentList[0]?.key : '')
   const [serverModalVisible, setServerModalVisible] = useState(false)
   const [currentEditServer, setCurrentEditServer] = useState(null)
+  // 所有的服务器列表
+  const [serverList, setServerList] = useState([])
+  const [serverListMap, setServerListMap] = useState({})
+
+  useEffect(async () => {
+    // 请求服务器数据
+    const serverRes = await queryServerList()
+    const { success, data } = serverRes || {}
+    setServerList(data)
+    // 按环境区分机器
+    const serverMap = {}
+    data.forEach(({ id, ip, environment }) => {
+      if (!serverMap[environment]) {
+        serverMap[environment] = Object.create(null)
+      }
+      serverMap[environment][id] = ip
+    })
+    if (success) {
+      setServerListMap(serverMap)
+    }
+  }, [])
 
   const addServer = async params => {
     const addRes = await addProjectServer(params)
@@ -148,6 +150,7 @@ const ProjectSettings = props => {
         ...prevServers,
         [currentTab]: (prevServers[currentTab] || []).concat(data)
       }))
+      message.success('添加成功！')
     }
 
     return success
