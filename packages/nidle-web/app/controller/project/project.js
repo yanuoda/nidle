@@ -44,23 +44,32 @@ class ProjectController extends Controller {
   // 保存并同步应用信息
   async sync() {
     const { ctx } = this
-    const { id, ...rest } = ctx.request.body
+    const { id, name, repositoryUrl, ...rest } = ctx.request.body
+    let projectName = name
+
+    if (!name) {
+      const urlSplit = repositoryUrl.split('/')
+      projectName = urlSplit[urlSplit.length - 1]
+    }
+
+    const data = { name: projectName, repositoryUrl, ...rest }
 
     try {
       let res
       if (!id) {
         // 新增
-        res = await ctx.model.Project.create(rest)
+        res = await ctx.model.Project.create(data)
       } else {
         // 修改
-        await ctx.model.Project.update(rest, { where: { id } })
-        res = { id, name: rest.name }
+        await ctx.model.Project.update(data, { where: { id } })
+        res = { id, projectName }
       }
-      // TODO: 同步 gitlab 数据
+
       this.success(res)
     } catch (err) {
+      this.logger.error(`应用信息保存失败 >>>>>>>> \n${err.message}`)
       this.failed({
-        msg: err.message
+        msg: '应用信息保存失败，请重试！'
       })
     }
   }

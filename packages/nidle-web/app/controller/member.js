@@ -18,7 +18,7 @@ class UserController extends Controller {
     const { ctx } = this
 
     try {
-      const user = await ctx.service.user.find(ctx.request.body)
+      const user = await ctx.service.member.find(ctx.request.body)
 
       if (user) {
         const { id, name, gitlabUserId } = user

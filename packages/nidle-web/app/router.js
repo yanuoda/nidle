@@ -11,9 +11,9 @@ module.exports = app => {
   router.get('/api/oauth/callback', controller.oauth.oauth)
 
   // 用户
-  router.get('/api/user', controller.user.index)
-  router.post('/api/user/login', controller.user.login)
-  router.get('/api/user/logout', controller.user.logout)
+  router.get('/api/user', controller.member.index)
+  router.post('/api/user/login', controller.member.login)
+  router.get('/api/user/logout', controller.member.logout)
 
   // 配置信息
   router.post('/api/config/getByApp', controller.config.getByApp)
