@@ -29,6 +29,7 @@ class GitlabService extends Service {
     })
   }
 
+  // 获取应用成员
   async getMembers(projectUrl) {
     const projectPath = projectUrl.replace(`${OAUTH_GITLAB_BASEURL}/`, '')
     const group = projectPath.split('/').length === 2 ? projectPath.split('/')[0] : null

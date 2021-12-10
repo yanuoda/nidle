@@ -55,7 +55,14 @@ class ProjectController extends Controller {
     const data = { name: projectName, repositoryUrl, ...rest }
 
     try {
-      let res
+      let res = null
+      // 先获取 gitlab 项目 owner
+      const gitlabProjectMembers = await ctx.service.gitlab.getMembers(repositoryUrl)
+      const { username } = gitlabProjectMembers.find(member => member.access_level === 50) || {}
+      if (username) {
+        data.owner = username
+      }
+
       if (!id) {
         // 新增
         res = await ctx.model.Project.create(data)

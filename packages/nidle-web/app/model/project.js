@@ -8,7 +8,7 @@ module.exports = app => {
     name: STRING(30),
     description: STRING,
     owner: STRING(20),
-    repositoryType: STRING(20),
+    repositoryType: { type: STRING(20), defaultValue: 'GIT' },
     repositoryUrl: STRING,
     postEmails: STRING(500),
     createdTime: DATE,
