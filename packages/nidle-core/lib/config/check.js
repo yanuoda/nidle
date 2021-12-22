@@ -4,7 +4,7 @@
  * @returns Object
  */
 export default function check(config = {}) {
-  const { name, type, repository, log, output, stages, update } = config
+  const { name, type, repository, log, source, output, stages, update } = config
 
   if (!name) {
     return configErrorObj('应用名称缺失')
@@ -22,14 +22,18 @@ export default function check(config = {}) {
     return configErrorObj('任务流配置缺失')
   }
 
+  if (!source) {
+    return configErrorObj('源文件目录缺失')
+  }
+
   // 发布时检查 output 选项
   if (type === 'publish') {
     if (!output || typeof output !== 'object') {
       return configErrorObj('应用输出信息缺失')
     } else if (!output.path) {
       return configErrorObj('应用输出路径缺失')
-    } else if (!checkChainExist(output, 'cache.path')) {
-      return configErrorObj('应用缓存路径缺失')
+    } else if (!checkChainExist(output, 'backup.path')) {
+      return configErrorObj('应用备份路径缺失')
     }
   }
 

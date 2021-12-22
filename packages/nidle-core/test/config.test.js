@@ -16,6 +16,8 @@ test('check config', () => {
   config.stages = {}
   expect(check(config)).toEqual({ valid: false, message: 'config err: 任务流配置缺失' })
   config.stages = [{}]
+  expect(check(config)).toEqual({ valid: false, message: 'config err: 源文件目录缺失' })
+  config.source = '/source/'
   expect(check(config)).toEqual({ valid: false, message: 'config err: 状态更新方法缺失' })
   config.update = function () {}
   expect(check(config)).toEqual({ valid: true, message: '' })
@@ -24,8 +26,8 @@ test('check config', () => {
   config.output = {}
   expect(check(config)).toEqual({ valid: false, message: 'config err: 应用输出路径缺失' })
   config.output.path = '/out/path'
-  expect(check(config)).toEqual({ valid: false, message: 'config err: 应用缓存路径缺失' })
-  config.output.cache = { path: '/cache/path' }
+  expect(check(config)).toEqual({ valid: false, message: 'config err: 应用备份路径缺失' })
+  config.output.backup = { path: '/backup/path' }
   expect(check(config)).toEqual({ valid: true, message: '' })
 })
 
