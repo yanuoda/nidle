@@ -85,21 +85,32 @@ Form表单并不能完全支持inquirer的所有场景，所以我们进行了�
 ```js
 {
   name: '', // 应用名
+  mode: 'development', // 环境
   repository: {
     // git repository
   },
   type: 'publish', // 构建类型, default `publish`
+  processOptions: {
+    // process option
+    execPath: process.execPath
+  },
+  source: '', // 源代码目录
   output: {
-    path: '' // 源代码目录
+    path: '' // 编译输出
   },
   logger: logger // 日志
 }
 ```
 
+### process 说明
+如果多应用之间基于不同 node 版本开发，并且通过 `nvm` 进行版本管理，那请**关注这里**
+
+如果插件是通过子进程执行 shell 命令，像 `npm install`、`编译` 相关都是依赖应用需要的 `node version`，在使用 `nidle-nvm` 插件的情况下，task 实例中的 `processOptions.execPath` 提供了正确的 node 执行文件，只要在 `child_process.option.execPath` 指定即可
+
 ### 日志说明
 #### levels
 * info
-* warning\
+* warning
 如果没有报错，但是存在警告，一定要warning，前台会展示
 * error
 * fatal
