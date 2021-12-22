@@ -12,6 +12,7 @@ sidebar_position: 2
 // 给任务器的最终配置
 module.exports = {
   name: 'app-name', // 应用名称
+  mode: 'development', // 环境: development/pre/production
   repository: {
     // 从package.json 和 git信息获取
     type: 'git',
@@ -24,16 +25,17 @@ module.exports = {
   log: {
     path: '/xx/xx/', // 日志存放路径
   },
+  source: '/xx/xx/', // 源文件
   // 输出、备份
   output: {
     backup: {
       path: '/xx/xx',
       maxCount: 3, // 备份最大数量
     },
-    cache: {
-      // 发布记录缓存，用来部署和失败重试
-      path: '/xx/xx' 
-    },
+    // cache: {
+    //   // 发布记录缓存，用来部署和失败重试
+    //   path: '/xx/xx' 
+    // },
     path: ''
   },
   // 插件input
