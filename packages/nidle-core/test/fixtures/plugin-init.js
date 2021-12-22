@@ -5,10 +5,10 @@ export default class {
   apply(scheduler) {
     scheduler.add('name', (task, config) => {
       return new Promise(resolve => {
-        fs.mkdirSync(task.output.path, {
+        fs.mkdirSync(task.source, {
           recursive: true
         })
-        fs.writeFileSync(path.resolve(task.output.path, 'index.js'), 'console.log("test")')
+        fs.writeFileSync(path.resolve(task.source, 'index.js'), 'console.log("test")')
         task.logger.info({
           name: 'name',
           detail: `${task.name}/${config.test}分支代码下载完成.`

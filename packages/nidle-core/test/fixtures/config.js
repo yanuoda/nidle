@@ -258,6 +258,7 @@ export const retryErrorTask = {
 
 export const options = {
   name: 'test-app',
+  mode: 'development',
   repository: {
     type: 'git',
     url: 'http://xxx.xxx.com/xx/xx.git',
@@ -269,15 +270,16 @@ export const options = {
     all: path.resolve(root, '.log', 'test.all.log'),
     error: path.resolve(root, '.log', 'test.error.log')
   },
+  source: path.resolve(root, '.source/test-app.202109161400'),
   output: {
     backup: {
       path: path.resolve(root, '.backup'),
       maxCount: 2
     },
-    cache: {
-      path: path.resolve(root, '.cache')
-    },
-    path: path.resolve(root, `.build/test-app.202109161400`)
+    // cache: {
+    //   path: path.resolve(root, '.cache')
+    // },
+    path: path.resolve(root, '.build/test-app.202109161400')
   },
   stages: [
     {
@@ -300,8 +302,9 @@ export const options = {
   }
 }
 
-export const retryOptions = {
+export const productionOptions = {
   name: 'test-app',
+  mode: 'production',
   repository: {
     type: 'git',
     url: 'http://xxx.xxx.com/xx/xx.git',
@@ -313,14 +316,15 @@ export const retryOptions = {
     all: path.resolve(root, '.log', 'test-retry.all.log'),
     error: path.resolve(root, '.log', 'test-retry.error.log')
   },
+  source: path.resolve(root, '.source/test-app.202109181400'),
   output: {
     backup: {
       path: path.resolve(root, '.backup'),
       maxCount: 2
     },
-    cache: {
-      path: path.resolve(root, '.cache')
-    },
+    // cache: {
+    //   path: path.resolve(root, '.cache')
+    // },
     path: path.resolve(root, `.build/test-app.202109181400`)
   },
   stages: [
@@ -345,7 +349,7 @@ export const retryOptions = {
         {
           name: 'publish',
           enable: true,
-          path: path.resolve(root, 'fixtures/plugin-retry.js')
+          path: path.resolve(root, 'fixtures/plugin-output.js')
         }
       ]
     }

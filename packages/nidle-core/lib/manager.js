@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { rm } from 'fs/promises'
 import EventEmitter from 'eventemitter3'
 import { check, input, combine } from './config/index.js'
 import Scheduler from './scheduler/scheduler.js'
@@ -61,7 +62,12 @@ class Manager extends EventEmitter {
         {
           name: config.name,
           repository: config.repository,
+          mode: config.mode, // 环境
           type: config.type,
+          processOptions: {
+            execPath: process.execPath
+          },
+          source: config.source,
           output: {
             path: config.output.path
           },
@@ -81,19 +87,23 @@ class Manager extends EventEmitter {
           progress: 'SCHEDULER COMPLETE'
         })
 
-        try {
-          await backup.backup()
-          fs.rmSync(config.output.path, {
-            recursive: true
-          })
-        } catch (error) {
-          logger.error({
-            progress: 'BACKUP ERROR',
-            error: {
-              message: error.message,
-              stack: error.stack
-            }
-          })
+        if (config.mode === 'production') {
+          // 发布生产后备份
+          try {
+            await backup.backup()
+            // 删除源文件
+            fs.rmSync(config.source, {
+              recursive: true
+            })
+          } catch (error) {
+            logger.error({
+              progress: 'BACKUP ERROR',
+              error: {
+                message: error.message,
+                stack: error.stack
+              }
+            })
+          }
         }
 
         log.end()
@@ -116,19 +126,19 @@ class Manager extends EventEmitter {
         })
       })
 
-      scheduler.on('stage.completed', async () => {
+      scheduler.on('stage.completed', () => {
         // 缓存
-        try {
-          await backup.cache()
-        } catch (error) {
-          logger.error({
-            progress: 'CACHE ERROR',
-            error: {
-              message: error.message,
-              stack: error.stack
-            }
-          })
-        }
+        // try {
+        //   await backup.cache()
+        // } catch (error) {
+        //   logger.error({
+        //     progress: 'CACHE ERROR',
+        //     error: {
+        //       message: error.message,
+        //       stack: error.stack
+        //     }
+        //   })
+        // }
       })
     })
   }
@@ -139,23 +149,24 @@ class Manager extends EventEmitter {
 
     if (index !== 0) {
       // 重试，需要从缓存中恢复
-      try {
-        await this.backup.restore()
+      // try {
+      //   await this.backup.restore()
 
-        logger.info({
-          progress: 'RESTORE COMPLETE',
-          detail: '已从缓存还原代码'
-        })
-      } catch (error) {
-        logger.error({
-          progress: 'RESTORE ERROR',
-          error: {
-            message: error.message,
-            stack: error.stack
-          }
-        })
-        throw new Error('缓存恢复失败，请重新开始构建！')
-      }
+      //   logger.info({
+      //     progress: 'RESTORE COMPLETE',
+      //     detail: '已从缓存还原代码'
+      //   })
+      // } catch (error) {
+      //   logger.error({
+      //     progress: 'RESTORE ERROR',
+      //     error: {
+      //       message: error.message,
+      //       stack: error.stack
+      //     }
+      //   })
+      //   throw new Error('缓存恢复失败，请重新开始构建！')
+      // }
+      throw new Error('start must from index = 0!')
     }
 
     logger.info({
@@ -163,6 +174,37 @@ class Manager extends EventEmitter {
       start: index
     })
     this.scheduler.start(index)
+  }
+
+  // 构建取消
+  async cancel() {
+    const { config } = this
+
+    try {
+      // 删除源文件
+      const sourceState = fs.statSync(config.source, {
+        throwIfNoEntry: false
+      })
+
+      if (typeof sourceState !== 'undefined') {
+        await rm(config.source, {
+          recursive: true
+        })
+      }
+
+      // 删除构建文件
+      const outputState = fs.statSync(config.output.path, {
+        throwIfNoEntry: false
+      })
+
+      if (typeof outputState !== 'undefined') {
+        await rm(config.output.path, {
+          recursive: true
+        })
+      }
+    } catch (err) {
+      throw err
+    }
   }
 
   // 回滚
