@@ -130,7 +130,7 @@ describe('backup', () => {
     expect(fs.accessSync(options.path)).toBeUndefined()
   })
 
-  test('cache when publish end', async () => {
+  test('cache & remove source', async () => {
     const backup = new Backup(options)
 
     await backup.cache(true)
@@ -144,7 +144,6 @@ describe('backup', () => {
   test('backup', async () => {
     const backup = new Backup(options)
 
-    await backup.cache()
     await backup.backup()
     expect(fs.accessSync(path.resolve(options.backup.path, `${dirname}.tgz`))).toBeUndefined()
   })
@@ -161,7 +160,6 @@ describe('backup', () => {
       path.resolve(options.backup.path, 'test-app.202109121715.tgz'),
       true
     )
-    await backup.cache()
     await backup.backup()
 
     expect(fs.accessSync(path.resolve(options.backup.path, `${dirname}.tgz`))).toBeUndefined()

@@ -1,6 +1,6 @@
 import p from 'path'
 import fs from 'fs'
-import { copy, compress, decompress, mkdir } from './util'
+import { compress, decompress, mkdir } from './util'
 const cFileExtname = '.tgz'
 
 class Backup {
@@ -16,11 +16,10 @@ class Backup {
    * @returns Promise
    */
   backup() {
-    const { name, backup, cache, path } = this.options
-    const basename = p.basename(path)
+    const { name, backup, path } = this.options
 
     return new Promise((resolve, reject) => {
-      copy(`${p.resolve(cache.path, basename)}${cFileExtname}`, backup.path, true)
+      compress(path, backup.path, false, cFileExtname)
         .then(() => {
           // 备份数量超过限制将删除老文件
           const files = fs.readdirSync(backup.path)
