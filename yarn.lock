@@ -348,38 +348,6 @@
     lodash "^4.17.21"
     resize-observer-polyfill "^1.5.0"
 
-"@apidevtools/json-schema-ref-parser@^9.0.6":
-  version "9.0.9"
-  resolved "https://registry.npmmirror.com/@apidevtools/json-schema-ref-parser/download/@apidevtools/json-schema-ref-parser-9.0.9.tgz#d720f9256e3609621280584f2b47ae165359268b"
-  integrity sha1-1yD5JW42CWISgFhPK0euFlNZJos=
-  dependencies:
-    "@jsdevtools/ono" "^7.1.3"
-    "@types/json-schema" "^7.0.6"
-    call-me-maybe "^1.0.1"
-    js-yaml "^4.1.0"
-
-"@apidevtools/openapi-schemas@^2.0.4":
-  version "2.1.0"
-  resolved "https://registry.npmmirror.com/@apidevtools/openapi-schemas/download/@apidevtools/openapi-schemas-2.1.0.tgz#9fa08017fb59d80538812f03fc7cac5992caaa17"
-  integrity sha1-n6CAF/tZ2AU4gS8D/HysWZLKqhc=
-
-"@apidevtools/swagger-methods@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.npmmirror.com/@apidevtools/swagger-methods/download/@apidevtools/swagger-methods-3.0.2.tgz#b789a362e055b0340d04712eafe7027ddc1ac267"
-  integrity sha1-t4mjYuBVsDQNBHEur+cCfdwawmc=
-
-"@apidevtools/swagger-parser@10.0.3":
-  version "10.0.3"
-  resolved "https://registry.npmmirror.com/@apidevtools/swagger-parser/download/@apidevtools/swagger-parser-10.0.3.tgz#32057ae99487872c4dd96b314a1ab4b95d89eaf5"
-  integrity sha1-MgV66ZSHhyxN2WsxShq0uV2J6vU=
-  dependencies:
-    "@apidevtools/json-schema-ref-parser" "^9.0.6"
-    "@apidevtools/openapi-schemas" "^2.0.4"
-    "@apidevtools/swagger-methods" "^3.0.2"
-    "@jsdevtools/ono" "^7.1.3"
-    call-me-maybe "^1.0.1"
-    z-schema "^5.0.1"
-
 "@babel/code-frame@7.10.4":
   version "7.10.4"
   resolved "https://registry.npmmirror.com/@babel/code-frame/download/@babel/code-frame-7.10.4.tgz?cache=0&sync_timestamp=1635560663383&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40babel%2Fcode-frame%2Fdownload%2F%40babel%2Fcode-frame-7.10.4.tgz#168da1a36e90da68ae8d49c0f1b48c7c6249213a"
@@ -3014,11 +2982,6 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
-"@jsdevtools/ono@^7.1.3":
-  version "7.1.3"
-  resolved "https://registry.npmmirror.com/@jsdevtools/ono/download/@jsdevtools/ono-7.1.3.tgz#9df03bbd7c696a5c58885c34aa06da41c8543796"
-  integrity sha1-nfA7vXxpalxYiFw0qgbaQchUN5Y=
-
 "@kyleshockey/object-assign-deep@^0.4.2":
   version "0.4.2"
   resolved "https://registry.npmmirror.com/@kyleshockey/object-assign-deep/download/@kyleshockey/object-assign-deep-0.4.2.tgz#84900f0eefc372798f4751b5262830b8208922ec"
@@ -4428,7 +4391,7 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/json-schema@*", "@types/json-schema@^7.0.5", "@types/json-schema@^7.0.6", "@types/json-schema@^7.0.7", "@types/json-schema@^7.0.8", "@types/json-schema@^7.0.9":
+"@types/json-schema@*", "@types/json-schema@^7.0.5", "@types/json-schema@^7.0.7", "@types/json-schema@^7.0.8", "@types/json-schema@^7.0.9":
   version "7.0.9"
   resolved "https://registry.npmmirror.com/@types/json-schema/download/@types/json-schema-7.0.9.tgz#97edc9037ea0c38585320b28964dde3b39e4660d"
   integrity sha1-l+3JA36gw4WFMgsolk3eOznkZg0=
@@ -5701,7 +5664,7 @@ ajv@^6.1.0, ajv@^6.10.0, ajv@^6.12.3, ajv@^6.12.4, ajv@^6.12.5:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-ajv@^8.0.0, ajv@^8.0.1, ajv@^8.8.0, ajv@^8.8.2:
+ajv@^8.0.0, ajv@^8.0.1, ajv@^8.8.0:
   version "8.8.2"
   resolved "https://registry.npmmirror.com/ajv/download/ajv-8.8.2.tgz#01b4fef2007a28bf75f0b7fc009f62679de4abbb"
   integrity sha512-x9VuX+R/jcFj1DHo/fCp99esgGDWiHENrKxaCENuCxpoMCmAt/COCGVDwA7kleEpEzJjDnvh3yGoOuLu0Dtllw==
@@ -8661,7 +8624,7 @@ commander@*, commander@>=7.0.0, commander@^8.2.0, commander@^8.3.0:
   resolved "https://registry.npmmirror.com/commander/download/commander-8.3.0.tgz?cache=0&sync_timestamp=1634886396986&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fcommander%2Fdownload%2Fcommander-8.3.0.tgz#4837ea1b2da67b9c616a67afbb0fafee567bca66"
   integrity sha1-SDfqGy2me5xhamevuw+v7lZ7ymY=
 
-commander@^2.11.0, commander@^2.15.1, commander@^2.18.0, commander@^2.19.0, commander@^2.20.0, commander@^2.20.3, commander@^2.7.1:
+commander@^2.11.0, commander@^2.15.1, commander@^2.18.0, commander@^2.19.0, commander@^2.20.0, commander@^2.20.3:
   version "2.20.3"
   resolved "https://registry.npmmirror.com/commander/download/commander-2.20.3.tgz?cache=0&sync_timestamp=1634886396986&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fcommander%2Fdownload%2Fcommander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha1-/UhehMA+tIgcIHIrpIA16FMa6zM=
@@ -24384,30 +24347,6 @@ swagger-client@^3.17.0:
     traverse "~0.6.6"
     url "~0.11.0"
 
-swagger-egg@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.npmmirror.com/swagger-egg/download/swagger-egg-1.2.1.tgz#a6c8633baf1ea23c809d8ca196399d9d032f9150"
-  integrity sha1-pshjO68eojyAnYyhljmdnQMvkVA=
-  dependencies:
-    doctrine "^3.0.0"
-    globby "^11.0.3"
-    is-type-of "^1.2.1"
-    swagger-parser "^10.0.2"
-    swagger-ui-dist "^3.49.0"
-    yaml "^1.10.2"
-
-swagger-parser@^10.0.2:
-  version "10.0.3"
-  resolved "https://registry.npmmirror.com/swagger-parser/download/swagger-parser-10.0.3.tgz#04cb01c18c3ac192b41161c77f81e79309135d03"
-  integrity sha1-BMsBwYw6wZK0EWHHf4HnkwkTXQM=
-  dependencies:
-    "@apidevtools/swagger-parser" "10.0.3"
-
-swagger-ui-dist@^3.49.0:
-  version "3.52.5"
-  resolved "https://registry.npmmirror.com/swagger-ui-dist/download/swagger-ui-dist-3.52.5.tgz#9aa8101a2be751f5145195b9e048bc21b12fac60"
-  integrity sha1-mqgQGivnUfUUUZW54Ei8IbEvrGA=
-
 swagger-ui-react@^3.41.1, swagger-ui-react@^3.52.3:
   version "3.52.5"
   resolved "https://registry.npmmirror.com/swagger-ui-react/download/swagger-ui-react-3.52.5.tgz#07c361f99cfe360fcf921dc503989972cded155d"
@@ -26793,17 +26732,6 @@ ypkgfiles@^1.6.0:
     is-type-of "^1.0.0"
     resolve-files "^1.0.0"
     yargs "^7.0.1"
-
-z-schema@^5.0.1:
-  version "5.0.2"
-  resolved "https://registry.npmmirror.com/z-schema/download/z-schema-5.0.2.tgz?cache=0&sync_timestamp=1636615745351&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2Fz-schema%2Fdownload%2Fz-schema-5.0.2.tgz#f410394b2c9fcb9edaf6a7511491c0bb4e89a504"
-  integrity sha512-40TH47ukMHq5HrzkeVE40Ad7eIDKaRV2b+Qpi2prLc9X9eFJFzV7tMe5aH12e6avaSS/u5l653EQOv+J9PirPw==
-  dependencies:
-    lodash.get "^4.4.2"
-    lodash.isequal "^4.5.0"
-    validator "^13.7.0"
-  optionalDependencies:
-    commander "^2.7.1"
 
 zenscroll@^4.0.2:
   version "4.0.2"
