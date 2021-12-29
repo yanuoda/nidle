@@ -55,24 +55,24 @@ describe('copy & compress & decompress', () => {
   test('compress no remove source', async () => {
     await compress(options.path, output)
 
-    expect(fs.accessSync(path.resolve(output, `${dirname}.tgz`))).toBeUndefined()
+    expect(fs.accessSync(path.resolve(output, `${dirname}.tar.gz`))).toBeUndefined()
     expect(fs.accessSync(options.path)).toBeUndefined()
   })
 
   test('compress remove source', async () => {
     await compress(options.path, output, true)
 
-    expect(fs.accessSync(path.resolve(output, `${dirname}.tgz`))).toBeUndefined()
+    expect(fs.accessSync(path.resolve(output, `${dirname}.tar.gz`))).toBeUndefined()
     expect(() => {
       fs.accessSync(options.path)
     }).toThrow()
   })
 
   test('decompress no remove source', async () => {
-    await decompress(path.resolve(output, `${dirname}.tgz`), options.path)
+    await decompress(path.resolve(output, `${dirname}.tar.gz`), options.path)
 
     expect(fs.accessSync(path.resolve(options.path, 'index.js'))).toBeUndefined()
-    expect(fs.accessSync(path.resolve(output, `${dirname}.tgz`))).toBeUndefined()
+    expect(fs.accessSync(path.resolve(output, `${dirname}.tar.gz`))).toBeUndefined()
   })
 
   test('copy remove source', async () => {
@@ -85,11 +85,11 @@ describe('copy & compress & decompress', () => {
   })
 
   test('decompress remove source', async () => {
-    await decompress(path.resolve(output, `${dirname}.tgz`), options.path, true)
+    await decompress(path.resolve(output, `${dirname}.tar.gz`), options.path, true)
 
     expect(fs.accessSync(path.resolve(options.path, 'index.js'))).toBeUndefined()
     expect(() => {
-      fs.accessSync(path.resolve(output, `${dirname}.tgz`))
+      fs.accessSync(path.resolve(output, `${dirname}.tar.gz`))
     }).toThrow()
   })
 })
@@ -121,7 +121,7 @@ describe('backup', () => {
     const backup = new Backup(options)
 
     await backup.cache()
-    expect(fs.accessSync(path.resolve(options.cache.path, `${dirname}.tgz`))).toBeUndefined()
+    expect(fs.accessSync(path.resolve(options.cache.path, `${dirname}.tar.gz`))).toBeUndefined()
 
     fs.rmSync(options.path, {
       recursive: true
@@ -134,7 +134,7 @@ describe('backup', () => {
     const backup = new Backup(options)
 
     await backup.cache(true)
-    expect(fs.accessSync(path.resolve(options.cache.path, `${dirname}.tgz`))).toBeUndefined()
+    expect(fs.accessSync(path.resolve(options.cache.path, `${dirname}.tar.gz`))).toBeUndefined()
     expect(() => {
       fs.accessSync(options.path)
     }).toThrow()
@@ -145,27 +145,27 @@ describe('backup', () => {
     const backup = new Backup(options)
 
     await backup.backup()
-    expect(fs.accessSync(path.resolve(options.backup.path, `${dirname}.tgz`))).toBeUndefined()
+    expect(fs.accessSync(path.resolve(options.backup.path, `${dirname}.tar.gz`))).toBeUndefined()
   })
 
   test('backup out of maxCount', async () => {
     const backup = new Backup(options)
 
     await copy(
-      path.resolve(options.backup.path, `${dirname}.tgz`),
-      path.resolve(options.backup.path, 'test-app.202109131715.tgz')
+      path.resolve(options.backup.path, `${dirname}.tar.gz`),
+      path.resolve(options.backup.path, 'test-app.202109131715.tar.gz')
     )
     await copy(
-      path.resolve(options.backup.path, `${dirname}.tgz`),
-      path.resolve(options.backup.path, 'test-app.202109121715.tgz'),
+      path.resolve(options.backup.path, `${dirname}.tar.gz`),
+      path.resolve(options.backup.path, 'test-app.202109121715.tar.gz'),
       true
     )
     await backup.backup()
 
-    expect(fs.accessSync(path.resolve(options.backup.path, `${dirname}.tgz`))).toBeUndefined()
-    expect(fs.accessSync(path.resolve(options.backup.path, 'test-app.202109131715.tgz'))).toBeUndefined()
+    expect(fs.accessSync(path.resolve(options.backup.path, `${dirname}.tar.gz`))).toBeUndefined()
+    expect(fs.accessSync(path.resolve(options.backup.path, 'test-app.202109131715.tar.gz'))).toBeUndefined()
     expect(() => {
-      fs.accessSync(path.resolve(options.backup.path, 'test-app.202109121715.tgz'))
+      fs.accessSync(path.resolve(options.backup.path, 'test-app.202109121715.tar.gz'))
     }).toThrow()
   })
 

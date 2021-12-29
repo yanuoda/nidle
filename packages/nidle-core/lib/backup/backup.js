@@ -1,7 +1,7 @@
 import p from 'path'
 import fs from 'fs'
 import { compress, decompress, mkdir } from './util'
-const cFileExtname = '.tgz'
+const cFileExtname = '.tar.gz'
 
 class Backup {
   // options = { name: '', backup: {}, cache: {}, path }

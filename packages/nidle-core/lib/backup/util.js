@@ -11,7 +11,7 @@ import execa from 'execa'
  * @param {String} extname 扩展名
  * @returns Promise
  */
-export const compress = function (input, output = '.', isRemove = false, extname = '.tgz') {
+export const compress = function (input, output = '.', isRemove = false, extname = '.tar.gz') {
   return new Promise((resolve, reject) => {
     if (output !== '.') {
       mkdir(output)
