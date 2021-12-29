@@ -1,0 +1,33 @@
+{
+  "name": "nidle-eslint",
+  "version": "0.1.0",
+  "description": "nidle plugin of eslint source code",
+  "keywords": [
+    "eslint",
+    "nidle",
+    "plugin"
+  ],
+  "author": "okbeng03 <okbeng03@live.com>",
+  "homepage": "https://github.com/yanuoda/nidle#readme",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./index.js",
+  "publishConfig": {
+    "registry": "https://registry.npmmirror.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yanuoda/nidle.git"
+  },
+  "scripts": {
+    "build": "rm -rf ./dist && rollup -c",
+    "prepublishOnly": "yarn build"
+  },
+  "bugs": {
+    "url": "https://github.com/yanuoda/nidle/issues"
+  },
+  "dependencies": {
+    "execa": "5.1.1",
+    "p-cancelable": "^3.0.0"
+  }
+}
