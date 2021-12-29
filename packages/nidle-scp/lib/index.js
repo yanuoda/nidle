@@ -62,7 +62,7 @@ function scp(task, config) {
 
           fs.rmSync(serverFile)
           fs.rmSync(path.resolve(dirname, tarname))
-          console.log(1111)
+
           resolve()
           return
         }

@@ -1,7 +1,7 @@
 import PCancelable from 'p-cancelable'
 import build from './lib/index'
 
-class ClonePlugin {
+class BuildPlugin {
   apply(scheduler) {
     scheduler.add('build', (task, config) => {
       return new PCancelable((resolve, reject, onCancel) => {
@@ -21,4 +21,4 @@ class ClonePlugin {
   }
 }
 
-export default ClonePlugin
+export default BuildPlugin
