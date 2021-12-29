@@ -6,7 +6,7 @@ import extend from 'extend'
  * @param {Array} inputs
  * @returns stages
  */
-export default function combine(stages, inputs) {
+export default function combine(stages, inputs, privacy) {
   stages.forEach(stage => {
     const { name: stageName } = stage
     stage.steps.forEach(step => {
@@ -16,7 +16,15 @@ export default function combine(stages, inputs) {
       })
 
       if (currentInput) {
-        step.options = extend(true, {}, step.options || {}, currentInput.options)
+        step.options = extend(
+          true,
+          {},
+          step.options || {},
+          currentInput.options,
+          step.secure === true ? { privacy } : {}
+        )
+      } else {
+        step.options = extend(true, {}, step.options || {}, step.secure === true ? { privacy } : {})
       }
     })
   })
