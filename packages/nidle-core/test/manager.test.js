@@ -99,10 +99,10 @@ test('start', done => {
             const basename = path.basename(options.output.path)
 
             expect(() => {
-              fs.accessSync(path.resolve(options.output.backup.path, `${basename}.tgz`))
+              fs.accessSync(path.resolve(options.output.backup.path, `${basename}.tar.gz`))
             }).toThrow()
             // expect(() => {
-            //   fs.accessSync(path.resolve(options.output.cache.path, `${basename}.tgz`))
+            //   fs.accessSync(path.resolve(options.output.cache.path, `${basename}.tar.gz`))
             // }).toBeUndefined()
             expect(fs.accessSync(options.source)).toBeUndefined()
             done()
@@ -118,15 +118,14 @@ test('start', done => {
 test('cancel', done => {
   const manager = new Manager(options)
   expect(fs.accessSync(options.source)).toBeUndefined()
-  manager.cancel().then(() => {
-    expect(() => {
-      fs.accessSync(options.output.path)
-    }).toThrow()
-    expect(() => {
-      fs.accessSync(options.source)
-    }).toThrow()
-    done()
-  })
+  manager.cancel()
+  expect(() => {
+    fs.accessSync(options.output.path)
+  }).toThrow()
+  expect(() => {
+    fs.accessSync(options.source)
+  }).toThrow()
+  done()
 })
 
 test('start when mode === production', done => {
@@ -147,7 +146,9 @@ test('start when mode === production', done => {
           manager.on('completed', () => {
             const basename = path.basename(productionOptions.output.path)
 
-            expect(fs.accessSync(path.resolve(productionOptions.output.backup.path, `${basename}.tgz`))).toBeUndefined()
+            expect(
+              fs.accessSync(path.resolve(productionOptions.output.backup.path, `${basename}.tar.gz`))
+            ).toBeUndefined()
             expect(() => {
               fs.accessSync(productionOptions.source)
             }).toThrow()
@@ -212,10 +213,10 @@ test('start from index !== 0', done => {
 //             expect(error.message).toBe('step publish error')
 //             const basename = path.basename(retryOptions.output.path)
 
-//             expect(fs.accessSync(path.resolve(retryOptions.output.cache.path, `${basename}.tgz`))).toBeUndefined()
+//             expect(fs.accessSync(path.resolve(retryOptions.output.cache.path, `${basename}.tar.gz`))).toBeUndefined()
 //             expect(fs.accessSync(retryOptions.output.path)).toBeUndefined()
 //             expect(() => {
-//               fs.accessSync(path.resolve(retryOptions.output.backup.path, `${basename}.tgz`))
+//               fs.accessSync(path.resolve(retryOptions.output.backup.path, `${basename}.tar.gz`))
 //             }).toThrow()
 //             done()
 //           })

@@ -1,5 +1,4 @@
 import fs from 'fs'
-import { rm } from 'fs/promises'
 import EventEmitter from 'eventemitter3'
 import { check, input, combine } from './config/index.js'
 import Scheduler from './scheduler/scheduler.js'
@@ -57,7 +56,7 @@ class Manager extends EventEmitter {
         name: config.name,
         ...config.output
       }))
-      const stages = combine(config.stages, inputs)
+      const stages = combine(config.stages, inputs, config.privacy || {})
       const scheduler = (this.scheduler = new Scheduler(
         {
           name: config.name,
@@ -91,10 +90,8 @@ class Manager extends EventEmitter {
           // 发布生产后备份
           try {
             await backup.backup()
-            // 删除源文件
-            fs.rmSync(config.source, {
-              recursive: true
-            })
+
+            this.cancel()
           } catch (error) {
             logger.error({
               progress: 'BACKUP ERROR',
@@ -177,7 +174,7 @@ class Manager extends EventEmitter {
   }
 
   // 构建取消
-  async cancel() {
+  cancel() {
     const { config } = this
 
     try {
@@ -187,7 +184,7 @@ class Manager extends EventEmitter {
       })
 
       if (typeof sourceState !== 'undefined') {
-        await rm(config.source, {
+        fs.rmSync(config.source, {
           recursive: true
         })
       }
@@ -198,7 +195,7 @@ class Manager extends EventEmitter {
       })
 
       if (typeof outputState !== 'undefined') {
-        await rm(config.output.path, {
+        fs.rmSync(config.output.path, {
           recursive: true
         })
       }
