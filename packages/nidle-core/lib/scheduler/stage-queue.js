@@ -89,6 +89,9 @@ class StageQueue {
           stack: error.stack
         }
       })
+
+      // 清除运行队列
+      queue.clear()
       EE.emit('error', new Error(`step ${step.name} error`))
     })
 
