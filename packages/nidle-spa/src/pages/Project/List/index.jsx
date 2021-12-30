@@ -30,8 +30,8 @@ const ProjectList = () => {
       valueType: 'option',
       align: 'center',
       width: 300,
-      render: (dom, { id }) => [
-        <Link key="settings" to={`/project/settings?id=${id}`}>
+      render: (dom, { id, name }) => [
+        <Link key="settings" to={`/project/settings?id=${id}&name=${name}`}>
           设置
         </Link>,
         <Link key="publish" to={`/project/publish/record?id=${id}`}>

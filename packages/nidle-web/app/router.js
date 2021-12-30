@@ -11,9 +11,9 @@ module.exports = app => {
   router.get('/api/oauth/callback', controller.oauth.oauth)
 
   // 用户
-  router.get('/api/user', controller.user.index)
-  router.post('/api/user/login', controller.user.login)
-  router.get('/api/user/logout', controller.user.logout)
+  router.get('/api/user', controller.member.index)
+  router.post('/api/user/login', controller.member.login)
+  router.get('/api/user/logout', controller.member.logout)
 
   // 配置信息
   router.post('/api/config/getByApp', controller.config.getByApp)
@@ -21,6 +21,10 @@ module.exports = app => {
 
   // 服务器
   router.post('/api/server', controller.server.index)
+  router.post('/api/server/list', controller.server.list)
+  router.post('/api/server/add', controller.server.add)
+  router.post('/api/server/delete', controller.server.delete)
+  router.post('/api/server/modify', controller.server.modify)
 
   // input
   router.post('/api/config/getInput', controller.config.getInput)

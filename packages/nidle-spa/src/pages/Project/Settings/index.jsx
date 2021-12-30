@@ -1,10 +1,10 @@
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
 import ProForm, { ProFormText, ProFormTextArea, ModalForm, ProFormSelect } from '@ant-design/pro-form'
-import { Tabs, Button, message } from 'antd'
-import { Link } from 'umi'
+import { Tabs, Button, List, Avatar, Skeleton, message } from 'antd'
+import { Link, useModel } from 'umi'
 import { useState, useEffect } from 'react'
-import { PlusOutlined } from '@ant-design/icons'
+import { PlusOutlined, UserOutlined } from '@ant-design/icons'
 
 import ConfigBlock from './components/ConfigBlock'
 import ServerList from './components/ServerList'
@@ -20,12 +20,13 @@ import {
 import styles from './index.less'
 
 const ProjectSettings = props => {
+  // 获取环境配置信息
+  const { initialState } = useModel('@@initialState')
+  const { environmentList } = initialState || { environmentList: [] }
+
   const { name: projectName, id } = props.location.query
   const [pageLoading, setPageLoading] = useState(true)
   const [projectData, setProjectData] = useState({})
-  // 所有的服务器列表
-  const [serverList, setServerList] = useState([])
-  const [serverListMap, setServerListMap] = useState({})
   // 应用服务器
   const [servers, setServers] = useState({})
 
@@ -38,22 +39,6 @@ const ProjectSettings = props => {
         setProjectData(data)
         setServers(data.serverList)
       }
-    }
-
-    // 请求服务器数据
-    const serverRes = await queryServerList()
-    const { success: serverSuccess, data: serverData } = serverRes || {}
-    setServerList(serverData)
-    // 按环境区分机器
-    const serverMap = {}
-    serverData.forEach(({ id, ip, environment }) => {
-      if (!serverMap[environment]) {
-        serverMap[environment] = Object.create(null)
-      }
-      serverMap[environment][id] = ip
-    })
-    if (serverSuccess) {
-      setServerListMap(serverMap)
     }
 
     setPageLoading(false)
@@ -85,7 +70,7 @@ const ProjectSettings = props => {
         layout="vertical"
         submitter={{
           searchConfig: {
-            submitText: '保存并同步'
+            submitText: '保存'
           }
         }}
         onFinish={async values => {
@@ -117,24 +102,43 @@ const ProjectSettings = props => {
   /* 发布配置 */
   const ConfigInfo = (
     <ProCard title="发布配置" headerBordered collapsible bordered type="inner">
-      <Tabs defaultActiveKey="test">
-        <Tabs.TabPane tab="测试" key="test">
-          <ConfigBlock configRaw={'测试'} />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="预发布" key="pre">
-          <ConfigBlock configRaw={'预发布'} />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="生产" key="prod">
-          <ConfigBlock configRaw={'生产'} />
-        </Tabs.TabPane>
-      </Tabs>
+      {environmentList.length > 0 && (
+        <Tabs defaultActiveKey={environmentList[0]?.key}>
+          {environmentList.map(env => (
+            <Tabs.TabPane tab={env.name} key={env.key}>
+              <ConfigBlock configRaw={env.name} />
+            </Tabs.TabPane>
+          ))}
+        </Tabs>
+      )}
     </ProCard>
   )
 
   /* 服务器信息 */
-  const [serverTab, setServerTab] = useState('test')
+  const [serverTab, setServerTab] = useState(environmentList.length > 0 ? environmentList[0]?.key : '')
   const [serverModalVisible, setServerModalVisible] = useState(false)
   const [currentEditServer, setCurrentEditServer] = useState(null)
+  // 所有的服务器列表
+  const [serverList, setServerList] = useState([])
+  const [serverListMap, setServerListMap] = useState({})
+
+  useEffect(async () => {
+    // 请求服务器数据
+    const serverRes = await queryServerList()
+    const { success, data } = serverRes || {}
+    setServerList(data)
+    // 按环境区分机器
+    const serverMap = {}
+    data.forEach(({ id, ip, environment }) => {
+      if (!serverMap[environment]) {
+        serverMap[environment] = Object.create(null)
+      }
+      serverMap[environment][id] = ip
+    })
+    if (success) {
+      setServerListMap(serverMap)
+    }
+  }, [])
 
   const addServer = async params => {
     const addRes = await addProjectServer(params)
@@ -146,6 +150,7 @@ const ProjectSettings = props => {
         ...prevServers,
         [currentTab]: (prevServers[currentTab] || []).concat(data)
       }))
+      message.success('添加成功！')
     }
 
     return success
@@ -210,72 +215,84 @@ const ProjectSettings = props => {
 
   const ServerInfo = (
     <ProCard title="服务器管理" headerBordered collapsible bordered type="inner">
-      <Tabs defaultActiveKey="test" onChange={setServerTab}>
-        <Tabs.TabPane tab="测试" key="test">
-          <ServerList
-            data={servers['test'] || []}
-            serverList={serverList.filter(({ environment }) => environment === 'test')}
-            modifyMethod={handleTriggerModifyModal}
-            delMethod={delServer}
-          />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="预发布" key="pre">
-          <ServerList
-            data={servers['pre'] || []}
-            serverList={serverList.filter(({ environment }) => environment === 'pre')}
-            modifyMethod={handleTriggerModifyModal}
-            delMethod={delServer}
-          />
-        </Tabs.TabPane>
-        <Tabs.TabPane tab="生产" key="prod">
-          <ServerList
-            data={servers['prod'] || []}
-            serverList={serverList.filter(({ environment }) => environment === 'prod')}
-            modifyMethod={handleTriggerModifyModal}
-            delMethod={delServer}
-          />
-        </Tabs.TabPane>
-      </Tabs>
-      <Button className={styles.addServerBtn} type="primary" onClick={handleTriggerAddModal}>
-        <PlusOutlined />
-        新增机器
-      </Button>
-      <ModalForm
-        title={`${currentEditServer ? '编辑' : '新增'}机器`}
-        width={500}
-        layout="horizontal"
-        visible={serverModalVisible}
-        modalProps={{ destroyOnClose: true }}
-        onVisibleChange={setServerModalVisible}
-        onFinish={handleAddOrModifyServer}
-        initialValues={{
-          server: currentEditServer?.server ? `${currentEditServer.server}` : null,
-          output: currentEditServer?.output
-        }}
-      >
-        <ProFormSelect
-          name="server"
-          label="选择机器"
-          valueEnum={serverListMap[serverTab]}
-          placeholder="请选择机器"
-          required
-          rules={[{ required: true, message: '请选择一个机器！' }]}
-        />
-        <ProFormText
-          name="output"
-          label="部署目录"
-          placeholder="请输入部署目录"
-          required
-          rules={[{ required: true, message: '请输入部署目录！' }]}
-        />
-      </ModalForm>
+      {environmentList.length > 0 && (
+        <>
+          <Tabs defaultActiveKey={environmentList[0]?.key} onChange={setServerTab}>
+            {environmentList.map(env => (
+              <Tabs.TabPane tab={env.name} key={env.key}>
+                <ServerList
+                  data={servers[env.key] || []}
+                  serverList={serverList.filter(({ environment }) => environment === env.key)}
+                  modifyMethod={handleTriggerModifyModal}
+                  delMethod={delServer}
+                />
+              </Tabs.TabPane>
+            ))}
+          </Tabs>
+          <Button className={styles.addServerBtn} type="primary" onClick={handleTriggerAddModal}>
+            <PlusOutlined />
+            新增机器
+          </Button>
+          <ModalForm
+            title={`${currentEditServer ? '编辑' : '新增'}机器`}
+            width={500}
+            layout="horizontal"
+            visible={serverModalVisible}
+            modalProps={{ destroyOnClose: true }}
+            onVisibleChange={setServerModalVisible}
+            onFinish={handleAddOrModifyServer}
+            initialValues={{
+              server: currentEditServer?.server ? `${currentEditServer.server}` : null,
+              output: currentEditServer?.output
+            }}
+          >
+            <ProFormSelect
+              name="server"
+              label="选择机器"
+              valueEnum={serverListMap[serverTab]}
+              placeholder="请选择机器"
+              required
+              rules={[{ required: true, message: '请选择一个机器！' }]}
+            />
+            <ProFormText
+              name="output"
+              label="部署目录"
+              placeholder="请输入部署目录"
+              required
+              rules={[{ required: true, message: '请输入部署目录！' }]}
+            />
+          </ModalForm>
+        </>
+      )}
     </ProCard>
   )
 
   /* 项目成员 */
+  const { memberList } = projectData
   const MemberInfo = (
     <ProCard title="项目成员" headerBordered collapsible bordered type="inner">
-      内容
+      <List
+        itemLayout="horizontal"
+        dataSource={memberList}
+        renderItem={item => (
+          <List.Item>
+            <Skeleton avatar title={false} loading={item.loading} active>
+              <List.Item.Meta
+                avatar={<Avatar src={item.avatar_url} icon={<UserOutlined />} />}
+                title={
+                  <>
+                    <a href={item.web_url} target="_blank" rel="noreferrer">
+                      {item.name}
+                    </a>
+                    <span className={styles.memberUsername}> @{item.username}</span>
+                  </>
+                }
+              />
+              <div>{item.role}</div>
+            </Skeleton>
+          </List.Item>
+        )}
+      />
     </ProCard>
   )
 

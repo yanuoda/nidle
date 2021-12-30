@@ -7,6 +7,11 @@ import settings from '../config/defaultSettings'
 import { getCookie } from '@/utils'
 
 const loginPath = '/user/login'
+const environmentList = [
+  { key: 'test', name: '测试' },
+  { key: 'pre', name: '预发布' },
+  { key: 'prod', name: '生产' }
+]
 
 /** 设置双色 icon 主色 */
 setTwoToneColor(settings.primaryColor)
@@ -43,12 +48,14 @@ export async function getInitialState() {
     return {
       fetchUserInfo,
       currentUser,
+      environmentList,
       settings: {}
     }
   }
 
   return {
     fetchUserInfo,
+    environmentList,
     settings: {}
   }
 }
