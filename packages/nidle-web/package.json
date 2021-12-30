@@ -15,8 +15,17 @@
     "inquirer": "^8.2.0",
     "lodash": "^4.17.21",
     "mysql2": "^2.3.0",
+    "nidle": "0.1.0",
+    "nidle-build": "0.1.0",
     "nidle-chain": "0.1.1",
+    "nidle-clone": "0.1.0",
+    "nidle-escheck": "0.1.0",
+    "nidle-eslint": "0.1.0",
+    "nidle-install": "0.1.0",
+    "nidle-nvm": "0.1.0",
+    "nidle-scp": "0.1.0",
     "node-gitlab": "^1.6.1",
+    "semver": "^7.3.5",
     "swagger-egg": "^1.2.1"
   },
   "devDependencies": {
