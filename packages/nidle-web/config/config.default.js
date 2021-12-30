@@ -2,7 +2,17 @@
 
 require('../.dotenv.js')
 
-const { DB_USER, DB_PASS, DB_HOST, REDIS_HOST, REDIS_PORT, REDIS_PASSWORD, REDIS_DB_INDEX } = process.env
+const {
+  DB_USER,
+  DB_PASS,
+  DB_HOST,
+  REDIS_HOST,
+  REDIS_PORT,
+  REDIS_PASSWORD,
+  REDIS_DB_INDEX,
+  OAUTH_GITLAB_BASEURL,
+  GITLAB_PRIVATE_TOKEN
+} = process.env
 
 module.exports = appInfo => {
   // eslint-disable-next-line node/no-exports-assign
@@ -57,8 +67,8 @@ module.exports = appInfo => {
 
   // node gitlab api
   config.gitlab = {
-    api: 'http://gitbj.haihangyun.com/api/v4',
-    privateToken: 'zxwDdcKGhwwxBGyS6D1y'
+    api: `${OAUTH_GITLAB_BASEURL}/api/v4`,
+    privateToken: GITLAB_PRIVATE_TOKEN
   }
 
   return config

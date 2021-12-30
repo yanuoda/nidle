@@ -57,9 +57,9 @@ class OAuthController extends Controller {
       })
       // 查找 or 注册用户
       const { id: gitlabUserId, username: name } = userInfo?.data || {}
-      let currentUser = await ctx.service.user.find({ gitlabUserId })
+      let currentUser = await ctx.service.member.find({ gitlabUserId })
       if (!currentUser) {
-        currentUser = await ctx.service.user.registerUser({ name, gitlabUserId })
+        currentUser = await ctx.service.member.registerUser({ name, gitlabUserId })
       }
       console.log('currentUser >>>>> ', currentUser)
       // session

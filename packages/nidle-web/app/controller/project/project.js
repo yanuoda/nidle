@@ -6,13 +6,9 @@ class ProjectController extends Controller {
   // 获取应用列表
   async list() {
     const { ctx } = this
-    const body = { ...ctx.request.body }
-    const { current, pageSize } = body
+    const { current, pageSize, ...body } = { ...ctx.request.body }
 
     try {
-      delete body.current
-      delete body.pageSize
-
       const { count, rows } = await ctx.model.Project.findAndCountAll({
         where: body,
         offset: (current - 1) * pageSize,
@@ -44,23 +40,39 @@ class ProjectController extends Controller {
   // 保存并同步应用信息
   async sync() {
     const { ctx } = this
-    const { id, ...rest } = ctx.request.body
+    const { id, name, repositoryUrl, ...rest } = ctx.request.body
+    let projectName = name
+
+    if (!name) {
+      const urlSplit = repositoryUrl.split('/')
+      projectName = urlSplit[urlSplit.length - 1]
+    }
+
+    const data = { name: projectName, repositoryUrl, ...rest }
 
     try {
-      let res
+      let res = null
+      // 先获取 gitlab 项目 owner
+      const gitlabProjectMembers = await ctx.service.gitlab.getMembers(repositoryUrl)
+      const { username } = gitlabProjectMembers.find(member => member.access_level === 50) || {}
+      if (username) {
+        data.owner = username
+      }
+
       if (!id) {
         // 新增
-        res = await ctx.model.Project.create(rest)
+        res = await ctx.model.Project.create(data)
       } else {
         // 修改
-        await ctx.model.Project.update(rest, { where: { id } })
-        res = { id, name: rest.name }
+        await ctx.model.Project.update(data, { where: { id } })
+        res = { id, name: projectName }
       }
-      // TODO: 同步 gitlab 数据
+
       this.success(res)
     } catch (err) {
+      this.logger.error(`应用信息保存失败 >>>>>>>> \n${err.message}`)
       this.failed({
-        msg: err.message
+        msg: '应用信息保存失败，请重试！'
       })
     }
   }
