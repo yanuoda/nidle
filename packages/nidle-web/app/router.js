@@ -34,4 +34,7 @@ module.exports = app => {
   router.post('/api/project/server/add', controller.project.server.add)
   router.post('/api/project/server/modify', controller.project.server.modify)
   router.post('/api/project/server/delete', controller.project.server.delete)
+
+  // 发布记录
+  router.post('/api/changelog/start', controller.changelog.start)
 }

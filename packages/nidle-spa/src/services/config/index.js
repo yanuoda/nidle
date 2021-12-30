@@ -15,3 +15,11 @@ export async function setInput(params) {
     data: params
   })
 }
+
+// 开始构建任务
+export async function start(params) {
+  return request('/api/changelog/start', {
+    method: 'POST',
+    data: params
+  })
+}

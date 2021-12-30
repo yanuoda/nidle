@@ -1,8 +1,8 @@
 import { useRequest } from 'umi'
-import { Form } from 'antd'
+import { Form, Button } from 'antd'
 import { PageContainer } from '@ant-design/pro-layout'
 import { BetaSchemaForm } from '@ant-design/pro-form'
-import { getInput, setInput } from '@/services/config'
+import { getInput, setInput, start } from '@/services/config'
 import inputParse, { getGroupValues } from '@/utils/inquirer'
 
 const Input = () => {
@@ -59,6 +59,14 @@ const Input = () => {
     })
   }
 
+  async function onStart() {
+    try {
+      await start({})
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   return (
     <PageContainer>
       {loading && 'loading...'}
@@ -71,6 +79,7 @@ const Input = () => {
           }}
         ></BetaSchemaForm>
       )}
+      <Button onClick={() => onStart()}>发布</Button>
     </PageContainer>
   )
 }
