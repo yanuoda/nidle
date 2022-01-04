@@ -55,3 +55,11 @@ export async function modifyProjectServer(params) {
     data: params
   })
 }
+
+// 编辑应用服务器
+export async function queryProjectBranched(params) {
+  return request('/api/project/branches', {
+    method: 'GET',
+    params
+  })
+}

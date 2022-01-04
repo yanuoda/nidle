@@ -34,7 +34,7 @@ const ProjectList = () => {
         <Link key="settings" to={`/project/settings?id=${id}&name=${name}`}>
           设置
         </Link>,
-        <Link key="publish" to={`/project/publish/record?id=${id}`}>
+        <Link key="publish" to={`/project/publish?id=${id}&name=${name}`}>
           发布记录
         </Link>
       ]
@@ -42,7 +42,11 @@ const ProjectList = () => {
   ]
 
   return (
-    <PageContainer>
+    <PageContainer
+      header={{
+        title: null
+      }}
+    >
       <ProTable
         columns={columns}
         request={queryProjectList}
