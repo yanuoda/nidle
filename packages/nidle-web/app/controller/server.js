@@ -20,7 +20,7 @@ class ProjectController extends Controller {
   // 获取服务器分页列表
   async list() {
     const { ctx } = this
-    const { current, pageSize, ...body } = { ...ctx.request.body }
+    const { current, pageSize, ...body } = ctx.request.body
 
     try {
       const { count, rows } = await ctx.model.Server.findAndCountAll({
