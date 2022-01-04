@@ -10,7 +10,7 @@ import { queryServerDetail, addServer, modifyServer } from '@/services/server'
 const ServerSettings = props => {
   const { initialState } = useModel('@@initialState')
   const { environmentList } = initialState || { environmentList: [] }
-  const { name: projectName, id, environment } = props.location.query
+  const { name: serverName, id, environment } = props.location.query
   const environmentName = environmentList.find(item => {
     return item.key === props.location.query.environment
   }).name
@@ -39,16 +39,14 @@ const ServerSettings = props => {
       breadcrumbName: '服务器列表'
     }
   ]
-  // if (projectName) {
   routes.splice(1, 0, {
     path: '',
-    breadcrumbName: `${projectName || '新增'} [${environmentName}]`
+    breadcrumbName: `${serverName || '新增'} [${environmentName}]`
   })
-  // }
 
   /* 基本信息 */
-  const { name, ip, username, password, repositoryUrl, description } = server
-  const BasicInfo = (
+  const { name, ip, username, password, description } = server
+  const ServerInfo = (
     <ProCard title="服务器信息" headerBordered collapsible bordered type="inner">
       <ProForm
         layout="vertical"
@@ -64,10 +62,10 @@ const ServerSettings = props => {
           const { success } = result || {}
           if (success) {
             window.location.href = `/server/list`
-            message.success('应用信息保存成功，正在刷新页面...')
+            message.success('服务器信息保存成功，正在刷新页面...')
           }
         }}
-        initialValues={{ name, ip, username, password, repositoryUrl, description, environment }}
+        initialValues={{ name, ip, username, password, description, environment }}
       >
         <ProFormText
           width="xl"
@@ -124,7 +122,7 @@ const ServerSettings = props => {
         }
       }}
     >
-      {BasicInfo}
+      {ServerInfo}
     </PageContainer>
   )
 }

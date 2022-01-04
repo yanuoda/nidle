@@ -64,7 +64,7 @@ const ServerList = () => {
   ]
 
   return (
-    <ProCard title="基础信息" headerBordered collapsible bordered type="inner">
+    <ProCard headerBordered bordered type="inner">
       {environmentList.length > 0 && (
         <>
           <Tabs defaultActiveKey={environmentList[0]?.key}>
@@ -95,7 +95,7 @@ const ServerList = () => {
 }
 
 const ServerListContainer = props => {
-  const { name: projectName } = props.location.query
+  const { name: serverName } = props.location.query
   // 面包屑导航自定义
   const routes = [
     {
@@ -104,10 +104,10 @@ const ServerListContainer = props => {
     }
   ]
 
-  if (projectName) {
+  if (serverName) {
     routes.splice(1, 0, {
       path: '',
-      breadcrumbName: projectName
+      breadcrumbName: serverName
     })
   }
 
