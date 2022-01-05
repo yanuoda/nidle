@@ -9,6 +9,7 @@ module.exports = app => {
     environment: STRING(20),
     server: INTEGER,
     output: STRING(),
+    changelog: INTEGER,
     createdTime: DATE,
     updatedTime: DATE
   })
