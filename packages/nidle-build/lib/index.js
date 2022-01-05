@@ -72,6 +72,11 @@ function build(task, config = {}) {
         return
       }
 
+      if (str.indexOf('[webpack.Progress]') > -1) {
+        // 无用日志，不记录
+        return
+      }
+
       task.logger.info({
         name: 'build',
         detail: str
