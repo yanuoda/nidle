@@ -1,8 +1,7 @@
 'use strict'
 
 module.exports = app => {
-  const { INTEGER, DATE, STRING } = app.Sequelize
-
+  const { INTEGER, DATE, STRING, ENUM } = app.Sequelize
   const Changelog = app.model.define('changelog', {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
     period: STRING(),
@@ -11,8 +10,14 @@ module.exports = app => {
     commitId: STRING(),
     developer: INTEGER,
     source: STRING(20),
-    status: INTEGER,
-    codeReviewStatus: INTEGER,
+    status: {
+      type: ENUM,
+      values: ['NEW', 'PENDING', 'SUCCESS', 'FAIL', 'CANCEL']
+    },
+    codeReviewStatus: {
+      type: ENUM,
+      values: ['NEW', 'SUCCESS', 'FAIL']
+    },
     environment: STRING(20),
     stage: STRING(20),
     duration: INTEGER,
