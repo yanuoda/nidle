@@ -121,4 +121,4 @@ function build(task, config = {}) {
 }
 
 module.exports = build
-// export default build
+export default build
