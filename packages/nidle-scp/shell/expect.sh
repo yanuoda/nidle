@@ -42,7 +42,12 @@ if {$decompress==1} {
   expect "Last login:*"
 
   # 解压
-  send "cd $dest_file && tar -zxpf ./$src_file -C ./$appname && rm -rf ./$src_file\n"
+  # send "cd $dest_file && tar -zxpf ./$src_file -C ./$appname && rm -rf ./$src_file\n"
+  send "cd $dest_file\n"
+  expect "#*"
+  send "tar -zxpf ./$src_file -C ./$appname\n"
+  expect "#*"
+  send "rm -rf ./$src_file\n"
   expect "#*"
   send "exit\n"
 }

@@ -39,6 +39,13 @@ function scp(task, config) {
       ])
 
       subprocess.stdout.on('data', data => {
+        const str = data.toString()
+
+        if (str.indexOf('tar: ') > -1) {
+          // 解压会出现一串无用日志冲掉日志
+          return
+        }
+
         task.logger.info({
           name: 'scp',
           detail: data.toString()
