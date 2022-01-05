@@ -56,8 +56,13 @@ const Publish = props => {
     const { data: branchData, success: branchSuccess } = await queryProjectBranched({ id })
     if (branchSuccess) {
       const branchesMap = {}
-      branchData.forEach(({ name }) => {
-        branchesMap[name] = name
+      branchData.forEach(({ name, commit, protected: isProtect }) => {
+        if (isProtect) {
+          // 受保护的分支不能直接发布，防止对分支造成破坏性更改
+          return
+        }
+        const { author_name } = commit
+        branchesMap[name] = `${name} [${author_name}]`
       })
       setBranches(branchesMap)
     }
