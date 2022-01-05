@@ -37,7 +37,6 @@ test('constructor test', () => {
   const manager = new Manager(options)
 
   expect(manager).toHaveProperty('config')
-  expect(manager).toHaveProperty('update')
   expect(manager).toHaveProperty('scheduler', null)
 })
 

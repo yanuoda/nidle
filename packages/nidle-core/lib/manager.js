@@ -21,7 +21,6 @@ class Manager extends EventEmitter {
     }
 
     this.config = config
-    this.update = config.update
     this.scheduler = null
   }
 
@@ -42,9 +41,9 @@ class Manager extends EventEmitter {
   }
 
   // 挂载 - 用户确认input后
-  mount(inputs) {
+  mount(inputs, updateModel) {
     return new Promise(resolve => {
-      const { config, update } = this
+      const { config } = this
 
       const log = (this.log = new Logger(config.log))
       // pino transport is a async stream
@@ -75,6 +74,19 @@ class Manager extends EventEmitter {
         stages
       ))
       scheduler.mount()
+
+      async function update(model) {
+        if (updateModel) {
+          try {
+            await updateModel(model)
+          } catch (err) {
+            logger.error({
+              progress: 'UPDATE MODEL',
+              detail: err.message
+            })
+          }
+        }
+      }
 
       scheduler.on('completed', async () => {
         update({
@@ -109,7 +121,7 @@ class Manager extends EventEmitter {
 
       scheduler.on('error', error => {
         update({
-          status: 'error'
+          status: 'fail'
         })
 
         log.end()
