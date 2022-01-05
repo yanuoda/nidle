@@ -21,7 +21,7 @@ $ yarn dev
 
 ```bash
 # 生成新的迁移脚本
-$ yarn db:migration:generate --name <文件名时间戳后边跟着的部分>
+$ yarn db:migrate:generate --name <文件名时间戳后边跟着的部分>
 # 执行所有未执行过的迁移脚本的 up 函数
 $ yarn db:migrate
 # 同上，但做的是测试数据库的迁移
