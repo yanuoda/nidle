@@ -11,6 +11,7 @@ module.exports = app => {
     repositoryType: { type: STRING(20), defaultValue: 'GIT' },
     repositoryUrl: STRING,
     postEmails: STRING(500),
+    gitlabId: { type: INTEGER, unique: true },
     createdTime: DATE,
     updatedTime: DATE
   })

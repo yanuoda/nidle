@@ -16,6 +16,7 @@ export default [
     routes: [
       { path: '/project/list', name: '应用列表', icon: 'smile', component: './Project/List' },
       { path: '/project/settings', name: '应用配置', component: './Project/Settings', hideInMenu: true },
+      { path: '/project/publish', name: '发布记录', component: './Project/Publish', hideInMenu: true },
       { path: '/project', redirect: '/project/list' },
       { component: './404' }
     ]

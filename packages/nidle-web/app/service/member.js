@@ -13,6 +13,14 @@ class MemberService extends Service {
     const user = await this.ctx.model.Member.findOne({ where })
     return user
   }
+
+  // 条件查找所有
+  async getMembers(params = {}, attributes = {}) {
+    const { ctx } = this
+    const members = await ctx.model.Member.findAll({ where: params, attributes })
+    return members
+  }
+
   // 注册
   async registerUser(params) {
     const { name, gitlabUserId } = params
