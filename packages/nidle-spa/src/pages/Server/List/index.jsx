@@ -168,15 +168,14 @@ const ServerList = () => {
           </Tabs>
         </>
       )}
-      <Modal visible={visible} footer={null} onCancel={() => handleCancel()} destroyOnClose>
+      <Modal title="服务器信息" visible={visible} footer={null} onCancel={() => handleCancel()} destroyOnClose>
         <ServerForm serverInfo={serverInfo} onRefresh={() => handleRefresh()} />
       </Modal>
     </ProCard>
   )
 }
 
-const ServerContainer = props => {
-  const { name: serverName } = props.location.query
+const ServerContainer = () => {
   // 面包屑导航自定义
   const routes = [
     {
@@ -185,16 +184,8 @@ const ServerContainer = props => {
     }
   ]
 
-  if (serverName) {
-    routes.splice(1, 0, {
-      path: '',
-      breadcrumbName: serverName
-    })
-  }
-
   return (
     <PageContainer
-      waterMarkProps={{}}
       header={{
         title: null,
         breadcrumb: {
