@@ -5,31 +5,13 @@ import ProTable from '@ant-design/pro-table'
 import ProForm, { ProFormText } from '@ant-design/pro-form'
 import { PageContainer } from '@ant-design/pro-layout'
 import { ExclamationCircleOutlined } from '@ant-design/icons'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { Link, useModel } from 'umi'
 import { queryServerListByPage, queryServerDetail, addServer, modifyServer, deleteServer } from '@/services/server'
 
 const ServerForm = props => {
-  const { id, environment } = props
-  console.log(id, environment)
   // 应用服务器
-  const [server, setServer] = useState({})
-
-  useEffect(async () => {
-    // 获取服务器详情数据
-
-    if (id) {
-      const res = await queryServerDetail({ id })
-      const { success, data } = res || {}
-      if (success) {
-        setServer(data)
-      }
-    }
-  }, [])
-
-  /* 基本信息 */
-  const { name, ip, username, password, description } = server
-  console.log(server)
+  const server = props.serverInfo
   const ServerInfo = (
     <ProForm
       layout="vertical"
@@ -39,7 +21,7 @@ const ServerForm = props => {
         }
       }}
       onFinish={async values => {
-        values = { ...values, environment }
+        values = { ...values, environment: server.environment }
         const params = server.id ? { id: server.id, ...values } : values
         const result = server.id ? await modifyServer(params) : await addServer(params)
         const { success } = result || {}
@@ -48,7 +30,9 @@ const ServerForm = props => {
           message.success('服务器信息保存成功，正在刷新页面...')
         }
       }}
-      initialValues={{ name, ip, username, password, description, environment }}
+      initialValues={server.id ? server : {}}
+      request={server.id ? queryServerDetail : ''}
+      params={server.id ? { id: server.id } : ''}
     >
       <ProFormText
         width="xl"
@@ -85,7 +69,6 @@ const ServerForm = props => {
       />
     </ProForm>
   )
-
   return <ProCard type="inner">{ServerInfo}</ProCard>
 }
 
@@ -94,14 +77,12 @@ const ServerList = () => {
   const { initialState } = useModel('@@initialState')
   const { environmentList } = initialState || { environmentList: [] }
   const ref = useRef(null)
-  const [serverId, setServerId] = useState('')
-  const [serverEnv, setServerEnv] = useState('')
+  const [serverInfo, setServerInfo] = useState({})
   const [visible, setVisible] = useState(false)
 
-  const handleOpenModal = (env, id) => {
+  const handleOpenModal = serverInfo => {
     setVisible(true)
-    env && setServerEnv(env)
-    id && setServerId(id)
+    setServerInfo(serverInfo)
   }
 
   const handleCancel = () => {
@@ -150,7 +131,7 @@ const ServerList = () => {
       key: 'action',
       render: (text, record) => (
         <Space size="middle">
-          <a onClick={() => handleOpenModal(record.environment, record.id)}>编辑</a>
+          <a onClick={() => handleOpenModal(record)}>编辑</a>
           <a onClick={() => handleDeleteServer(record)}>删除</a>
         </Space>
       )
@@ -176,7 +157,7 @@ const ServerList = () => {
                       key="button"
                       icon={<PlusOutlined />}
                       type="primary"
-                      onClick={() => handleOpenModal(env.key)}
+                      onClick={() => handleOpenModal({ environment: env.key })}
                     >
                       新建
                     </Button>
@@ -187,8 +168,8 @@ const ServerList = () => {
           </Tabs>
         </>
       )}
-      <Modal visible={visible} footer={null} onCancel={() => handleCancel()}>
-        <ServerForm environment={serverEnv} id={serverId} onRefresh={() => handleRefresh()} />
+      <Modal visible={visible} footer={null} onCancel={() => handleCancel()} destroyOnClose>
+        <ServerForm serverInfo={serverInfo} onRefresh={() => handleRefresh()} />
       </Modal>
     </ProCard>
   )
