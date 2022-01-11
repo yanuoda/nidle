@@ -7,9 +7,8 @@ import AddProjectServer from '@/pages/Project/Settings/components/addProjectServ
 import InputAnswer from './Input'
 
 const Inputs = props => {
-  const { changelogId, projectId, mode, readonly, inputs, config } = props
+  const { projectId, mode, readonly, inputs, config } = props
   const [serverList, setServerList] = useState([])
-  const [defaultSelected, setDefaultSelected] = useState([])
   let columns = [
     {
       title: '机器名',
@@ -36,12 +35,6 @@ const Inputs = props => {
     useEffect(() => {
       if (servers && servers.length) {
         setServerList(servers)
-
-        const selectedRows = servers.filter(item => item.changelog === changelogId)
-
-        if (selectedRows.length) {
-          setDefaultSelected(selectedRows.map(row => row.id))
-        }
       }
     }, [servers])
 
@@ -94,8 +87,7 @@ const Inputs = props => {
     },
     getCheckboxProps: record => ({
       disabled: readonly || !record.Server.status || record.changelog
-    }),
-    selectedRowKeys: defaultSelected
+    })
   }
 
   return (
