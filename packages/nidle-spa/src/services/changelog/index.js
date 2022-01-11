@@ -3,9 +3,9 @@ import { request } from 'umi'
 // 获取分支
 export async function fetchBranches(id) {
   const result = await request('/api/project/branches', {
-    method: 'POST',
-    data: {
-      projectId: id
+    method: 'GET',
+    params: {
+      id
     }
   })
 

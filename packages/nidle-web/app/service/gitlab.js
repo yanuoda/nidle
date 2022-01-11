@@ -86,22 +86,18 @@ class GitlabService extends Service {
     const projectPath = projectUrl.replace(`${OAUTH_GITLAB_BASEURL}/`, '')
     const id = encodeURIComponent(projectPath)
 
-    const project = await this.gitlabRequest({
+    return await this.gitlabRequest({
       url: `/projects/${id}`,
       method: 'GET'
     })
-
-    return project?.data || {}
   }
 
   // 获取项目分支信息
   async getBranches(projectGitlabId) {
-    const branches = await this.gitlabRequest({
+    return await this.gitlabRequest({
       url: `/projects/${projectGitlabId}/repository/branches`,
       method: 'GET'
     })
-
-    return branches?.data || {}
   }
 }
 
