@@ -3,6 +3,13 @@
 const Service = require('egg').Service
 
 class ProjectService extends Service {
+  // 根据主键获取单个项目信息
+  async findByPk(id) {
+    const project = await this.ctx.model.Project.findByPk(id)
+    return project
+  }
+
+  // 获取应用详情信息
   async getDetail(id) {
     const { ctx } = this
     const { Project } = ctx.model

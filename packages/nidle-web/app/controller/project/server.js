@@ -2,7 +2,7 @@
 
 const Controller = require('../../core/base_controller')
 
-class ProjectController extends Controller {
+class ProjectServerController extends Controller {
   async add() {
     const { ctx } = this
 
@@ -74,4 +74,4 @@ class ProjectController extends Controller {
   }
 }
 
-module.exports = ProjectController
+module.exports = ProjectServerController

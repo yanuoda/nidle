@@ -67,20 +67,6 @@ class GitlabService extends Service {
     }
   }
 
-  async getBranches(projectUrl) {
-    const projectPath = projectUrl.replace(`${OAUTH_GITLAB_BASEURL}/`, '')
-    const id = encodeURIComponent(projectPath)
-
-    try {
-      return await this.gitlabRequest({
-        url: `/projects/${id}/repository/branches`,
-        method: 'GET'
-      })
-    } catch (err) {
-      throw err
-    }
-  }
-
   async getFile(projectUrl, branch, filePath) {
     const projectPath = projectUrl.replace(`${OAUTH_GITLAB_BASEURL}/`, '')
     const id = encodeURIComponent(projectPath)
@@ -93,6 +79,29 @@ class GitlabService extends Service {
     } catch (err) {
       throw err
     }
+  }
+
+  // 获取某个项目的信息
+  async getProjectDetail(projectUrl) {
+    const projectPath = projectUrl.replace(`${OAUTH_GITLAB_BASEURL}/`, '')
+    const id = encodeURIComponent(projectPath)
+
+    const project = await this.gitlabRequest({
+      url: `/projects/${id}`,
+      method: 'GET'
+    })
+
+    return project?.data || {}
+  }
+
+  // 获取项目分支信息
+  async getBranches(projectGitlabId) {
+    const branches = await this.gitlabRequest({
+      url: `/projects/${projectGitlabId}/repository/branches`,
+      method: 'GET'
+    })
+
+    return branches?.data || {}
   }
 }
 

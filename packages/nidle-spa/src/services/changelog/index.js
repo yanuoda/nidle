@@ -2,7 +2,7 @@ import { request } from 'umi'
 
 // 获取分支
 export async function fetchBranches(id) {
-  const result = await request('/api/changelog/fetchBranches', {
+  const result = await request('/api/project/branches', {
     method: 'POST',
     data: {
       projectId: id

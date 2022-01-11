@@ -19,23 +19,6 @@ class ChangelogController extends Controller {
     }
   }
 
-  // 获取分支
-  async fetchBranches() {
-    const { ctx } = this
-    const { projectId } = ctx.request.body
-
-    try {
-      const project = await ctx.service.project.getBaseinfo(projectId)
-      const branches = await ctx.service.gitlab.getBranches(project.repositoryUrl)
-
-      this.success(branches)
-    } catch (err) {
-      this.failed({
-        msg: err.message
-      })
-    }
-  }
-
   // 开始构建任务
   async start() {
     const { ctx } = this

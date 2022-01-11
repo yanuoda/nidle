@@ -25,6 +25,7 @@ module.exports = app => {
   router.post('/api/server/add', controller.server.add)
   router.post('/api/server/delete', controller.server.delete)
   router.post('/api/server/modify', controller.server.modify)
+  router.get('/api/server/query', controller.server.query)
 
   // input
   router.post('/api/config/getInput', controller.config.getInput)
@@ -33,6 +34,7 @@ module.exports = app => {
   // 应用
   router.post('/api/project/list', controller.project.project.list)
   router.get('/api/project/detail', controller.project.project.detail)
+  router.get('/api/project/branches', controller.project.project.getBranches)
   router.post('/api/project/sync', controller.project.project.sync)
   router.post('/api/project/contacts/update', controller.project.project.updateContacts)
   router.post('/api/project/server/add', controller.project.server.add)
@@ -41,9 +43,9 @@ module.exports = app => {
   router.post('/api/project/server/fetch', controller.project.server.getServer)
 
   // 发布记录
-  router.post('/api/changelog/fetchBranches', controller.changelog.fetchBranches)
   router.post('/api/changelog/create', controller.changelog.create)
   router.post('/api/changelog/start', controller.changelog.start)
   router.post('/api/changelog/detail', controller.changelog.detail)
   router.post('/api/changelog/log', controller.changelog.log)
+  router.get('/api/project/publish/list', controller.project.publish.list)
 }
