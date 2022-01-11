@@ -20,12 +20,10 @@ class ProjectService extends Service {
       const serverList = await this.getServer(id)
       // 获取 gitlab 应用成员
       const memberList = await ctx.service.gitlab.getMembers(resData.repositoryUrl)
+      resData.serverList = serverList
+      resData.memberList = memberList
 
-      return {
-        ...resData,
-        serverList,
-        memberList
-      }
+      return resData
     } catch (err) {
       console.log(333, err)
       throw err
