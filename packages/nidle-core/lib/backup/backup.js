@@ -7,7 +7,9 @@ class Backup {
   // options = { name: '', backup: {}, cache: {}, path }
   constructor(options) {
     this.options = options
+    mkdir(options.source)
     mkdir(options.path)
+    mkdir(options.backup.path)
   }
 
   /**

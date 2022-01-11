@@ -53,6 +53,7 @@ class Manager extends EventEmitter {
       const logger = (this.logger = log.logger)
       const backup = (this.backup = new Backup({
         name: config.name,
+        source: config.source,
         ...config.output
       }))
       const stages = combine(config.stages, inputs, config.privacy || {})

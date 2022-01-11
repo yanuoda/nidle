@@ -6,6 +6,7 @@ const root = path.resolve(process.cwd(), 'test')
 const dirname = 'test-app.202109141715'
 const options = {
   name: 'test-app',
+  source: path.resolve(root, '.source'),
   backup: {
     path: path.resolve(root, '.backup_backup'),
     maxCount: 2
