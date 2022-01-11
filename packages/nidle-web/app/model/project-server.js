@@ -14,5 +14,9 @@ module.exports = app => {
     updatedTime: DATE
   })
 
+  ProjectServer.associate = function () {
+    app.model.ProjectServer.belongsTo(app.model.Server, { foreignKey: 'server', as: 'Server' })
+  }
+
   return ProjectServer
 }

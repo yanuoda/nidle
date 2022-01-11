@@ -7,8 +7,22 @@ class ProjectController extends Controller {
     const { ctx } = this
 
     try {
+      // TODO: 校验
+      // 直接在create上include没生效
       const res = await ctx.model.ProjectServer.create(ctx.request.body)
-      this.success(res)
+      const result = await ctx.model.ProjectServer.findOne({
+        where: {
+          id: res.id
+        },
+        include: [
+          {
+            model: ctx.model.Server,
+            as: 'Server',
+            attributes: ['name', 'ip', 'description', 'status']
+          }
+        ]
+      })
+      this.success(result)
     } catch (err) {
       this.failed({
         msg: err.message
@@ -37,6 +51,21 @@ class ProjectController extends Controller {
       const { id } = ctx.request.body
       await ctx.model.ProjectServer.destroy({ where: { id } })
       this.success()
+    } catch (err) {
+      this.failed({
+        msg: err.message
+      })
+    }
+  }
+
+  // 获取项目指定环境服务器列表
+  async getServer() {
+    const { ctx } = this
+
+    try {
+      const { id, mode } = ctx.request.body
+      const result = await ctx.service.project.getServer(id, mode)
+      this.success(result)
     } catch (err) {
       this.failed({
         msg: err.message

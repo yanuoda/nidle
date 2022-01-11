@@ -1,7 +1,9 @@
 'use strict'
 
+const statusEnums = ['NEW', 'PENDING', 'SUCCESS', 'FAIL', 'CANCEL']
+
 module.exports = app => {
-  const { INTEGER, DATE, STRING, ENUM } = app.Sequelize
+  const { INTEGER, DATE, STRING, ENUM, VIRTUAL } = app.Sequelize
   const Changelog = app.model.define('changelog', {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
     period: STRING(),
@@ -12,7 +14,14 @@ module.exports = app => {
     source: STRING(20),
     status: {
       type: ENUM,
-      values: ['NEW', 'PENDING', 'SUCCESS', 'FAIL', 'CANCEL']
+      values: statusEnums
+    },
+    statusEnum: {
+      type: VIRTUAL,
+      get() {
+        const rawValue = this.getDataValue('status')
+        return statusEnums.indexOf(rawValue)
+      }
     },
     codeReviewStatus: {
       type: ENUM,

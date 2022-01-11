@@ -17,7 +17,7 @@ class GitlabService extends Service {
    */
   async gitlabRequest(options) {
     const { url, method, params, headers, ...rest } = options
-    return this.ctx.curl(`${OAUTH_GITLAB_BASEURL}/api/v4${url}`, {
+    const { data, status } = await this.ctx.curl(`${OAUTH_GITLAB_BASEURL}/api/v4${url}`, {
       method,
       data: params,
       headers: {
@@ -27,6 +27,12 @@ class GitlabService extends Service {
       dataType: 'json',
       ...rest
     })
+
+    if (status === 200) {
+      return data
+    }
+
+    throw new Error(data.message)
   }
 
   // 获取应用成员
@@ -36,25 +42,57 @@ class GitlabService extends Service {
     const id = encodeURIComponent(projectPath)
     let groupMembers = []
 
-    const projectMembers = await this.gitlabRequest({
-      url: `/projects/${id}/members`,
-      method: 'GET'
-    })
-
-    if (group) {
-      groupMembers = await this.gitlabRequest({
-        url: `/groups/${group}/members`,
+    try {
+      const projectMembers = await this.gitlabRequest({
+        url: `/projects/${id}/members`,
         method: 'GET'
       })
-    }
 
-    const members = [...(projectMembers?.data || []), ...(groupMembers?.data || [])].map(member => {
-      return {
-        role: accessLevelMap[member.access_level],
-        ...member
+      if (group) {
+        groupMembers = await this.gitlabRequest({
+          url: `/groups/${group}/members`,
+          method: 'GET'
+        })
       }
-    })
-    return members
+
+      const members = [...(projectMembers || []), ...(groupMembers || [])].map(member => {
+        return {
+          role: accessLevelMap[member.access_level],
+          ...member
+        }
+      })
+      return members
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async getBranches(projectUrl) {
+    const projectPath = projectUrl.replace(`${OAUTH_GITLAB_BASEURL}/`, '')
+    const id = encodeURIComponent(projectPath)
+
+    try {
+      return await this.gitlabRequest({
+        url: `/projects/${id}/repository/branches`,
+        method: 'GET'
+      })
+    } catch (err) {
+      throw err
+    }
+  }
+
+  async getFile(projectUrl, branch, filePath) {
+    const projectPath = projectUrl.replace(`${OAUTH_GITLAB_BASEURL}/`, '')
+    const id = encodeURIComponent(projectPath)
+
+    try {
+      return await this.gitlabRequest({
+        url: `/projects/${id}/repository/files/${encodeURIComponent(filePath)}/raw?ref=${branch}`,
+        method: 'GET'
+      })
+    } catch (err) {
+      throw err
+    }
   }
 }
 

@@ -70,6 +70,7 @@ class ProjectController extends Controller {
 
       this.success(res)
     } catch (err) {
+      console.log(err)
       this.logger.error(`应用信息保存失败 >>>>>>>> \n${err.message}`)
       this.failed({
         msg: '应用信息保存失败，请重试！'

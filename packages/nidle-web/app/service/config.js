@@ -10,60 +10,77 @@ const inputParse = require('../../lib/inquirer')
 
 class ConfigService extends Service {
   // 获取应用对应环境配置
-  async getByApp({ name, mode }) {
-    // TODO: 通过name获取gitlab仓库
-    const config = require(`../mock/config/${name}.${mode}`)
+  async getByApp({ projectUrl, mode, branch }) {
+    const { ctx } = this
+    const fileName = `nidle.${mode}.config.json`
 
-    // TODO: 获取应用指定mode配置
+    try {
+      const config = await ctx.service.gitlab.getFile(projectUrl, branch, fileName)
+      let templateConfig = {}
 
-    // TODO: 有extend就获取模板
-    let templateConfig = {}
+      if (config.extend) {
+        templateConfig = require(`../mock/config/tmp-${config.extend}`)
+      }
 
-    if (config.extend) {
-      templateConfig = require(`../mock/config/${config.extend}`)
+      // 合并模板
+      if (config.extend && !_.isEmpty(templateConfig)) {
+        return extend(true, {}, templateConfig, config)
+      }
+
+      return config
+    } catch (err) {
+      throw err
     }
-
-    // 合并模板
-    if (config.extend && !_.isEmpty(templateConfig)) {
-      return extend(true, {}, templateConfig, config)
-    }
-
-    return config
   }
 
   // 发布时获取对应环境配置
-  async getByCreate({ name, mode, changelogId }) {
+  async getByCreate(project, mode, branch, fileName, options = {}) {
+    const { ctx } = this
+    const nidleConfig = ctx.app.config.nidle
     const config = await this.getByApp({
-      name,
-      mode
+      projectUrl: project.repositoryUrl,
+      mode,
+      branch
     })
 
     // 处理细节log/output
-    const fileName = `${name}_${changelogId}`
-
-    if (config.log) {
-      const logPath = config.log.path
-      config.log = {
-        ...config.log,
-        all: path.join(logPath, `${fileName}.all.log`),
-        error: path.join(logPath, `${fileName}.error.log`)
-      }
-    }
+    config.source = path.resolve(nidleConfig.source, config.source || config.name, fileName)
 
     if (config.output) {
+      config.output.path = path.resolve(nidleConfig.output.path, config.output.path || config.name, fileName)
+
       if (config.output.backup) {
         config.output.backup = {
           ...config.output.backup,
-          path: path.join(config.output.backup.path, `${fileName}_backup`)
+          path: path.resolve(nidleConfig.output.backup.path, config.output.backup.path || config.name)
+        }
+      } else {
+        config.output.backup = {
+          path: path.resolve(nidleConfig.output.backup.path, config.name)
         }
       }
+    } else {
+      config.output = {
+        path: path.resolve(nidleConfig.output.path, config.name, fileName),
+        backup: {
+          path: path.resolve(nidleConfig.output.backup.path, config.name)
+        }
+      }
+    }
 
-      if (config.output.cache) {
-        config.output.cache = {
-          ...config.output.cache,
-          path: path.join(config.output.cache.path, `${fileName}_cache`)
-        }
-      }
+    let logPath
+
+    if (config.log) {
+      logPath = path.resolve(nidleConfig.log.path, config.log.path || config.name)
+    } else {
+      logPath = path.resolve(nidleConfig.log.path, config.name)
+    }
+
+    config.log = {
+      ...config.log,
+      path: logPath,
+      all: path.join(logPath, `all_${fileName}.log`),
+      error: path.join(logPath, `error_${fileName}.log`)
     }
 
     // 有chain，处理chain
@@ -79,7 +96,10 @@ class ConfigService extends Service {
       return newConfig.toConfig()
     }
 
-    return config
+    return {
+      ...config,
+      ...options
+    }
   }
 
   // 获取发布记录对应配置

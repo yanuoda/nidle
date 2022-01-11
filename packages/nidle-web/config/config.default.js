@@ -33,7 +33,7 @@ module.exports = appInfo => {
     username: DB_USER,
     password: DB_PASS,
     timezone: '+08:00',
-    query: { raw: true },
+    // query: { raw: true },
     define: {
       timestamps: true,
       freezeTableName: true,

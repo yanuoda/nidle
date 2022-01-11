@@ -38,7 +38,12 @@ module.exports = app => {
   router.post('/api/project/server/add', controller.project.server.add)
   router.post('/api/project/server/modify', controller.project.server.modify)
   router.post('/api/project/server/delete', controller.project.server.delete)
+  router.post('/api/project/server/fetch', controller.project.server.getServer)
 
   // 发布记录
+  router.post('/api/changelog/fetchBranches', controller.changelog.fetchBranches)
+  router.post('/api/changelog/create', controller.changelog.create)
   router.post('/api/changelog/start', controller.changelog.start)
+  router.post('/api/changelog/detail', controller.changelog.detail)
+  router.post('/api/changelog/log', controller.changelog.log)
 }

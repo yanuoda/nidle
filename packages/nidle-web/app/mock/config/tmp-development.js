@@ -1,37 +1,89 @@
 // 模板配置
 module.exports = {
-  name: 'tmp-development', // 模板名称
+  name: 'development', // 模板名称
+  mode: 'development',
   type: 'publish', // 任务类型: build/test/publish
-  // 日志
-  log: {
-    path: '/xx/xx/' // 日志存放路径
-  },
-  // 输出、备份
-  output: {
-    backup: {
-      path: '/xx/xx',
-      maxCount: 3 // 备份最大数量
-    },
-    cache: {
-      // 发布记录缓存，用来部署和失败重试
-      path: '/xx/xx'
-    }
-  },
+  // source: '/Users/wangchangbin/git/nidle-output/',
+  // output: {
+  //   backup: {
+  //     path: '/Users/wangchangbin/git/nidle-output/backup/',
+  //     maxCount: 1
+  //   },
+  //   path: '/Users/wangchangbin/git/nidle-output/output/'
+  // },
+  // log: {
+  //   path: '/Users/wangchangbin/git/nidle-output/logs/'
+  // },
   stages: [
+    {
+      name: 'download',
+      timeout: 0, // 超时结束，0则不超时
+      steps: [
+        {
+          name: 'clone',
+          enable: true, // 插件开启与否
+          package: 'nidle-clone', // npm 模块名
+          timeout: 0, // 超时结束，0则不超时
+          retry: 0
+        },
+        {
+          name: 'nvm',
+          enable: true, // 插件开启与否
+          package: 'nidle-nvm', // npm 模块名
+          timeout: 0, // 超时结束，0则不超时
+          retry: 0
+        },
+        {
+          name: 'install',
+          enable: true, // 插件开启与否
+          package: 'nidle-install', // npm 模块名
+          timeout: 0, // 超时结束，0则不超时
+          retry: 0
+        },
+        {
+          name: 'eslint',
+          enable: true, // 插件开启与否
+          package: 'nidle-eslint', // npm 模块名
+          timeout: 0, // 超时结束，0则不超时
+          retry: 0
+        }
+      ]
+    },
     {
       name: 'build',
       timeout: 0, // 超时结束，0则不超时
-      // disabledParallel: false, // 是否关闭并行插件，关闭后并行插件会变成顺序执行
       steps: [
         {
-          name: 'example',
+          name: 'build',
           enable: true, // 插件开启与否
-          package: 'example-plugin', // npm 模块名
+          package: 'nidle-build', // npm 模块名
           timeout: 0, // 超时结束，0则不超时
-          retry: 0, // 失败重试，0则不重试
+          retry: 0,
           options: {
-            // 插件默认配置，最后会跟input整合，input优先
+            output: './dist/*',
+            buildShell: './release.sh'
           }
+        },
+        {
+          name: 'escheck',
+          enable: true, // 插件开启与否
+          package: 'nidle-escheck', // npm 模块名
+          timeout: 0, // 超时结束，0则不超时
+          retry: 0
+        }
+      ]
+    },
+    {
+      name: 'publish',
+      timeout: 0, // 超时结束，0则不超时
+      steps: [
+        {
+          name: 'scp',
+          enable: true, // 插件开启与否
+          package: 'nidle-scp', // npm 模块名
+          timeout: 0, // 超时结束，0则不超时
+          retry: 0,
+          secure: true
         }
       ]
     }

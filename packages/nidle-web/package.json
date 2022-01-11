@@ -14,6 +14,7 @@
     "extend": "^3.0.2",
     "inquirer": "^8.2.0",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "mysql2": "^2.3.0",
     "nidle": "0.1.0",
     "nidle-build": "0.1.0",

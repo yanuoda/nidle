@@ -55,3 +55,11 @@ export async function modifyProjectServer(params) {
     data: params
   })
 }
+
+// 获取应用服务器
+export async function getProjectServer(params) {
+  return request('/api/project/server/fetch', {
+    method: 'POST',
+    data: params
+  })
+}

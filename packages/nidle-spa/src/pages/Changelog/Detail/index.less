@@ -1,0 +1,69 @@
+@import '~antd/lib/style/themes/default.less';
+
+.mod-baseinfo {
+  table-layout: fixed;
+  width: 100%;
+
+  th,
+  td {
+    padding: 6px 4px;
+  }
+
+  th {
+    width: 100px;
+    text-align: right;
+  }
+}
+
+.ant-steps-item-active:not(.ant-steps-item-error) {
+  .ant-steps-item-icon {
+    background-color: @success-color;
+    color: #fff;
+
+    .ant-steps-icon {
+      color: #fff;
+    }
+  }
+
+  .ant-steps-item-title {
+    color: @success-color !important;
+  }
+}
+
+.mod-log {
+  .cell-header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .duration {
+    font-size: 12px;
+    color: #888;
+  }
+
+  .log-panel-extra {
+    .duration {
+      margin-right: 10px;
+    }
+
+    .status {
+      .anticon-loading-3-quarters {
+        color: @warning-color;
+      }
+
+      .anticon-close {
+        color: @error-color;
+      }
+
+      color: @primary-color;
+    }
+  }
+
+  .ant-collapse-content-box {
+    padding: 0;
+
+    pre {
+      margin: 0;
+    }
+  }
+}

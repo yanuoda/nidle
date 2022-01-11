@@ -8,6 +8,7 @@ import { PlusOutlined, UserOutlined } from '@ant-design/icons'
 
 import ConfigBlock from './components/ConfigBlock'
 import ServerList from './components/ServerList'
+import CreateChangelog from './components/create'
 import { queryServerList } from '@/services/server'
 import {
   queryProjectDetail,
@@ -37,7 +38,7 @@ const ProjectSettings = props => {
       const { success, data } = res || {}
       if (success) {
         setProjectData(data)
-        setServers(data.serverList)
+        setServers(data.serverList || {})
       }
     }
 
@@ -348,6 +349,7 @@ const ProjectSettings = props => {
         }
       }}
     >
+      <CreateChangelog projectId={id} projectName={projectName} />
       {BasicInfo}
       {/* 只有存在 id 的时候才展示其他板块 */}
       {id && (

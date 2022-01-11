@@ -1,17 +1,10 @@
-import { useRequest } from 'umi'
-import { Form, Button } from 'antd'
-import { PageContainer } from '@ant-design/pro-layout'
+import { Form } from 'antd'
 import { BetaSchemaForm } from '@ant-design/pro-form'
-import { getInput, setInput, start } from '@/services/config'
 import inputParse, { getGroupValues } from '@/utils/inquirer'
 
-const Input = () => {
+const Input = props => {
   const [form] = Form.useForm()
-  const { data: input, loading } = useRequest(() => {
-    return getInput({
-      id: 'input'
-    })
-  })
+  const { inputs: input } = props
   let schema
 
   if (input) {
@@ -51,36 +44,20 @@ const Input = () => {
     })
   }
 
-  async function submit(values) {
-    console.log(2222, values)
-    await setInput({
-      values,
-      groups: input
-    })
-  }
-
-  async function onStart() {
-    try {
-      await start({})
-    } catch (err) {
-      console.error(err)
-    }
+  function submit(values) {
+    props.onFinish(values)
   }
 
   return (
-    <PageContainer>
-      {loading && 'loading...'}
-      {schema && (
-        <BetaSchemaForm
-          form={form}
-          {...schema}
-          onFinish={values => {
-            submit(values)
-          }}
-        ></BetaSchemaForm>
-      )}
-      <Button onClick={() => onStart()}>发布</Button>
-    </PageContainer>
+    schema && (
+      <BetaSchemaForm
+        form={form}
+        {...schema}
+        onFinish={values => {
+          submit(values)
+        }}
+      ></BetaSchemaForm>
+    )
   )
 }
 

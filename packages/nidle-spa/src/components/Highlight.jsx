@@ -6,9 +6,9 @@ const ConfigBlock = props => {
   const codeRef = useRef(null)
 
   useEffect(async () => {
-    const languageModule = await import('highlight.js/lib/languages/javascript')
-    console.log(1111, languageModule)
-    hljs.registerLanguage('javascript', languageModule.default)
+    const languageModule = await import(`highlight.js/lib/languages/${props.type}`)
+
+    hljs.registerLanguage(props.type, languageModule.default)
     hljs.highlightElement(codeRef.current)
   }, [props.configRaw])
 
