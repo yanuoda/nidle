@@ -253,7 +253,7 @@ const App = props => {
             projectId={projectId}
             changelogId={parseInt(id)}
             mode={mode}
-            readonly={changelog.statusEnum !== 0 || changelog.statusEnum !== 3}
+            readonly={changelog.statusEnum !== 0 && changelog.statusEnum !== 3}
             config={config}
             inputs={inputs}
             onChange={handlerInput}
