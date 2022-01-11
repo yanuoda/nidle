@@ -16,7 +16,7 @@ class ProjectService extends Service {
 
     try {
       // 获取应用数据
-      const resData = await Project.findOne({ where: { id }, raw: true })
+      const resData = await Project.findOne({ where: { id } })
       const serverList = await this.getServer(id)
       // 获取 gitlab 应用成员
       const memberList = await ctx.service.gitlab.getMembers(resData.repositoryUrl)
