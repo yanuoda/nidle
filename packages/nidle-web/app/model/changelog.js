@@ -25,7 +25,7 @@ module.exports = app => {
     },
     codeReviewStatus: {
       type: ENUM,
-      values: ['NEW', 'SUCCESS', 'FAIL']
+      values: ['NEW', 'PENDING', 'SUCCESS', 'FAIL']
     },
     environment: STRING(20),
     stage: STRING(20),
