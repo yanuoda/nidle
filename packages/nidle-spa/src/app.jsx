@@ -9,7 +9,7 @@ import { getCookie } from '@/utils'
 const loginPath = '/user/login'
 const environmentList = [
   { key: 'test', name: '测试' },
-  { key: 'pre', name: '预发布' },
+  { key: 'pre', name: '预发' },
   { key: 'prod', name: '生产' }
 ]
 

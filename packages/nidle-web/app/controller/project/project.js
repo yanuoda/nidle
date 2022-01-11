@@ -6,7 +6,7 @@ class ProjectController extends Controller {
   // 获取应用列表
   async list() {
     const { ctx } = this
-    const { current, pageSize, ...body } = { ...ctx.request.body }
+    const { current, pageSize, ...body } = ctx.request.body
 
     try {
       const { count, rows } = await ctx.model.Project.findAndCountAll({
@@ -40,12 +40,13 @@ class ProjectController extends Controller {
   // 保存并同步应用信息
   async sync() {
     const { ctx } = this
-    const { id, name, repositoryUrl, ...rest } = ctx.request.body
+    const { id, name, repositoryUrl: originRepoUrl, ...rest } = ctx.request.body
+    const { OAUTH_GITLAB_BASEURL } = process.env
+    const repositoryUrl = originRepoUrl.replace('.git', '')
     let projectName = name
 
     if (!name) {
-      const urlSplit = repositoryUrl.split('/')
-      projectName = urlSplit[urlSplit.length - 1]
+      projectName = repositoryUrl.replace(`${OAUTH_GITLAB_BASEURL}/`, '')
     }
 
     const data = { name: projectName, repositoryUrl, ...rest }
@@ -61,6 +62,11 @@ class ProjectController extends Controller {
 
       if (!id) {
         // 新增
+        // 先获取项目的 gitlab id，存储在数据库中
+        const { id: gitlabId } = await ctx.service.gitlab.getProjectDetail(repositoryUrl)
+        if (gitlabId) {
+          data.gitlabId = gitlabId
+        }
         res = await ctx.model.Project.create(data)
       } else {
         // 修改
@@ -70,7 +76,8 @@ class ProjectController extends Controller {
 
       this.success(res)
     } catch (err) {
-      this.logger.error(`应用信息保存失败 >>>>>>>> \n${err.message}`)
+      const { message, stack } = err
+      this.logger.error(`应用信息保存失败 >>>>>>>> \n${message}\n${stack}`)
       this.failed({
         msg: '应用信息保存失败，请重试！'
       })
@@ -88,6 +95,23 @@ class ProjectController extends Controller {
     } catch (err) {
       this.failed({
         msg: err.message
+      })
+    }
+  }
+
+  // 获取项目的 gitlab 分支信息
+  async getBranches() {
+    const { ctx } = this
+    const { id } = ctx.query
+
+    try {
+      const { gitlabId } = await ctx.service.project.findByPk(id)
+      const branches = await ctx.service.gitlab.getBranches(gitlabId)
+      this.success(branches)
+    } catch (err) {
+      console.error(err)
+      this.failed({
+        msg: '获取项目分支信息失败！'
       })
     }
   }

@@ -54,6 +54,7 @@ sidebar_position: 4
 * name: string
 * password: password
 * role: roleId
+* gitlabUserId: number - gitlab 用户 id
 * status: int - 0: 禁用 1: 启用
 * createdTime: date-time
 * updatedTime: date-time
@@ -66,10 +67,11 @@ sidebar_position: 4
 * repositoryType: string - 默认GIT
 * repositoryUrl: string
 * postEmails: string - 邮件通知列表
+* gitlabId: number - gitlab 项目 id
 * createdTime: date-time
 * updatedTime: date-time
 
-### project-member 应用用户表
+### project-member 应用用户表（已删除）
 * id: uniqueid
 * project: projectId
 * member: memberId

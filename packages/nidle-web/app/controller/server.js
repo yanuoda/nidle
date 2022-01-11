@@ -20,15 +20,37 @@ class ProjectController extends Controller {
   // 获取服务器分页列表
   async list() {
     const { ctx } = this
-    const { current, pageSize, ...body } = { ...ctx.request.body }
-
+    const { current, pageSize, environment, ...body } = { ...ctx.request.body }
+    const params = { environment, ...body }
+    // 剔除为空的查询参数
+    for (const key in params) {
+      if (Object.hasOwnProperty.call(params, key)) {
+        if (!params[key]) {
+          delete params[key]
+        }
+      }
+    }
     try {
       const { count, rows } = await ctx.model.Server.findAndCountAll({
-        where: body,
+        where: params,
         offset: (current - 1) * pageSize,
         limit: pageSize
       })
       this.successList(rows, count)
+    } catch (err) {
+      this.failed({
+        msg: err.message
+      })
+    }
+  }
+
+  // 获取服务器详情
+  async query() {
+    const { ctx } = this
+    const { id } = ctx.query
+    try {
+      const detail = await ctx.service.server.getDetail(id)
+      this.success(detail)
     } catch (err) {
       this.failed({
         msg: err.message

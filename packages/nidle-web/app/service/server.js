@@ -7,6 +7,14 @@ class ServerService extends Service {
     const servers = await this.ctx.model.Server.findAll({ where: params, attributes })
     return servers
   }
+
+  async getDetail(id) {
+    const { ctx } = this
+    const { Server } = ctx.model
+    // 获取应用数据
+    const { ...resData } = await Server.findOne({ where: { id } })
+    return resData
+  }
 }
 
 module.exports = ServerService
