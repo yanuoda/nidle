@@ -10,51 +10,84 @@ const extend = require('extend')
 const moment = require('moment')
 
 class ChangelogService extends Service {
-  // 新建发布
+  // 新建发布，发布周期继续发布、重新发布
   async create() {
     const { ctx } = this
     const nidleConfig = ctx.app.config.nidle
-    const { branch, projectId, mode } = ctx.request.body
-
-    // TODO: 新建发布，复用period
+    // id是非必须的，只有在发布周期创建新的发布记录才传
+    const { id, branch, projectId, mode, source = 'web' } = ctx.request.body
 
     try {
-      const project = await ctx.service.project.getBaseinfo(projectId)
       const now = new Date().getTime()
-      const fileName = `${project.name}_${mode}_${now}`
-      const config = await ctx.service.config.getByCreate(project, mode, branch, fileName, {
+      // 发布周期
+      let period = now
+      const project = await ctx.service.project.getBaseinfo(projectId)
+      let options = {
         repository: {
           type: project.repositoryType.toLocaleLowerCase(),
           url: project.repositoryUrl,
           branch,
           userName: ctx.session.user.name
         }
-      })
+      }
+
+      if (id) {
+        // 现有发布记录上创建，复用period
+        const changelog = await ctx.model.Changelog.findOne({ where: { id } })
+        period = changelog.period
+
+        if (mode !== nidleConfig.environments[0].value) {
+          // 预发、生产复用source、output
+          const configRaw = fs.readFileSync(changelog.configPath)
+          const config = JSON.parse(configRaw)
+
+          options = {
+            ...options,
+            source: config.source,
+            output: config.output
+          }
+        }
+      }
+
+      const fileName = `${project.name}_${now}`
+      const createConfig = await ctx.service.config.getByCreate(project, mode, branch, fileName, options)
+      const config = {
+        ...createConfig,
+        ...options
+      }
+
       // 将配置存起来
-      const configPath = path.resolve(nidleConfig.config.path, `${fileName}.json`)
+      const configPath = path.resolve(nidleConfig.config.path, `${mode}_${fileName}.json`)
       fs.writeFileSync(configPath, JSON.stringify(config, '', 2))
 
       // 创建记录
       const changelog = await ctx.model.Changelog.create({
-        period: now,
+        period,
         project: projectId,
         branch,
         developer: ctx.session.user.id,
-        // TODO: source
-        source: 'web',
-        status: 'NEW',
+        source,
+        status: createConfig ? 'NEW' : 'SUCCESS',
         codeReviewStatus: 'NEW',
         environment: mode,
         configPath,
-        logPath: config.log.all
+        logPath: createConfig ? config.log.all : null
       })
-      const manager = new Nidle(extend(true, {}, config))
-      const inputs = await manager.init()
+
+      let inputs = {}
+
+      if (createConfig) {
+        const manager = new Nidle(extend(true, {}, config))
+        inputs = await manager.init()
+      }
+
+      const next = ctx.helper.nidleNext(changelog)
 
       return {
         config,
         changelog,
-        ...inputs
+        ...inputs,
+        next
       }
     } catch (err) {
       console.log(2222, err)
@@ -172,18 +205,25 @@ class ChangelogService extends Service {
     const { ctx } = this
     try {
       const changelog = await ctx.model.Changelog.findOne({ where: { id } })
-      const project = await ctx.model.Project.findOne({ where: { id: changelog.project } })
-      const configRaw = fs.readFileSync(changelog.configPath)
-      const config = JSON.parse(configRaw)
 
-      return {
-        config,
-        changelog: {
-          ...changelog.dataValues,
-          statusEnum: changelog.statusEnum,
-          projectName: project.name
-        },
-        inputs: config.inputs || []
+      if (changelog) {
+        const next = ctx.helper.nidleNext(changelog)
+        const project = await ctx.model.Project.findOne({ where: { id: changelog.project } })
+        const configRaw = fs.readFileSync(changelog.configPath)
+        const config = JSON.parse(configRaw)
+
+        return {
+          config,
+          changelog: {
+            ...changelog.dataValues,
+            statusEnum: changelog.statusEnum,
+            projectName: project.name
+          },
+          inputs: config.inputs || [],
+          next
+        }
+      } else {
+        throw new Error('未找到相关发布记录')
       }
     } catch (err) {
       console.log(3333, err)
@@ -197,6 +237,7 @@ class ChangelogService extends Service {
 
     try {
       const changelog = await ctx.model.Changelog.findOne({ where: { id } })
+      const next = ctx.helper.nidleNext(changelog)
       let logRaw
 
       if (!logPath) {
@@ -225,7 +266,8 @@ class ChangelogService extends Service {
       const result = {
         status: changelog.status,
         statusEnum: changelog.statusEnum,
-        stage: changelog.stage
+        stage: changelog.stage,
+        next
       }
 
       if (len > 1) {

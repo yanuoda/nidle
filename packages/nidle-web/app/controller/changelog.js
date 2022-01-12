@@ -7,8 +7,21 @@ class ChangelogController extends Controller {
   // 新建，返回配置信息
   async create() {
     const { ctx } = this
+    const { id, mode } = ctx.request.body
 
     try {
+      // 检查是否能进入下一阶段
+      const changelog = id ? await ctx.model.Changelog.findOne({ where: { id } }) : null
+      const next = ctx.helper.nidleNext(changelog)
+
+      if (next.next !== 'CREATE' || next.environment.value !== mode) {
+        this.failed({
+          data: next,
+          msg: `请检查发布状态，暂时不能进入${mode}发布`
+        })
+        return
+      }
+
       const result = await ctx.service.changelog.create(ctx.request.body)
 
       this.success(result)

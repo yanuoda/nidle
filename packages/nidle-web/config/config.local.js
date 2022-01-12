@@ -11,5 +11,19 @@ exports.nidle = {
   },
   config: {
     path: '/Users/wangchangbin/git/nidle-output/config/'
-  }
+  },
+  environments: [
+    {
+      value: 'development',
+      label: '测试'
+    },
+    {
+      value: 'pre',
+      label: '预发布'
+    },
+    {
+      value: 'production',
+      label: '生产'
+    }
+  ]
 }
