@@ -8,7 +8,8 @@ const ServerList = props => {
 
   useEffect(() => {
     const list = data.map(item => {
-      const { name, ip } = serverList.find(server => server.id === item.server) || {}
+      const { Server } = item
+      const { name, ip } = Server
       return {
         name,
         ip,
