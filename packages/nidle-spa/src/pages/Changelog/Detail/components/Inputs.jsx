@@ -1,13 +1,13 @@
 import ProCard from '@ant-design/pro-card'
-import { Table } from 'antd'
+import { Table, message } from 'antd'
 import { useState, useEffect } from 'react'
-import { Link, useRequest } from 'umi'
+import { Link } from 'umi'
 import { getProjectServer } from '@/services/project'
 import AddProjectServer from '@/pages/Project/Settings/components/addProjectServer'
 import InputAnswer from './Input'
 
 const Inputs = props => {
-  const { projectId, mode, readonly, inputs, config } = props
+  const { projectId, mode, readonly, inputs, config = {} } = props
   const [serverList, setServerList] = useState([])
   let columns = [
     {
@@ -24,20 +24,33 @@ const Inputs = props => {
     }
   ]
 
-  if (!readonly) {
-    const { data: servers } = useRequest(() => {
-      return getProjectServer({
+  useEffect(async () => {
+    if (!readonly) {
+      const {
+        data: servers = [],
+        success,
+        errorMessage
+      } = await getProjectServer({
         id: projectId,
         mode
       })
-    })
 
-    useEffect(() => {
-      if (servers && servers.length) {
+      if (success === true) {
         setServerList(servers)
+      } else {
+        setServerList([])
+        message.error(errorMessage)
       }
-    }, [servers])
+    } else {
+      if (config.privacy && config.privacy.server) {
+        setServerList(config.privacy.server)
+      } else {
+        setServerList([])
+      }
+    }
+  }, [readonly])
 
+  if (!readonly) {
     columns = columns.concat([
       {
         title: '使用状态',
@@ -63,9 +76,6 @@ const Inputs = props => {
   } else {
     columns[0].dataIndex = 'ip'
     columns[1].dataIndex = 'ip'
-    useEffect(() => {
-      setServerList(config.privacy.server)
-    }, [config])
   }
 
   const handlerAddServer = (type, server) => {

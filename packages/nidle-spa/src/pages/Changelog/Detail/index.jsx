@@ -1,64 +1,104 @@
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
-import { Tabs, Button, message } from 'antd'
+import { Tabs, Button, Space, Modal, message } from 'antd'
 import { useState, useEffect } from 'react'
-import { Link, history, useRequest } from 'umi'
+import { Link, history } from 'umi'
 import { create, start, detail as fetchDetail, fetchLog } from '@/services/changelog'
 import Steps from './components/Steps'
 import Log from './components/Log'
 import Inputs from './components/Inputs'
 import Highlight from '@/components/Highlight'
 import { status } from '@/dicts/changelog'
-import { mode } from '@/dicts/app'
+import { mode as modes } from '@/dicts/app'
 import { dictsToMap } from '@/utils/filter'
 import './index.less'
 
 const statusMap = dictsToMap(status)
-const modeMap = dictsToMap(mode)
+const modeMap = dictsToMap(modes)
 
 const App = props => {
+  const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
+  const [detail, setDetail] = useState() // 配置
   const [config, setConfig] = useState({}) // 配置
   const [changelog, setChangelog] = useState({}) // 发布记录实例
+  const [next, setNext] = useState({}) // 下一步
   const [inputs, setInputs] = useState([]) // 输入配置
   const [current, setCurrent] = useState({ progress: 'start', stage: '' }) // 进度
   const [tabActive, setTabActive] = useState('inputs') // Tab Active
   const [logs, setLogs] = useState({}) // 日志
   const [serverList, setServerList] = useState([]) // 已选择发布服务器
-  const [inputAnswers, setInputAnswers] = useState(null)
-  // TODO: mode
-  const { branch, projectName, id, mode = 'development' } = props.location.query
+  const [inputAnswers, setInputAnswers] = useState(null) // inputs answer
+  const { branch, id, mode = modes[0].value, action } = props.location.query
   const { id: projectId } = props.match.params
 
-  const { data: detail, loading } = useRequest(() => {
-    return id
-      ? fetchDetail({
-          id
-        })
-      : create({
-          branch,
-          projectId,
-          mode
-        })
-  })
+  // 获取详情
+  const getDetail = async () => {
+    const { data, success, errorMessage } = await fetchDetail({
+      id
+    })
 
+    if (success === true) {
+      setDetail(data)
+      setLoading(false)
+    } else {
+      message.error(errorMessage)
+    }
+  }
+
+  // 创建发布记录
+  const createChangelog = async params => {
+    const { data, success, errorMessage } = await create(params)
+
+    if (success === true) {
+      setDetail(data)
+
+      // 创建完跳到详情页，避免用户刷新页面重复创建
+      history.replace(`/project/${projectId}/changelog/detail?id=${data.changelog.id}`)
+
+      setLoading(false)
+      return true
+    } else {
+      message.error(errorMessage)
+      setLoading(false)
+      return false
+    }
+  }
+
+  // 页面进入初始化请求
+  useEffect(async () => {
+    if (!id) {
+      await createChangelog({
+        branch,
+        mode,
+        projectId
+      })
+    } else if (action === 'CREATE') {
+      await createChangelog({
+        id,
+        branch,
+        mode,
+        projectId
+      })
+    } else {
+      await getDetail()
+    }
+  }, [])
+
+  // 详情改变相关state
   useEffect(() => {
     if (detail) {
-      const { config, changelog, inputs } = detail
+      const { config, changelog, inputs, next } = detail
 
       setConfig(config)
       setChangelog(changelog)
-      setInputs(inputs)
-
-      if (!id && changelog.id) {
-        // 创建完跳到详情页，避免用户刷新页面重复创建
-        history.replace(
-          `/project/${projectId}/changelog/detail?branch=${branch}&id=${changelog.id}&projectName=${projectName}`
-        )
-      }
+      setInputs(inputs || null)
+      setNext(next)
+      setLogs({})
     }
   }, [detail])
 
+  // 进度条
   useEffect(() => {
     if (changelog) {
       let progress = 'start'
@@ -75,11 +115,17 @@ const App = props => {
 
   let interval
 
+  // tab & 日志
   useEffect(() => {
-    const { statusEnum } = changelog
+    const { statusEnum, logPath } = changelog
 
     if (statusEnum === 0) {
       setTabActive('inputs')
+      return
+    }
+
+    if (!logPath) {
+      setTabActive('config')
       return
     }
 
@@ -95,8 +141,9 @@ const App = props => {
     } else if (statusEnum > 1) {
       getLogs()
     }
-  }, [changelog.statusEnum])
+  }, [changelog.statusEnum, changelog.id])
 
+  // 日志请求
   const getLogs = async () => {
     const { data, success, errorMessage } = await fetchLog({
       logPath: config.log.all,
@@ -112,6 +159,7 @@ const App = props => {
         statusEnum: data.statusEnum,
         stage: data.stage
       })
+      setNext(data.next)
 
       if (data.statusEnum > 1 && interval) {
         clearInterval(interval)
@@ -130,31 +178,24 @@ const App = props => {
     {
       // TODO
       path: '',
-      breadcrumbName: projectName || changelog.projectName || '应用'
+      breadcrumbName: changelog.projectName || '应用'
     },
     {
       path: '',
       breadcrumbName: id ? '发布详情' : '新建发布'
     }
   ]
+
+  // 下一步
   const handlerNildeAction = async () => {
     setActionLoading(true)
 
     try {
-      if (changelog.statusEnum === 1) {
-        // 发布中取消
-        console.log('取消')
-        setActionLoading(false)
-      } else {
+      if (next.next === 'START') {
         if (!serverList || !serverList.length) {
           message.error('请选择发布服务器')
           setActionLoading(false)
           return
-        }
-
-        // 开始、重新开始
-        if (changelog.statusEnum === 3) {
-          // TODO: 重新开始，创建新的发布记录
         }
 
         const { success, errorMessage } = await start({
@@ -177,12 +218,48 @@ const App = props => {
           setActionLoading(false)
           message.error(errorMessage)
         }
+      } else if (next.next === 'CREATE' || next.next === 'RESTART') {
+        setActionLoading(true)
+        const success = await createChangelog({
+          id: changelog.id,
+          branch: changelog.branch,
+          projectId: changelog.project,
+          mode: next.environment.value
+        })
+
+        if (success === true) {
+          message.success(`创建${next.label}成功`)
+        }
+        setActionLoading(false)
       }
     } catch (err) {
       setActionLoading(false)
       message.error(err.message)
     }
   }
+
+  // 退出发布
+  const handlerNildeQuit = () => {
+    Modal.confirm({
+      title: '确定退出发布?',
+      content: (
+        <div>
+          请确定是否以下原因退出发布：
+          <br />
+          1. 发布取消；
+          <br />
+          2. 其他发布优先，需要退出释放服务资源；
+          <br />
+          3. 发布配置有变动，重新加载最新发布配置；
+          <br />
+        </div>
+      ),
+      onOk() {
+        setActionLoading(true)
+      }
+    })
+  }
+  // 切换步骤
   const handlerStepsChange = stage => {
     setCurrent({ progress: current.progress, stage })
   }
@@ -192,15 +269,18 @@ const App = props => {
       title="基础信息"
       hoverable
       extra={
-        changelog.statusEnum !== 2 && (
-          <Button
-            type={changelog.statusEnum === 1 ? 'warning' : 'primary'}
-            onClick={() => handlerNildeAction()}
-            loading={actionLoading}
-          >
-            {changelog.statusEnum === 1 ? '取消' : changelog.statusEnum !== 0 ? '重新开始' : '开始'}
-          </Button>
-        )
+        next ? (
+          <Space>
+            <Button type="primary" onClick={handlerNildeAction} loading={actionLoading} disabled={!!next.disabled}>
+              {next.label}
+            </Button>
+            {next.quit ? (
+              <Button type="warning" onClick={handlerNildeQuit} loading={actionLoading}>
+                退出发布
+              </Button>
+            ) : null}
+          </Space>
+        ) : null
       }
     >
       <table className="mod-baseinfo">
@@ -243,27 +323,27 @@ const App = props => {
           setTabActive(activeKey)
         }}
       >
-        {changelog.statusEnum && (
-          <Tabs.TabPane key="log" tab="日志">
-            {logs.stages && <Log type="all" logs={logs} current={current}></Log>}
-          </Tabs.TabPane>
-        )}
-        <Tabs.TabPane key="inputs" tab="Inputs">
-          <Inputs
-            projectId={projectId}
-            changelogId={parseInt(id)}
-            mode={mode}
-            readonly={changelog.statusEnum !== 0 && changelog.statusEnum !== 3}
-            config={config}
-            inputs={inputs}
-            onChange={handlerInput}
-          ></Inputs>
+        <Tabs.TabPane key="log" tab="日志">
+          {logs.stages ? <Log type="all" logs={logs} current={current}></Log> : '没有记录'}
         </Tabs.TabPane>
-        {config && (
-          <Tabs.TabPane key="config" tab="配置">
-            <Highlight configRaw={JSON.stringify(config, '', 2)} type="javascript"></Highlight>
-          </Tabs.TabPane>
-        )}
+        <Tabs.TabPane key="inputs" tab="Inputs">
+          {inputs ? (
+            <Inputs
+              projectId={projectId}
+              changelogId={parseInt(id)}
+              mode={changelog.environment}
+              readonly={changelog.statusEnum !== 0 && changelog.statusEnum !== 3}
+              config={config}
+              inputs={inputs}
+              onChange={handlerInput}
+            ></Inputs>
+          ) : (
+            '没有记录'
+          )}
+        </Tabs.TabPane>
+        <Tabs.TabPane key="config" tab="配置">
+          {config && <Highlight configRaw={JSON.stringify(config, '', 2)} type="javascript"></Highlight>}
+        </Tabs.TabPane>
       </Tabs>
     </ProCard>
   )
