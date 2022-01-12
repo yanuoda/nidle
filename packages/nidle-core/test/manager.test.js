@@ -114,10 +114,10 @@ test('start', done => {
   })
 })
 
-test('cancel', done => {
+test('clear', done => {
   const manager = new Manager(options)
   expect(fs.accessSync(options.source)).toBeUndefined()
-  manager.cancel()
+  manager.clear()
   expect(() => {
     fs.accessSync(options.output.path)
   }).toThrow()
@@ -127,7 +127,7 @@ test('cancel', done => {
   done()
 })
 
-test('start when mode === production', done => {
+test('backup', done => {
   const manager = new Manager(productionOptions)
   manager.init().then(() => {
     manager
@@ -143,15 +143,17 @@ test('start when mode === production', done => {
       .then(() => {
         manager.start().then(() => {
           manager.on('completed', () => {
-            const basename = path.basename(productionOptions.output.path)
+            manager.backup().then(() => {
+              const basename = path.basename(productionOptions.output.path)
 
-            expect(
-              fs.accessSync(path.resolve(productionOptions.output.backup.path, `${basename}.tar.gz`))
-            ).toBeUndefined()
-            expect(() => {
-              fs.accessSync(productionOptions.source)
-            }).toThrow()
-            done()
+              expect(
+                fs.accessSync(path.resolve(productionOptions.output.backup.path, `${basename}.tar.gz`))
+              ).toBeUndefined()
+              expect(() => {
+                fs.accessSync(productionOptions.source)
+              }).toThrow()
+              done()
+            })
           })
           manager.on('error', error => {
             done(error)

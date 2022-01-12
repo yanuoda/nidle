@@ -51,11 +51,11 @@ class Manager extends EventEmitter {
         resolve()
       })
       const logger = (this.logger = log.logger)
-      const backup = (this.backup = new Backup({
+      this._backup = new Backup({
         name: config.name,
         source: config.source,
         ...config.output
-      }))
+      })
       const stages = combine(config.stages, inputs, config.privacy || {})
       const scheduler = (this.scheduler = new Scheduler(
         {
@@ -98,23 +98,6 @@ class Manager extends EventEmitter {
         logger.info({
           progress: 'SCHEDULER COMPLETE'
         })
-
-        if (config.mode === 'production') {
-          // 发布生产后备份
-          try {
-            await backup.backup()
-
-            this.cancel()
-          } catch (error) {
-            logger.error({
-              progress: 'BACKUP ERROR',
-              error: {
-                message: error.message,
-                stack: error.stack
-              }
-            })
-          }
-        }
 
         log.end()
         this.emit('completed')
@@ -186,8 +169,8 @@ class Manager extends EventEmitter {
     this.scheduler.start(index)
   }
 
-  // 构建取消
-  cancel() {
+  // 清除
+  clear() {
     const { config } = this
 
     try {
@@ -217,13 +200,31 @@ class Manager extends EventEmitter {
     }
   }
 
+  // 备份
+  async backup() {
+    try {
+      await this._backup.backup()
+
+      this.clear()
+    } catch (error) {
+      this.logger.error({
+        progress: 'BACKUP ERROR',
+        error: {
+          message: error.message,
+          stack: error.stack
+        }
+      })
+      throw new Error('备份失败，请查看日志了解详情')
+    }
+  }
+
   // 回滚
   async rollback() {
     // 从备份中恢复，然后开始
-    const { logger, backup } = this
+    const { logger, _backup } = this
 
     try {
-      await backup.rollback()
+      await _backup.rollback()
 
       logger.info({
         progress: 'ROLLBACK COMPLETE',
