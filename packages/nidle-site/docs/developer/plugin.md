@@ -39,7 +39,8 @@ class ExamplePlugin {
     })
   }
 
-  input () {
+  input (options) {
+    // options为input默认配置的options，可以用来控制不同的场景返回不同的inputs
     // inquirer question list
     return [
       {
