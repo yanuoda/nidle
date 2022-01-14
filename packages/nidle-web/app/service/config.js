@@ -10,12 +10,12 @@ const inputParse = require('../../lib/inquirer')
 
 class ConfigService extends Service {
   // 获取应用对应环境配置
-  async getByApp({ projectUrl, mode, branch }) {
+  async getByApp({ id, mode, branch = 'master' }) {
     const { ctx } = this
     const fileName = `nidle.${mode}.config.json`
 
     try {
-      const config = await ctx.service.gitlab.getFile(projectUrl, branch, fileName)
+      const config = await ctx.service.gitlab.getFile(id, branch, fileName)
       let templateConfig = {}
 
       if (config.extend) {
@@ -45,7 +45,7 @@ class ConfigService extends Service {
     try {
       const nidleConfig = ctx.app.config.nidle
       const config = await this.getByApp({
-        projectUrl: project.repositoryUrl,
+        id: project.gitlabId,
         mode,
         branch
       })

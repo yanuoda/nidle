@@ -67,10 +67,7 @@ class GitlabService extends Service {
     }
   }
 
-  async getFile(projectUrl, branch, filePath) {
-    const projectPath = projectUrl.replace(`${OAUTH_GITLAB_BASEURL}/`, '')
-    const id = encodeURIComponent(projectPath)
-
+  async getFile(id, branch, filePath) {
     try {
       return await this.gitlabRequest({
         url: `/projects/${id}/repository/files/${encodeURIComponent(filePath)}/raw?ref=${branch}`,
