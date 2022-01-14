@@ -284,6 +284,15 @@
     rc-util "^5.0.1"
     swr "1.1.0"
 
+"@ant-design/pro-provider@^1.5.5":
+  version "1.5.5"
+  resolved "https://registry.npmmirror.com/@ant-design/pro-provider/download/@ant-design/pro-provider-1.5.5.tgz#14a592413b81d2cfbd6cdcfaedd92e50499929c6"
+  integrity sha512-gZzTG+WTNj6xswD/iLSLw8LH+7VNQKYuNcV5KmMqHrSlyimusMaJqBg+pMcD5PVLEe1pdm1lHm72t3qsRWtMNg==
+  dependencies:
+    "@babel/runtime" "^7.16.3"
+    rc-util "^5.0.1"
+    swr "1.1.0"
+
 "@ant-design/pro-skeleton@1.0.2":
   version "1.0.2"
   resolved "https://registry.npmmirror.com/@ant-design/pro-skeleton/download/@ant-design/pro-skeleton-1.0.2.tgz#33c25b31bcbf9ecfd22fd48630529552bbfc9dbc"
