@@ -58,11 +58,7 @@ module.exports = {
           enable: true, // 插件开启与否
           package: 'nidle-build', // npm 模块名
           timeout: 0, // 超时结束，0则不超时
-          retry: 0,
-          options: {
-            output: './dist/*',
-            buildShell: './release.sh'
-          }
+          retry: 0
         },
         {
           name: 'escheck',
@@ -82,8 +78,7 @@ module.exports = {
           enable: true, // 插件开启与否
           package: 'nidle-scp', // npm 模块名
           timeout: 0, // 超时结束，0则不超时
-          retry: 0,
-          secure: true
+          retry: 0
         }
       ]
     }

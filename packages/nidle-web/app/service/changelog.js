@@ -55,10 +55,26 @@ class ChangelogService extends Service {
         ...createConfig,
         ...options
       }
+      let initConfig = {}
+
+      if (createConfig) {
+        const manager = new Nidle(extend(true, {}, config))
+        initConfig = await manager.init()
+      }
 
       // 将配置存起来
       const configPath = path.resolve(nidleConfig.config.path, `${mode}_${fileName}.json`)
-      fs.writeFileSync(configPath, JSON.stringify(config, '', 2))
+      fs.writeFileSync(
+        configPath,
+        JSON.stringify(
+          {
+            ...config,
+            inputs: initConfig.inputs || []
+          },
+          '',
+          2
+        )
+      )
 
       // 创建记录
       const changelog = await ctx.model.Changelog.create({
@@ -73,20 +89,13 @@ class ChangelogService extends Service {
         configPath,
         logPath: createConfig ? config.log.all : null
       })
-
-      let inputs = {}
-
-      if (createConfig) {
-        const manager = new Nidle(extend(true, {}, config))
-        inputs = await manager.init()
-      }
-
       const next = ctx.helper.nidleNext(changelog)
+      initConfig.inputs = await ctx.service.config.getInput(initConfig.inputs, initConfig.inputs, source)
 
       return {
         config,
         changelog,
-        ...inputs,
+        ...initConfig,
         next
       }
     } catch (err) {
@@ -96,44 +105,55 @@ class ChangelogService extends Service {
   }
 
   // 开始构建任务
-  async start({ id, configPath, inputs = [], servers }) {
+  async start({ id, configPath, inputs = [], options: inputAnswers }) {
     const { ctx } = this
 
     try {
+      const answers = inputs.length ? await ctx.service.config.setInput(inputAnswers, inputs) : {}
       const configRaw = fs.readFileSync(configPath)
       const config = JSON.parse(configRaw)
-      const serverList = []
+      const options = _.cloneDeep(answers)
 
-      for (let i = 0, len = servers.length; i < len; i++) {
-        const item = servers[i]
-        const server = await ctx.model.Server.findOne({ where: { id: item.serverId } })
-        await ctx.model.ProjectServer.update({ changelog: id }, { where: { id: item.id } })
+      for (let i = 0, len = answers.length; i < len; i++) {
+        const step = answers[i]
 
-        serverList.push({
-          id: item.id,
-          output: item.output,
-          ip: server.ip,
-          username: server.username,
-          password: server.password
-        })
-      }
+        if (step._serversKey) {
+          const serverList = []
 
-      const serverTidyList = serverList.map(item => {
-        return {
-          id: item.id,
-          ip: item.ip,
-          output: item.output
+          for (let j = 0, slen = step.options[step._serversKey].length; j < slen; j++) {
+            const item = step.options[step._serversKey][j]
+            const server = await ctx.model.Server.findOne({ where: { id: item.serverId } })
+            await ctx.model.ProjectServer.update({ changelog: id }, { where: { id: item.id } })
+
+            serverList.push({
+              id: item.id,
+              output: item.output,
+              ip: server.ip,
+              username: server.username,
+              password: server.password
+            })
+          }
+
+          options[i].options[step._serversKey] = serverList
+
+          step.options[step._serversKey] = serverList.map(item => {
+            return {
+              id: item.id,
+              ip: item.ip,
+              output: item.output
+            }
+          })
+          delete step._serversKey
         }
-      })
+      }
+      console.log(111, options)
+
       fs.writeFileSync(
         configPath,
         JSON.stringify(
           {
             ...config,
-            privacy: {
-              server: serverTidyList
-            },
-            options: inputs
+            options: answers
           },
           '',
           2
@@ -160,13 +180,10 @@ class ChangelogService extends Service {
         }
 
         const manager = new Nidle({
-          ...config,
-          privacy: {
-            server: serverList
-          }
+          ...config
         })
         await manager.init()
-        await manager.mount(inputs, update)
+        await manager.mount(options, update)
 
         async function wait() {
           return new Promise(resolve => {
@@ -211,6 +228,7 @@ class ChangelogService extends Service {
         const project = await ctx.model.Project.findOne({ where: { id: changelog.project } })
         const configRaw = fs.readFileSync(changelog.configPath)
         const config = JSON.parse(configRaw)
+        const inputs = await ctx.service.config.getInput(config.inputs, config.options || config.inputs)
 
         return {
           config,
@@ -219,7 +237,7 @@ class ChangelogService extends Service {
             statusEnum: changelog.statusEnum,
             projectName: project.name
           },
-          inputs: config.inputs || [],
+          inputs,
           next
         }
       } else {

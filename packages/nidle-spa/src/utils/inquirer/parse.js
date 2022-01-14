@@ -1,14 +1,15 @@
 import parsers from './config/key'
 
-export default function (questions = []) {
+export default function (questions = [], props) {
   return questions.map(question => {
-    return parse(question)
+    return parse(question, props)
   })
 }
 
-function parse(question) {
+function parse(question, props) {
   const keys = Object.keys(question)
   const prop = {
+    ...props,
     formItemProps: {
       rules: [
         {
@@ -17,8 +18,7 @@ function parse(question) {
         }
       ]
     },
-    fieldProps: {},
-    initialValues: {}
+    fieldProps: {}
   }
 
   keys.forEach(key => {

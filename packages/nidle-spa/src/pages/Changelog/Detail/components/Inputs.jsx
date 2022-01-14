@@ -1,126 +1,101 @@
-import ProCard from '@ant-design/pro-card'
-import { Table, message } from 'antd'
-import { useState, useEffect } from 'react'
-import { Link } from 'umi'
-import { getProjectServer } from '@/services/project'
-import AddProjectServer from '@/pages/Project/Settings/components/addProjectServer'
-import InputAnswer from './Input'
+import { useContext, useEffect, useState } from 'react'
+import { Form, message } from 'antd'
+import { BetaSchemaForm } from '@ant-design/pro-form'
+import ProProvider from '@ant-design/pro-provider'
+import inputParse, { getGroupValues } from '@/utils/inquirer'
+import ServerList from './ServerList'
 
-const Inputs = props => {
-  const { projectId, mode, readonly, inputs, config = {} } = props
-  const [serverList, setServerList] = useState([])
-  let columns = [
-    {
-      title: '机器名',
-      dataIndex: ['Server', 'name']
-    },
-    {
-      title: 'IP',
-      dataIndex: ['Server', 'ip']
-    },
-    {
-      title: '目录',
-      dataIndex: 'output'
+const Input = props => {
+  const [form] = Form.useForm()
+  const { inputs, readonly } = props
+  const [schema, setSchema] = useState()
+
+  useEffect(() => {
+    try {
+      const schema = inputParse(inputs, readonly)
+
+      setSchema(schema)
+      handleValidate(schema.columns)
+    } catch (err) {
+      throw err
     }
-  ]
+  }, [inputs, readonly])
 
-  useEffect(async () => {
-    if (!readonly) {
-      const {
-        data: servers = [],
-        success,
-        errorMessage
-      } = await getProjectServer({
-        id: projectId,
-        mode
-      })
-
-      if (success === true) {
-        setServerList(servers)
-      } else {
-        setServerList([])
-        message.error(errorMessage)
+  function handleValidate(columns = []) {
+    columns.forEach(column => {
+      if (column.columns) {
+        handleValidate(column.columns)
+        return
       }
-    } else {
-      if (config.privacy && config.privacy.server) {
-        setServerList(config.privacy.server)
-      } else {
-        setServerList([])
-      }
-    }
-  }, [readonly])
 
-  if (!readonly) {
-    columns = columns.concat([
-      {
-        title: '使用状态',
-        dataIndex: 'changelog',
-        render: text => {
-          return text ? (
-            <Link to={`/project/${projectId}/changelog/detail?id=${text}`} target="_blank">
-              被占用
-            </Link>
-          ) : (
-            '空闲'
-          )
-        }
-      },
-      {
-        title: '服务器状态',
-        dataIndex: ['Server', 'status'],
-        render: text => {
-          return text === 1 ? '启用' : '禁用'
-        }
-      }
-    ])
-  } else {
-    columns[0].dataIndex = 'ip'
-    columns[1].dataIndex = 'ip'
-  }
+      if (column.validate) {
+        const validator = column.validate
 
-  const handlerAddServer = (type, server) => {
-    setServerList(serverList.concat(server))
-  }
+        column.formItemProps.rules.push({
+          validator: (rule, value) => {
+            // 为了避免多个插件中input key冲突，所以都加上了stage.step.key
+            // 但是input的校验中却还保留原始key，所以需要处理
+            const values = form.getFieldsValue(true)
+            const validate = validator(value, getGroupValues(values, rule.field))
 
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      props.onChange(
-        'server',
-        selectedRows.map(item => {
-          return {
-            id: item.id,
-            output: item.output,
-            serverId: item.server
+            if (validate === true) {
+              return Promise.resolve()
+            }
+
+            return Promise.reject(new Error(validate))
           }
         })
-      )
-    },
-    getCheckboxProps: record => ({
-      disabled: readonly || !record.Server.status || record.changelog
+      }
     })
   }
 
-  return (
-    <>
-      <ProCard title="服务器管理" headerBordered collapsible bordered type="inner">
-        <Table
-          columns={columns}
-          dataSource={serverList}
-          rowKey="id"
-          pagination={false}
-          rowSelection={readonly ? null : rowSelection}
-        />
-        {readonly || (
-          <AddProjectServer type="add" projectId={projectId} mode={mode} onChange={handlerAddServer}></AddProjectServer>
-        )}
-      </ProCard>
-      {inputs && inputs.length ? (
-        <ProCard title="插件配置" headerBordered collapsible bordered type="inner">
-          <InputAnswer inputs={inputs}></InputAnswer>
-        </ProCard>
-      ) : null}
-    </>
-  )
+  function handlerSubmit() {
+    form
+      .validateFields()
+      .then(values => {
+        props.onChange(values)
+        message.success('Inputs配置已保存，可以开始发布任务！')
+      })
+      .catch(() => {
+        props.onChange(null)
+      })
+  }
+
+  const values = useContext(ProProvider)
+
+  return schema ? (
+    <ProProvider.Provider
+      value={{
+        ...values,
+        valueTypeMap: {
+          servers: ServerList
+        }
+      }}
+    >
+      <BetaSchemaForm
+        form={form}
+        {...schema}
+        submitter={{
+          searchConfig: {
+            submitText: '保存'
+          },
+          onSubmit: () => {
+            handlerSubmit()
+          },
+          resetButtonProps: {
+            style: {
+              display: 'none'
+            }
+          },
+          submitButtonProps: {
+            style: {
+              display: readonly ? 'none' : 'block'
+            }
+          }
+        }}
+      ></BetaSchemaForm>
+    </ProProvider.Provider>
+  ) : null
 }
 
-export default Inputs
+export default Input

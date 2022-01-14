@@ -14,8 +14,14 @@ module.exports = function (values, groups) {
     group.items.forEach(item => {
       const { name } = item
       const value = values[name]
+      const key = name.split('.').slice(2).join('.')
 
-      options[name.split('.').slice(2).join('.')] = value
+      // 添加标识，更容易去映射服务信息
+      if (item.type === 'servers') {
+        input._serversKey = key
+      }
+
+      options[key] = value
     })
 
     input.options = options

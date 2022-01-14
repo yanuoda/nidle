@@ -11,6 +11,7 @@ import Highlight from '@/components/Highlight'
 import { status } from '@/dicts/changelog'
 import { mode as modes } from '@/dicts/app'
 import { dictsToMap } from '@/utils/filter'
+import { ChangelogContext } from './context'
 import './index.less'
 
 const statusMap = dictsToMap(status)
@@ -27,7 +28,6 @@ const App = props => {
   const [current, setCurrent] = useState({ progress: 'start', stage: '' }) // 进度
   const [tabActive, setTabActive] = useState('inputs') // Tab Active
   const [logs, setLogs] = useState({}) // 日志
-  const [serverList, setServerList] = useState([]) // 已选择发布服务器
   const [inputAnswers, setInputAnswers] = useState(null) // inputs answer
   const { branch, id, mode = modes[0].value, action } = props.location.query
   const { id: projectId } = props.match.params
@@ -192,8 +192,8 @@ const App = props => {
 
     try {
       if (next.next === 'START') {
-        if (!serverList || !serverList.length) {
-          message.error('请选择发布服务器')
+        if (inputs.length && !inputAnswers) {
+          message.error('请先完成并保存Inputs配置！')
           setActionLoading(false)
           return
         }
@@ -202,7 +202,7 @@ const App = props => {
           id: changelog.id,
           configPath: changelog.configPath,
           inputs,
-          servers: serverList
+          options: inputAnswers
         })
 
         if (success === true) {
@@ -306,13 +306,8 @@ const App = props => {
     </ProCard>
   )
 
-  const handlerInput = (type, values) => {
-    if (type === 'server') {
-      setServerList(values)
-    } else if (type === 'input') {
-      setInputAnswers(values)
-      console.log(inputAnswers)
-    }
+  const handlerInput = values => {
+    setInputAnswers(values)
   }
 
   const TabContainer = (
@@ -328,15 +323,13 @@ const App = props => {
         </Tabs.TabPane>
         <Tabs.TabPane key="inputs" tab="Inputs">
           {inputs ? (
-            <Inputs
-              projectId={projectId}
-              changelogId={parseInt(id)}
-              mode={changelog.environment}
-              readonly={changelog.statusEnum !== 0 && changelog.statusEnum !== 3}
-              config={config}
-              inputs={inputs}
-              onChange={handlerInput}
-            ></Inputs>
+            <ChangelogContext.Provider value={changelog}>
+              <Inputs
+                readonly={changelog.statusEnum !== 0 && changelog.statusEnum !== 3}
+                inputs={inputs}
+                onChange={handlerInput}
+              ></Inputs>
+            </ChangelogContext.Provider>
           ) : (
             '没有记录'
           )}

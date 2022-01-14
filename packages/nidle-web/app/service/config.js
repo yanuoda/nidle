@@ -124,29 +124,25 @@ class ConfigService extends Service {
   }
 
   // 获取配置
-  async getInput({ id, source = 'WEB' }) {
-    const inputs = require('../mock/config/input')
-    const input = inputs[id]
-
+  async getInput(inputs = [], values, source = 'web') {
     if (source === 'CLI') {
-      return input
+      return inputs
     }
 
     try {
-      const result = inputParse.parse(input)
+      if (!inputs.length) {
+        return inputs
+      }
 
-      return result
+      return inputParse.parse(inputs, values)
     } catch (err) {
       throw err
     }
   }
 
-  async setInput({ values, groups }) {
+  async setInput(values, groups) {
     try {
-      const result = inputParse.transform(values, groups)
-      console.log('input values::: ', result)
-
-      return true
+      return inputParse.transform(values, groups)
     } catch (err) {
       throw err
     }

@@ -45,6 +45,10 @@ const type = {
         valueType: 'group'
       }
     }
+
+    return {
+      valueType: value
+    }
   }
 }
 
@@ -87,9 +91,9 @@ const validate = {
 
 const items = {
   type: 'array',
-  parse(items) {
+  parse(items, prop) {
     return {
-      columns: parse(items)
+      columns: parse(items, prop)
     }
   }
 }

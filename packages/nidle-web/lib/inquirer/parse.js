@@ -1,8 +1,7 @@
 const parsers = require('./config/key')
 
-module.exports = function (inputs = []) {
+module.exports = function (inputs = [], values = []) {
   const groups = []
-
   inputs.forEach(group => {
     const { stage, step, plugin, description, input } = group
     const parent = `${stage}.${step}`
@@ -12,11 +11,17 @@ module.exports = function (inputs = []) {
       __name: parent,
       __plugin: plugin
     }
+    const { options = {} } =
+      values.find(item => item.stage === stage && item.step === item.step && item.plugin === plugin) || {}
 
     newGroup.items = input.map(question => {
-      question.name = `${parent}.${question.name}`
-
-      return parse(question)
+      return parse(
+        {
+          ...question,
+          name: `${parent}.${question.name}`
+        },
+        options[question.name]
+      )
     })
 
     groups.push(newGroup)
@@ -25,9 +30,13 @@ module.exports = function (inputs = []) {
   return groups
 }
 
-function parse(question) {
+function parse(question, value) {
   const keys = Object.keys(question)
   const prop = {}
+
+  if (value) {
+    prop.default = value
+  }
 
   keys.forEach(key => {
     const parser = parsers[key]
