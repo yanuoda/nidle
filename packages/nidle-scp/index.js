@@ -19,6 +19,22 @@ class ScpPlugin {
       })
     })
   }
+
+  input() {
+    return [
+      {
+        type: 'servers',
+        name: 'servers',
+        message: '请选择发布服务器'
+      },
+      {
+        type: 'confirm',
+        name: 'decompress',
+        message: '是否解压',
+        default: true
+      }
+    ]
+  }
 }
 
 export default ScpPlugin

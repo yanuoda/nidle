@@ -5,9 +5,9 @@ const execa = require('execa')
 function scp(task, config) {
   return new Promise((resolve, reject) => {
     const { output } = task
-    const { server = [] } = config.privacy || {}
+    const { servers = [] } = config || {}
 
-    if (!server.length) {
+    if (!servers.length) {
       return reject(new Error('server list is required.'))
     }
 
@@ -19,7 +19,7 @@ function scp(task, config) {
     try {
       // 将server信息写入文件，方便shell脚本遍历
       const serverStr =
-        server
+        servers
           .map(item => {
             const appName = path.basename(item.output)
             const outputDir = path.dirname(item.output)
