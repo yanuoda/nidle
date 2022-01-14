@@ -304,7 +304,15 @@ const App = props => {
             <th>分支:</th>
             <td>{changelog.branch}</td>
             <th>CommitId:</th>
-            <td>{changelog.commitId || '-'}</td>
+            <td>
+              {changelog.commitId ? (
+                <a href={`${config.repository.url}/tree/${changelog.commitId}`} target="_blank" rel="noreferrer">
+                  查看代码
+                </a>
+              ) : (
+                '-'
+              )}
+            </td>
             <th>发起人:</th>
             <td>{config.repository && config.repository.userName}</td>
           </tr>

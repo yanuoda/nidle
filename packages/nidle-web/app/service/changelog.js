@@ -22,11 +22,19 @@ class ChangelogService extends Service {
       // 发布周期
       let period = now
       const project = await ctx.service.project.getBaseinfo(projectId)
+      let commitId
+
+      if (mode === nidleConfig.environments[0].value) {
+        const branchInfo = await ctx.service.gitlab.getBranch(project.gitlabId, branch)
+        commitId = branchInfo.commit.id
+      }
+
       let options = {
         repository: {
           type: project.repositoryType.toLocaleLowerCase(),
           url: project.repositoryUrl,
           branch,
+          commitId,
           userName: ctx.session.user.name
         }
       }
@@ -35,6 +43,7 @@ class ChangelogService extends Service {
         // 现有发布记录上创建，复用period
         const changelog = await ctx.model.Changelog.findOne({ where: { id } })
         period = changelog.period
+        commitId = changelog.commitId
 
         // 复用source、output
         const configRaw = fs.readFileSync(changelog.configPath)
@@ -51,7 +60,7 @@ class ChangelogService extends Service {
       }
 
       const fileName = `${project.name}_${now}`
-      const createConfig = await ctx.service.config.getByCreate(project, mode, branch, fileName, options)
+      const createConfig = await ctx.service.config.getByCreate(project, mode, commitId, fileName, options)
       const config = {
         ...options,
         ...createConfig
@@ -89,7 +98,8 @@ class ChangelogService extends Service {
         environment: mode,
         configPath,
         logPath: createConfig ? config.log.all : null,
-        active: 0
+        active: 0,
+        commitId: commitId
       })
       const next = ctx.helper.nidleNext(changelog)
       initConfig.inputs = await ctx.service.config.getInput(initConfig.inputs, initConfig.inputs, source)

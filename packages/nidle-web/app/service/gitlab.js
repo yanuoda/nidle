@@ -99,6 +99,13 @@ class GitlabService extends Service {
       method: 'GET'
     })
   }
+
+  async getBranch(id, branch) {
+    return await this.gitlabRequest({
+      url: `/projects/${id}/repository/branches/${encodeURIComponent(branch)}`,
+      method: 'GET'
+    })
+  }
 }
 
 module.exports = GitlabService
