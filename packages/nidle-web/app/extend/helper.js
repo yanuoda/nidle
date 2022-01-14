@@ -10,7 +10,17 @@ module.exports = {
       }
     }
 
-    const { status, codeReviewStatus, environment } = changelog
+    const { status, codeReviewStatus, environment, active } = changelog
+
+    if (active === 1) {
+      // 已创建新的发布，发布结束
+      return {
+        next: 'END',
+        label: '已完成',
+        disabled: true
+      }
+    }
+
     const idx = environments.findIndex(item => item.value === environment)
 
     if (idx < 0) {
@@ -97,16 +107,6 @@ module.exports = {
         label: `发布${environments[idx + 1].label}`,
         quit: true,
         environment: environments[idx + 1]
-      }
-    }
-
-    if (status === 'END') {
-      // 已创建新的发布，发布结束
-      return {
-        next: 'END',
-        label: '发布完成',
-        disabled: true,
-        environment: current
       }
     }
   }

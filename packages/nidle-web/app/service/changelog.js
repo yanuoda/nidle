@@ -88,10 +88,21 @@ class ChangelogService extends Service {
         codeReviewStatus: 'NEW',
         environment: mode,
         configPath,
-        logPath: createConfig ? config.log.all : null
+        logPath: createConfig ? config.log.all : null,
+        active: 0
       })
       const next = ctx.helper.nidleNext(changelog)
       initConfig.inputs = await ctx.service.config.getInput(initConfig.inputs, initConfig.inputs, source)
+
+      if (id) {
+        // 将原记录设为已禁用
+        await ctx.model.Changelog.update(
+          {
+            active: 1
+          },
+          { where: { id } }
+        )
+      }
 
       return {
         config,

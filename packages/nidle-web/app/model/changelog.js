@@ -30,6 +30,7 @@ module.exports = app => {
     environment: STRING(20),
     stage: STRING(20),
     duration: INTEGER,
+    active: INTEGER,
     configPath: STRING(),
     logPath: STRING(),
     createdTime: DATE,
