@@ -29,6 +29,7 @@ class ConfigService extends Service {
 
       return config
     } catch (err) {
+      ctx.logger.error(`获取应用对应环境配置: \n${err.message}\n${err.stack}`)
       if (err.message === '404 File Not Found') {
         return ''
       }
@@ -111,6 +112,7 @@ class ConfigService extends Service {
 
       return config
     } catch (err) {
+      ctx.logger.error(`发布时获取对应环境配置: \n${err.message}\n${err.stack}`)
       throw err
     }
   }
@@ -136,6 +138,7 @@ class ConfigService extends Service {
 
       return inputParse.parse(inputs, values)
     } catch (err) {
+      this.ctx.logger.error(`getInput: \n${err.message}\n${err.stack}`)
       throw err
     }
   }
@@ -144,6 +147,7 @@ class ConfigService extends Service {
     try {
       return inputParse.transform(values, groups)
     } catch (err) {
+      this.ctx.logger.error(`setInput: \n${err.message}\n${err.stack}`)
       throw err
     }
   }

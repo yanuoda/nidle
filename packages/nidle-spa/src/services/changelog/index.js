@@ -37,6 +37,14 @@ export async function start(params) {
   })
 }
 
+// 退出构建任务
+export async function quit(params) {
+  return request('/api/changelog/quit', {
+    method: 'POST',
+    data: params
+  })
+}
+
 // 详情
 export async function detail(params) {
   return request('/api/changelog/detail', {

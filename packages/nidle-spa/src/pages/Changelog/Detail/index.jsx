@@ -3,7 +3,7 @@ import ProCard from '@ant-design/pro-card'
 import { Tabs, Button, Space, Modal, message } from 'antd'
 import { useState, useEffect } from 'react'
 import { Link, history } from 'umi'
-import { create, start, detail as fetchDetail, fetchLog } from '@/services/changelog'
+import { create, start, quit, detail as fetchDetail, fetchLog } from '@/services/changelog'
 import Steps from './components/Steps'
 import Log from './components/Log'
 import Inputs from './components/Inputs'
@@ -105,6 +105,9 @@ const App = props => {
 
       if (changelog.statusEnum === 2) {
         progress = 'success'
+      } else if (changelog.statusEnum === 4) {
+        // 退出发布的状态
+        progress = changelog.stage || (changelog.logPath ? 'success' : 'start')
       } else if (changelog.statusEnum !== 0) {
         progress = changelog.stage
       }
@@ -192,6 +195,7 @@ const App = props => {
 
     try {
       if (next.next === 'START') {
+        // 开始构建
         if (inputs.length && !inputAnswers) {
           message.error('请先完成并保存Inputs配置！')
           setActionLoading(false)
@@ -218,7 +222,8 @@ const App = props => {
           setActionLoading(false)
           message.error(errorMessage)
         }
-      } else if (next.next === 'CREATE' || next.next === 'RESTART') {
+      } else if (next.next === 'CREATE') {
+        // 新建发布记录
         setActionLoading(true)
         const success = await createChangelog({
           id: changelog.id,
@@ -254,8 +259,18 @@ const App = props => {
           <br />
         </div>
       ),
-      onOk() {
+      onOk: async () => {
         setActionLoading(true)
+        const { success } = await quit({
+          id: changelog.id
+        })
+
+        if (success === true) {
+          message.success('退出发布成功，即将刷新页面', function () {
+            location.reload()
+          })
+        }
+        setActionLoading(false)
       }
     })
   }

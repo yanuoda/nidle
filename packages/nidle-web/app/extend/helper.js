@@ -39,13 +39,22 @@ module.exports = {
       }
     }
 
-    if (status === 'FAIL' || status === 'CANCEL') {
-      // 失败、取消 - 重新开始
+    if (status === 'FAIL') {
+      // 失败 - 重新开始
       return {
-        next: 'RESTART',
-        label: '重新发布',
+        next: 'START',
+        label: '重新开始',
         quit: status === 'FAIL',
         environment: current
+      }
+    }
+
+    if (status === 'CANCEL') {
+      // 退出发布 - 重新开始
+      return {
+        next: 'CREATE',
+        label: '重新发布',
+        environment: environments[0]
       }
     }
 
@@ -88,6 +97,16 @@ module.exports = {
         label: `发布${environments[idx + 1].label}`,
         quit: true,
         environment: environments[idx + 1]
+      }
+    }
+
+    if (status === 'END') {
+      // 已创建新的发布，发布结束
+      return {
+        next: 'END',
+        label: '发布完成',
+        disabled: true,
+        environment: current
       }
     }
   }

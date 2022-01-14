@@ -45,6 +45,7 @@ module.exports = app => {
   // 发布记录
   router.post('/api/changelog/create', controller.changelog.create)
   router.post('/api/changelog/start', controller.changelog.start)
+  router.post('/api/changelog/quit', controller.changelog.quit)
   router.post('/api/changelog/detail', controller.changelog.detail)
   router.post('/api/changelog/log', controller.changelog.log)
   router.get('/api/project/publish/list', controller.project.publish.list)

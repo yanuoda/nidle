@@ -47,6 +47,21 @@ class ChangelogController extends Controller {
     }
   }
 
+  // 退出发布
+  async quit() {
+    const { ctx } = this
+
+    try {
+      const result = await ctx.service.changelog.quit(ctx.request.body)
+
+      this.success(result)
+    } catch (err) {
+      this.failed({
+        msg: err.message
+      })
+    }
+  }
+
   // 详情
   async detail() {
     const { ctx } = this

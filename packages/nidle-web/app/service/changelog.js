@@ -36,24 +36,25 @@ class ChangelogService extends Service {
         const changelog = await ctx.model.Changelog.findOne({ where: { id } })
         period = changelog.period
 
-        if (mode !== nidleConfig.environments[0].value) {
-          // 预发、生产复用source、output
-          const configRaw = fs.readFileSync(changelog.configPath)
-          const config = JSON.parse(configRaw)
+        // 复用source、output
+        const configRaw = fs.readFileSync(changelog.configPath)
+        const config = JSON.parse(configRaw)
 
-          options = {
-            ...options,
-            source: config.source,
-            output: config.output
-          }
+        options = {
+          ...options,
+          source: config.source,
+          output: config.output
         }
+
+        // 解除环境占用
+        await ctx.service.projectServer.cancelUsed(id)
       }
 
       const fileName = `${project.name}_${now}`
       const createConfig = await ctx.service.config.getByCreate(project, mode, branch, fileName, options)
       const config = {
-        ...createConfig,
-        ...options
+        ...options,
+        ...createConfig
       }
       let initConfig = {}
 
@@ -99,7 +100,7 @@ class ChangelogService extends Service {
         next
       }
     } catch (err) {
-      console.log(2222, err)
+      ctx.logger.error(`新建发布: \n${err.message}\n${err.stack}`)
       throw err
     }
   }
@@ -146,7 +147,6 @@ class ChangelogService extends Service {
           delete step._serversKey
         }
       }
-      console.log(111, options)
 
       fs.writeFileSync(
         configPath,
@@ -200,7 +200,6 @@ class ChangelogService extends Service {
         }
         await manager.start()
         await wait()
-        console.log('55555')
       })
 
       await ctx.model.Changelog.update(
@@ -212,7 +211,29 @@ class ChangelogService extends Service {
 
       return true
     } catch (err) {
-      console.error(11111, err)
+      ctx.logger.error(`开始构建: \n${err.message}\n${err.stack}`)
+      throw err
+    }
+  }
+
+  // 退出发布
+  async quit() {
+    const { ctx } = this
+    const { id } = ctx.request.body
+
+    try {
+      // 解除环境占用
+      await ctx.service.projectServer.cancelUsed(id)
+      await ctx.model.Changelog.update(
+        {
+          status: 'CANCEL'
+        },
+        { where: { id } }
+      )
+
+      return true
+    } catch (err) {
+      ctx.logger.error(`退出发布: \n${err.message}\n${err.stack}`)
       throw err
     }
   }
@@ -244,7 +265,7 @@ class ChangelogService extends Service {
         throw new Error('未找到相关发布记录')
       }
     } catch (err) {
-      console.log(3333, err)
+      ctx.logger.error(`发布记录详情: \n${err.message}\n${err.stack}`)
       throw err
     }
   }
@@ -309,7 +330,7 @@ class ChangelogService extends Service {
         return result
       }
     } catch (err) {
-      console.log(444, err)
+      ctx.logger.error(`发布记录日志: \n${err.message}\n${err.stack}`)
       throw err
     }
   }
