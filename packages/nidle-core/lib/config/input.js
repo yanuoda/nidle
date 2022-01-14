@@ -24,7 +24,8 @@ export default async function collect(stages) {
             step: stepName,
             description: step.description,
             plugin,
-            input: inputCache.input
+            input: inputCache.input(step.options),
+            options: step.options
           })
           step.module = new inputCache.module()
           continue
@@ -33,18 +34,20 @@ export default async function collect(stages) {
         try {
           const PluginClass = (await import(plugin)).default
           const pluginInstance = (step.module = new PluginClass())
-          const input = typeof pluginInstance.input === 'function' ? pluginInstance.input() : null
+          const input = typeof pluginInstance.input === 'function' ? pluginInstance.input : null
           if (input) {
             const inputParam = {
               stage: stageName,
               step: stepName,
               description: step.description,
               plugin,
-              input
+              input: input(step.options),
+              options: step.options
             }
             inputs.push(inputParam)
             pluginInputCacheMap.set(plugin, {
               ...inputParam,
+              input: input,
               module: PluginClass
             })
           }

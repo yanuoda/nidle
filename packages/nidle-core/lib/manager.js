@@ -56,7 +56,7 @@ class Manager extends EventEmitter {
         source: config.source,
         ...config.output
       })
-      const stages = combine(config.stages, inputs, config.privacy || {})
+      const stages = combine(config.stages, inputs)
       const scheduler = (this.scheduler = new Scheduler(
         {
           name: config.name,
