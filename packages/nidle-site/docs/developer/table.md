@@ -85,6 +85,7 @@ sidebar_position: 4
 * environment: string
 * server: serverId
 * output: string
+* changelog: uniqueid - 标识服务被哪个构建记录占用
 * createdTime: date-time
 * updatedTime: date-time
 
@@ -96,13 +97,14 @@ sidebar_position: 4
 * commitId: string
 * developer: memberId
 * source: string - 触发方式: CLI、webhook、web
-* status: int - 0: 进行中 1: 成功 2: 失败 3: Aborted取消中止 4: Pause暂停\
+* status: enum - ['NEW', 'PENDING', 'SUCCESS', 'FAIL', 'CANCEL']\
 这里不再保留`unstable`状态，因为也无法区别哪里出问题，而是再前台根据`log.warn`判断存在警告，可能不稳定来标识
-* codeReviewStatus: int - 0: 未审核 1: 通过 2: 拒绝
+* codeReviewStatus: enum - ['NEW', 'PENDING', 'SUCCESS', 'FAIL']
 * environment: string - 发布环境
 * stage: string
 * duration: number - 持续时间
 * configPath: string - 配置数据路径（input数据、日志路径都从这个文件拿）
 * logPath: string - 日志路径
+* active: number - 0: 启用，1: 禁用（当在该记录上创建新记录后，该记录将结束，被禁用）
 * createdTime: date-time
 * updatedTime: date-time 
