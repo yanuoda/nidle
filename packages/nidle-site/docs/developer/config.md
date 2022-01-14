@@ -50,7 +50,8 @@ module.exports = {
           name: 'test',
           message: 'xxx'
         }
-      ]
+      ],
+      options: {}
     }
   ],
   stages: [
@@ -97,6 +98,7 @@ module.exports = {
   log: {
     path: '/xx/xx/', // 日志存放路径
   },
+  source: '/xx/xx/', // 源文件
   // 输出、备份
   output: {
     backup: {
@@ -138,6 +140,7 @@ module.exports = {
   name: '应用名称',
   extend: '', // 模块扩展
   log: {},
+  source: '/xx/xx/', // 源文件
   output: {
     path: ''
   },
