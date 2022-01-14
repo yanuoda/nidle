@@ -5,7 +5,7 @@ const execa = require('execa')
 function build(task, config = {}) {
   return new Promise((resolve, reject) => {
     const { source, output } = task
-    const sh = config.buildShell || './release.sh'
+    const sh = config.buildShell
     const buildFileState = fs.statSync(path.resolve(source, sh), {
       throwIfNoEntry: false
     })
@@ -105,7 +105,7 @@ function build(task, config = {}) {
 
     async function copy() {
       try {
-        const childprocess = await execa(`cp -rpf ${path.resolve(source, config.output)} ${output.path}`, {
+        const childprocess = await execa(`cp -rpf ${path.resolve(source, config.output, '*')} ${output.path}`, {
           shell: true
         })
         task.logger.info({

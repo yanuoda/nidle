@@ -19,6 +19,23 @@ class BuildPlugin {
       })
     })
   }
+
+  input() {
+    return [
+      {
+        type: 'input',
+        name: 'output',
+        message: '编译目标目录',
+        default: 'dist'
+      },
+      {
+        type: 'input',
+        name: 'buildShell',
+        message: '编译脚本',
+        default: 'release.sh'
+      }
+    ]
+  }
 }
 
 export default BuildPlugin
