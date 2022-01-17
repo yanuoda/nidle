@@ -33,6 +33,7 @@ class ChangelogService extends Service {
         repository: {
           type: project.repositoryType.toLocaleLowerCase(),
           url: project.repositoryUrl,
+          id: project.gitlabId,
           branch,
           commitId,
           userName: ctx.session.user.name
@@ -182,17 +183,7 @@ class ChangelogService extends Service {
       )
 
       ctx.app.runInBackground(async ctx => {
-        async function update({ status, stage }) {
-          const data = {}
-
-          if (typeof stage !== 'undefined') {
-            data.stage = stage
-          }
-
-          if (status) {
-            data.status = status === 'success' ? 'SUCCESS' : 'FAIL'
-          }
-
+        async function update(data) {
           try {
             await ctx.model.Changelog.update(data, { where: { id } })
           } catch (err) {
