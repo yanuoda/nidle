@@ -115,6 +115,10 @@ class Mounter extends EventEmitter {
         EE.on('completed', () => {
           resolve()
         })
+
+        EE.on('message', data => {
+          this.emit('message', data)
+        })
       })
     }
 

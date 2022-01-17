@@ -91,7 +91,7 @@ class Manager extends EventEmitter {
 
       scheduler.on('completed', async () => {
         update({
-          status: 'success',
+          status: 'SUCCESS',
           stage: ''
         })
 
@@ -105,7 +105,7 @@ class Manager extends EventEmitter {
 
       scheduler.on('error', error => {
         update({
-          status: 'fail'
+          status: 'FAIL'
         })
 
         log.end()
@@ -132,6 +132,22 @@ class Manager extends EventEmitter {
         //     }
         //   })
         // }
+      })
+
+      scheduler.on('message', data => {
+        const { type } = data
+
+        if (!type) {
+          log.error({
+            detail: `undefined message type when values: ${data ? JSON.stringify(data) : null}`
+          })
+        }
+
+        if (type === 'codeReview') {
+          update({
+            codeReviewStatus: 'PENDING'
+          })
+        }
       })
     })
   }

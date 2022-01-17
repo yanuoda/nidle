@@ -110,11 +110,17 @@ class StageQueue {
 
   // 暴露给插件的挂载钩子
   add(name, fn) {
-    const { task } = this
+    const { task, _EE } = this
     const step = this._currentAddStep
     step.taskName = name
     let run = () => {
-      return fn(task, step.options)
+      return fn(
+        {
+          ...task,
+          event: _EE
+        },
+        step.options
+      )
     }
 
     if (step.retry) {

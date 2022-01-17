@@ -48,6 +48,7 @@ test('init', async () => {
     {
       stage: 'build',
       step: 'download',
+      description: undefined,
       plugin: path.resolve(root, 'fixtures/plugin-init.js'),
       input: [
         {
@@ -55,7 +56,10 @@ test('init', async () => {
           name: 'test',
           message: 'Type something'
         }
-      ]
+      ],
+      options: {
+        test: 'dev'
+      }
     }
   ])
 })
