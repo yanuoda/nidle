@@ -11,7 +11,7 @@ module.exports = {
         {
           name: 'scp',
           enable: true, // 插件开启与否
-          package: 'nidle-scp', // npm 模块名
+          package: 'nidle-plugin-scp', // npm 模块名
           timeout: 0, // 超时结束，0则不超时
           retry: 0,
           secure: true

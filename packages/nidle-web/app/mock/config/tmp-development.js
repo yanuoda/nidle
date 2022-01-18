@@ -22,28 +22,28 @@ module.exports = {
         {
           name: 'clone',
           enable: true, // 插件开启与否
-          package: 'nidle-clone', // npm 模块名
+          package: 'nidle-plugin-clone', // npm 模块名
           timeout: 0, // 超时结束，0则不超时
           retry: 0
         },
         {
           name: 'nvm',
           enable: true, // 插件开启与否
-          package: 'nidle-nvm', // npm 模块名
+          package: 'nidle-plugin-nvm', // npm 模块名
           timeout: 0, // 超时结束，0则不超时
           retry: 0
         },
         {
           name: 'install',
           enable: true, // 插件开启与否
-          package: 'nidle-install', // npm 模块名
+          package: 'nidle-plugin-install', // npm 模块名
           timeout: 0, // 超时结束，0则不超时
           retry: 0
         },
         {
           name: 'eslint',
           enable: true, // 插件开启与否
-          package: 'nidle-eslint', // npm 模块名
+          package: 'nidle-plugin-eslint', // npm 模块名
           timeout: 0, // 超时结束，0则不超时
           retry: 0
         }
@@ -56,14 +56,14 @@ module.exports = {
         {
           name: 'build',
           enable: true, // 插件开启与否
-          package: 'nidle-build', // npm 模块名
+          package: 'nidle-plugin-build', // npm 模块名
           timeout: 0, // 超时结束，0则不超时
           retry: 0
         },
         {
           name: 'escheck',
           enable: true, // 插件开启与否
-          package: 'nidle-escheck', // npm 模块名
+          package: 'nidle-plugin-escheck', // npm 模块名
           timeout: 0, // 超时结束，0则不超时
           retry: 0
         }
@@ -76,7 +76,7 @@ module.exports = {
         {
           name: 'scp',
           enable: true, // 插件开启与否
-          package: 'nidle-scp', // npm 模块名
+          package: 'nidle-plugin-scp', // npm 模块名
           timeout: 0, // 超时结束，0则不超时
           retry: 0
         }
