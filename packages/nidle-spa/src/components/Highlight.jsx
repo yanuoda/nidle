@@ -10,7 +10,7 @@ const ConfigBlock = props => {
 
     hljs.registerLanguage(props.type, languageModule.default)
     hljs.highlightElement(codeRef.current)
-  }, [props.configRaw])
+  }, [props.type])
 
   return (
     <pre>
