@@ -3,9 +3,9 @@ import manifest from './lib/index'
 
 class ManifestPlugin {
   apply(scheduler) {
-    scheduler.add('clone', task => {
+    scheduler.add('clone', (task, config) => {
       return new PCancelable((resolve, reject, onCancel) => {
-        const subprocess = manifest(task)
+        const subprocess = manifest(task, config)
           .then(function () {
             resolve()
           })

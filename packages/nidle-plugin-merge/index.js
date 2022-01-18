@@ -3,9 +3,9 @@ import merge from './lib/index'
 
 class MergePlugin {
   apply(scheduler) {
-    scheduler.add('clone', task => {
+    scheduler.add('clone', (task, config) => {
       return new PCancelable((resolve, reject, onCancel) => {
-        const subprocess = merge(task)
+        const subprocess = merge(task, config)
           .then(function () {
             resolve()
           })
