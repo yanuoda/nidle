@@ -113,14 +113,10 @@ class StageQueue {
     const { task, _EE } = this
     const step = this._currentAddStep
     step.taskName = name
+    task.event = _EE
+
     let run = () => {
-      return fn(
-        {
-          ...task,
-          event: _EE
-        },
-        step.options
-      )
+      return fn(task, step.options)
     }
 
     if (step.retry) {
