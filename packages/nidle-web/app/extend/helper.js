@@ -52,7 +52,7 @@ module.exports = {
     if (status === 'FAIL') {
       // 失败 - 重新开始
       return {
-        next: 'START',
+        next: 'CREATE',
         label: '重新开始',
         quit: status === 'FAIL',
         environment: current
