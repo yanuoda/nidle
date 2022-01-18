@@ -7,7 +7,7 @@ import { ChangelogContext } from '../context'
 
 const ServerInput = props => {
   const changelog = useContext(ChangelogContext)
-  const { project: projectId, environment: mode } = changelog
+  const { project: projectId, environment: mode, id } = changelog
   const { value, onChange, readonly } = props
   const [serverList, setServerList] = useState([])
   let columns = [
@@ -53,7 +53,7 @@ const ServerInput = props => {
         title: '使用状态',
         dataIndex: 'changelog',
         render: text => {
-          return text ? (
+          return text && text !== id ? (
             <Link to={`/project/${projectId}/changelog/detail?id=${text}`} target="_blank">
               被占用
             </Link>
@@ -92,10 +92,10 @@ const ServerInput = props => {
       )
     },
     getCheckboxProps: record => ({
-      disabled: !record.Server.status || record.changelog
+      disabled: !record.Server.status || (record.changelog && record.changelog !== id)
     })
   }
-
+  console.log('serverList:::', readonly)
   return (
     <>
       <Table
