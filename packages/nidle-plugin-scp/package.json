@@ -1,9 +1,9 @@
 {
-  "name": "nidle-install",
+  "name": "nidle-plugin-scp",
   "version": "0.1.0",
-  "description": "nidle plugin of install node module",
+  "description": "nidle plugin of secure copy",
   "keywords": [
-    "install",
+    "clone",
     "nidle",
     "plugin"
   ],
@@ -28,7 +28,6 @@
   },
   "dependencies": {
     "execa": "5.1.1",
-    "p-cancelable": "^3.0.0",
-    "semver": "^7.3.5"
+    "p-cancelable": "^3.0.0"
   }
 }

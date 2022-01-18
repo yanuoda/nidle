@@ -1,8 +1,8 @@
-# `nidle-nvm`
+# `nidle-plugin-nvm`
 
 > nidle plugin of nvm node version manager，required `nvm`
 
-`nidle-nvm` 会根据
+`nidle-plugin-nvm` 会根据
 * .nvmrc （`优先`）
 * package.json > engines > node
 
@@ -11,13 +11,13 @@
 ## Usage
 
 ```
-const nidleNvm = require('nidle-nvm');
+const nidleNvm = require('nidle-plugin-nvm');
 
 // TODO: DEMONSTRATE API
 ```
 
 ## WHY
-#### 为什么`nidle-nvm`不直接`nvm use`管理应用的 node 版本，而是只给出执行文件路径？
+#### 为什么`nidle-plugin-nvm`不直接`nvm use`管理应用的 node 版本，而是只给出执行文件路径？
 
 > nvm is a version manager for node.js, designed to be installed per-user, and invoked per-shell.
 

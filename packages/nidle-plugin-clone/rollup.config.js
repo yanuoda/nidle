@@ -5,8 +5,8 @@ export default {
   output: {
     file: './dist/index.js',
     format: 'cjs',
-    name: 'NidleEscheck'
+    name: 'NidlePluginClone'
   },
   plugins: [resolve()],
-  external: ['execa', 'es-check-format']
+  external: ['execa']
 }

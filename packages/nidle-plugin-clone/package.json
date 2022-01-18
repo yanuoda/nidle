@@ -1,9 +1,9 @@
 {
-  "name": "nidle-build",
+  "name": "nidle-plugin-clone",
   "version": "0.1.0",
-  "description": "nidle plugin of build the target file into a production bundle for deployment",
+  "description": "nidle plugin of clone source code",
   "keywords": [
-    "build",
+    "clone",
     "nidle",
     "plugin"
   ],

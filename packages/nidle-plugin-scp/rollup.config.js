@@ -5,7 +5,7 @@ export default {
   output: {
     file: './dist/index.js',
     format: 'cjs',
-    name: 'NidleBuild'
+    name: 'NidlePluginScp'
   },
   plugins: [resolve()],
   external: ['execa']

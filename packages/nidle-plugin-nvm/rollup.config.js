@@ -5,8 +5,8 @@ export default {
   output: {
     file: './dist/index.js',
     format: 'cjs',
-    name: 'NidleEslint'
+    name: 'NidlePluginNvm'
   },
   plugins: [resolve()],
-  external: ['execa']
+  external: ['execa', 'semver']
 }

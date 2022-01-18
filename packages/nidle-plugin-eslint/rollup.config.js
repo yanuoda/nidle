@@ -5,7 +5,7 @@ export default {
   output: {
     file: './dist/index.js',
     format: 'cjs',
-    name: 'NidleClone'
+    name: 'NidlePluginEslint'
   },
   plugins: [resolve()],
   external: ['execa']

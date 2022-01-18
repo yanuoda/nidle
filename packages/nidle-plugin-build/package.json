@@ -1,9 +1,9 @@
 {
-  "name": "nidle-scp",
+  "name": "nidle-plugin-build",
   "version": "0.1.0",
-  "description": "nidle plugin of secure copy",
+  "description": "nidle plugin of build the target file into a production bundle for deployment",
   "keywords": [
-    "clone",
+    "build",
     "nidle",
     "plugin"
   ],

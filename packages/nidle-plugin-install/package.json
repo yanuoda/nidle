@@ -1,9 +1,9 @@
 {
-  "name": "nidle-clone",
+  "name": "nidle-plugin-install",
   "version": "0.1.0",
-  "description": "nidle plugin of clone source code",
+  "description": "nidle plugin of install node module",
   "keywords": [
-    "clone",
+    "install",
     "nidle",
     "plugin"
   ],
@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "execa": "5.1.1",
-    "p-cancelable": "^3.0.0"
+    "p-cancelable": "^3.0.0",
+    "semver": "^7.3.5"
   }
 }

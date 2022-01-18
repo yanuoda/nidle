@@ -5,8 +5,8 @@ export default {
   output: {
     file: './dist/index.js',
     format: 'cjs',
-    name: 'NidleNvm'
+    name: 'NidlePluginEscheck'
   },
   plugins: [resolve()],
-  external: ['execa', 'semver']
+  external: ['execa', 'es-check-format']
 }
