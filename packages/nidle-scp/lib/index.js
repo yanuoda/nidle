@@ -14,7 +14,7 @@ function scp(task, config) {
     const basename = path.basename(output.path)
     const dirname = path.dirname(output.path)
     const tarname = basename + '.tar.gz'
-    const serverFile = path.resolve(dirname, 'server.config')
+    const serverFile = path.resolve(dirname, `server.${basename}.config`)
 
     try {
       // 将server信息写入文件，方便shell脚本遍历
@@ -28,13 +28,6 @@ function scp(task, config) {
           .join('\n') + '\n'
 
       fs.writeFileSync(serverFile, serverStr)
-
-      if (decompress === false) {
-        // 不解压，说明等待后续解压使用，所以将服务器信息挂载，以便后续插件使用
-        task.scp = {
-          servers
-        }
-      }
 
       const subprocess = execa(path.resolve(__dirname, '../shell/scp.sh'), [
         serverFile,
@@ -74,7 +67,10 @@ function scp(task, config) {
           task.output.tarFileName = tarname
           // 删除临时文件
 
-          fs.rmSync(serverFile)
+          if (decompress !== false) {
+            // 不解压，说明等待后续解压使用，所以保留服务文件，以便后续插件使用
+            fs.rmSync(serverFile)
+          }
           fs.rmSync(path.resolve(dirname, tarname))
 
           resolve()
