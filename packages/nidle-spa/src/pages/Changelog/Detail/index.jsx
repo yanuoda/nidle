@@ -348,7 +348,7 @@ const App = props => {
           {inputs ? (
             <ChangelogContext.Provider value={changelog}>
               <Inputs
-                readonly={changelog.active || (changelog.statusEnum !== 0 && changelog.statusEnum !== 3)}
+                readonly={changelog.active || changelog.statusEnum !== 0}
                 inputs={inputs}
                 onChange={handlerInput}
               ></Inputs>
