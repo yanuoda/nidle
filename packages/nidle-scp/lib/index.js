@@ -5,7 +5,7 @@ const execa = require('execa')
 function scp(task, config) {
   return new Promise((resolve, reject) => {
     const { output } = task
-    const { servers = [] } = config || {}
+    const { servers = [], decompress } = config || {}
 
     if (!servers.length) {
       return reject(new Error('server list is required.'))
@@ -29,13 +29,20 @@ function scp(task, config) {
 
       fs.writeFileSync(serverFile, serverStr)
 
+      if (decompress === false) {
+        // 不解压，说明等待后续解压使用，所以将服务器信息挂载，以便后续插件使用
+        task.scp = {
+          servers
+        }
+      }
+
       const subprocess = execa(path.resolve(__dirname, '../shell/scp.sh'), [
         serverFile,
         dirname,
         output.path,
         tarname,
         path.resolve(__dirname, '../shell/expect.sh'),
-        config.decompress === false ? 0 : 1
+        decompress === false ? 0 : 1
       ])
 
       subprocess.stdout.on('data', data => {
