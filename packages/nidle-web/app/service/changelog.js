@@ -314,6 +314,14 @@ class ChangelogService extends Service {
         }
       }
 
+      const logState = fs.statSync(logPath, {
+        throwIfNoEntry: false
+      })
+
+      if (!logState) {
+        return
+      }
+
       logRaw = fs.readFileSync(logPath)
       logRaw = logRaw.toString().replace(/\n/g, ',')
 

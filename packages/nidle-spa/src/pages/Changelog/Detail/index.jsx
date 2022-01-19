@@ -108,7 +108,7 @@ const App = props => {
         progress = 'success'
       } else if (changelog.statusEnum === 4) {
         // 退出发布的状态
-        progress = changelog.stage || (changelog.logPath ? 'success' : 'start')
+        progress = changelog.stage || (logs.duration ? 'success' : 'start')
       } else if (changelog.statusEnum !== 0) {
         progress = changelog.stage
       }
@@ -162,6 +162,11 @@ const App = props => {
     })
 
     if (success === true) {
+      if (!data) {
+        setLogs({})
+        return
+      }
+
       if (data.statusEnum > 1 && interval) {
         clearInterval(interval)
       }
@@ -270,7 +275,7 @@ const App = props => {
         <div>
           请确定是否以下原因退出发布：
           <br />
-          1. 发布取消；
+          1. 发布取消、代码有改动；
           <br />
           2. 其他发布优先，需要退出释放服务资源；
           <br />
@@ -309,7 +314,7 @@ const App = props => {
               {next.label}
             </Button>
             {next.quit ? (
-              <Button type="warning" onClick={handlerNildeQuit} loading={actionLoading}>
+              <Button danger onClick={handlerNildeQuit} loading={actionLoading}>
                 退出发布
               </Button>
             ) : null}
