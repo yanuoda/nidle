@@ -40,6 +40,7 @@ class GitlabService extends Service {
     const projectPath = projectUrl.replace(`${OAUTH_GITLAB_BASEURL}/`, '')
     const group = projectPath.split('/').length === 2 ? projectPath.split('/')[0] : null
     const id = encodeURIComponent(projectPath)
+
     let groupMembers = []
 
     try {
@@ -47,7 +48,7 @@ class GitlabService extends Service {
         url: `/projects/${id}/members`,
         method: 'GET'
       })
-
+      console.log(projectMembers)
       if (group) {
         groupMembers = await this.gitlabRequest({
           url: `/groups/${group}/members`,

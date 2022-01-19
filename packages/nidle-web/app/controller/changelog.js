@@ -7,9 +7,19 @@ class ChangelogController extends Controller {
   // 新建，返回配置信息
   async create() {
     const { ctx } = this
-    const { id, mode } = ctx.request.body
+    const { id, mode, projectId } = ctx.request.body
 
     try {
+      // 检查是否有权限
+      const isProjectMember = await ctx.service.member.isProjectMember(projectId)
+
+      if (!isProjectMember) {
+        this.failed({
+          msg: '您没有该应用权限，不能进行此操作'
+        })
+        return
+      }
+
       // 检查是否能进入下一阶段
       const changelog = id ? await ctx.model.Changelog.findOne({ where: { id } }) : null
       const next = ctx.helper.nidleNext(changelog)
@@ -35,8 +45,20 @@ class ChangelogController extends Controller {
   // 开始构建任务
   async start() {
     const { ctx } = this
+    const { id } = ctx.request.body
 
     try {
+      const changelog = await ctx.model.Changelog.findOne({ where: { id } })
+      // 检查是否有权限
+      const isProjectMember = await ctx.service.member.isProjectMember(changelog.project)
+
+      if (!isProjectMember) {
+        this.failed({
+          msg: '您没有该应用权限，不能进行此操作'
+        })
+        return
+      }
+
       const result = await ctx.service.changelog.start(ctx.request.body)
 
       this.success(result)
@@ -50,8 +72,20 @@ class ChangelogController extends Controller {
   // 退出发布
   async quit() {
     const { ctx } = this
+    const { id } = ctx.request.body
 
     try {
+      const changelog = await ctx.model.Changelog.findOne({ where: { id } })
+      // 检查是否有权限
+      const isProjectMember = await ctx.service.member.isProjectMember(changelog.project)
+
+      if (!isProjectMember) {
+        this.failed({
+          msg: '您没有该应用权限，不能进行此操作'
+        })
+        return
+      }
+
       const result = await ctx.service.changelog.quit(ctx.request.body)
 
       this.success(result)
