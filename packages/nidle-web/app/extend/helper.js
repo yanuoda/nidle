@@ -10,7 +10,7 @@ module.exports = {
       }
     }
 
-    const { status, codeReviewStatus, environment, active } = changelog
+    const { status, codeReviewStatus, environment, active, project, id, branch } = changelog
 
     if (active === 1) {
       // 已创建新的发布，发布结束
@@ -35,7 +35,9 @@ module.exports = {
         next: 'START',
         label: '开始',
         quit: idx !== 0,
-        environment: current
+        environment: current,
+        buttonText: '开始发布',
+        redirectUrl: `/project/${project}/changelog/detail?id=${id}&branch=${branch}&action=START&mode=${current.value}`
       }
     }
 
@@ -55,7 +57,9 @@ module.exports = {
         next: 'CREATE',
         label: '重新开始',
         quit: status === 'FAIL',
-        environment: current
+        environment: current,
+        buttonText: '重新开始',
+        redirectUrl: `/project/${project}/changelog/detail?id=${id}&branch=${branch}&action=CREATE&mode=${current.value}`
       }
     }
 
@@ -64,7 +68,9 @@ module.exports = {
       return {
         next: 'CREATE',
         label: '重新发布',
-        environment: environments[0]
+        environment: environments[0],
+        buttonText: '重新发布',
+        redirectUrl: `/project/${project}/changelog/detail?id=${id}&branch=${branch}&action=CREATE&mode=${environments[0].value}`
       }
     }
 
@@ -76,7 +82,8 @@ module.exports = {
           label: '等待代码审核',
           disabled: true,
           quit: true,
-          environment: current
+          environment: current,
+          buttonText: '等待代码审核'
         }
       }
 
@@ -106,7 +113,11 @@ module.exports = {
         next: 'CREATE',
         label: `发布${environments[idx + 1].label}`,
         quit: true,
-        environment: environments[idx + 1]
+        environment: environments[idx + 1],
+        buttonText: `发布${environments[idx + 1].label}`,
+        redirectUrl: `/project/${project}/changelog/detail?id=${id}&branch=${branch}&action=CREATE&mode=${
+          environments[idx + 1].value
+        }`
       }
     }
   }

@@ -6,9 +6,9 @@ class AppBootHook {
   async willReady() {
     this.app.globalData = {
       environmentList: [
-        { key: 'test', name: '测试' },
-        { key: 'pre', name: '预发' },
-        { key: 'prod', name: '生产' }
+        { key: 'development', name: '测试' },
+        { key: 'pre', name: '预发布' },
+        { key: 'production', name: '生产' }
       ]
     }
   }

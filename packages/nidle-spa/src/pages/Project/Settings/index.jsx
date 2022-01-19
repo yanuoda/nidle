@@ -7,7 +7,6 @@ import ConfigInfo from './ConfigInfo'
 import ContactsInfo from './ContactsInfo'
 import MemberInfo from './MemberInfo'
 import ServerInfo from './ServerInfo'
-// import CreateChangelog from './components/create'
 import { queryProjectDetail } from '@/services/project'
 
 const ProjectSettings = props => {
@@ -64,12 +63,11 @@ const ProjectSettings = props => {
         }
       }}
     >
-      {/* <CreateChangelog projectId={id} projectName={projectName} /> */}
       <BasicInfo projectData={projectData} />
       {/* 只有存在 id 的时候才展示其他板块 */}
       {id && (
         <>
-          <ConfigInfo />
+          <ConfigInfo projectData={projectData} />
           <ServerInfo projectData={projectData} />
           <MemberInfo projectData={projectData} />
           <ContactsInfo projectData={projectData} />

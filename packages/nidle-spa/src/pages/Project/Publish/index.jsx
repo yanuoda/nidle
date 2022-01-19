@@ -1,29 +1,17 @@
 import { useState, useEffect } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import { Tabs, Tooltip, Badge, Button } from 'antd'
-import { queryProjectBranched } from '@/services/project'
 import { queryPublishData } from '@/services/publish'
-import { Link, useModel } from 'umi'
+import { Link } from 'umi'
 
 import PublishList from './components/PublishList'
 import { transformDuration } from '@/utils'
+import { status as statusList } from '@/dicts/changelog'
+import { mode as environmentList } from '@/dicts/app'
 import styles from './index.less'
-
-// 发布状态
-const statusMap = {
-  all: { text: '全部', status: 'default' },
-  0: { text: '进行中', status: 'processing' },
-  1: { text: '成功', status: 'success' },
-  2: { text: '失败', status: 'error' },
-  3: { text: '取消', status: 'default' },
-  4: { text: '暂停', status: 'warning' }
-}
 
 const Publish = props => {
   const { name, id } = props.location.query
-  // 获取环境配置信息
-  const { initialState } = useModel('@@initialState')
-  const { environmentList } = initialState || { environmentList: [] }
 
   // 面包屑导航自定义
   const routes = [
@@ -45,26 +33,11 @@ const Publish = props => {
 
   // 处理数据
   const [publishDataList, setPublishDataList] = useState({})
-  const [branches, setBranches] = useState({})
   useEffect(async () => {
     // 获取所有发布数据
     const { data, success } = await queryPublishData({ id })
     if (success) {
       setPublishDataList(data)
-    }
-    // 获取项目分支数据
-    const { data: branchData, success: branchSuccess } = await queryProjectBranched({ id })
-    if (branchSuccess) {
-      const branchesMap = {}
-      branchData.forEach(({ name, commit, protected: isProtect }) => {
-        if (isProtect) {
-          // 受保护的分支不能直接发布，防止对分支造成破坏性更改
-          return
-        }
-        const { author_name } = commit
-        branchesMap[name] = `${name} [${author_name}]`
-      })
-      setBranches(branchesMap)
     }
   }, [])
 
@@ -137,10 +110,10 @@ const Publish = props => {
       initialValue: 'all',
       fixed: 'right',
       width: 100,
-      valueEnum: statusMap,
+      valueEnum: statusList,
       render(dom, { status }) {
-        const { text, status: badgeStatus } = statusMap[status]
-        return <Badge status={badgeStatus} text={text} />
+        const { label, badgeStatus } = statusList.find(item => item.value === status)
+        return <Badge status={badgeStatus} text={label} />
       }
     },
     {
@@ -150,55 +123,51 @@ const Publish = props => {
       fixed: 'right',
       align: 'center',
       width: 300,
-      render: (dom, { id, canPublish, environment, codeReviewStatus, status, isChild }) => {
+      render: (dom, { id, nextPublish, isChild, project }) => {
+        const { buttonText, redirectUrl, quit, disabled } = nextPublish || {}
         const list = []
         if (!isChild) {
-          // 可以发布
-          if (canPublish) {
-            const idx = environmentList.findIndex(({ key }) => key === environment)
-            if (idx === 0) {
-              // 测试环境
-              list.push(
-                <Button type="primary" key="publishPre">
-                  发布{environmentList[idx + 1].name}
-                </Button>
-              )
-            } else if (idx === 1 && codeReviewStatus === 0) {
-              // 预发环境需要先做代码审核
-              list.push(
-                <Button type="primary" key="codeReview">
-                  代码审核
-                </Button>
-              )
-            } else if (idx === 1 && codeReviewStatus === 1) {
-              list.push(
-                <Button type="primary" key="publishProd">
-                  发布{environmentList[idx + 1].name}
-                </Button>
-              )
-            }
+          if (buttonText && redirectUrl) {
             list.push(
-              <Button type="primary" className={styles.warningBtn} key="exitPublish">
-                退出发布
+              <Link key={buttonText} to={redirectUrl}>
+                <Button type="primary" key={buttonText}>
+                  {buttonText}
+                </Button>
+              </Link>
+            )
+          } else if (buttonText) {
+            list.push(
+              <Button type="primary" key={buttonText}>
+                {buttonText}
               </Button>
             )
           }
-          // 失败或取消可以重新发布
-          if ([2, 3].includes(status)) {
+
+          if (quit) {
             list.push(
-              <Button type="primary" className={styles.warningBtn} key="rePublish">
-                重新发布
-              </Button>
+              <Link key={buttonText} to={`/project/${project}/changelog/detail?id=${id}`}>
+                <Button type="primary" key="退出发布" className={styles.warningBtn}>
+                  退出发布
+                </Button>
+              </Link>
             )
           }
-          // TODO: 上线后是否可以回滚?
+
+          if (disabled) {
+            list.push(
+              <Link key="publish" to={`/project/${project}/changelog/detail?id=${id}`}>
+                发布详情
+              </Link>
+            )
+          }
+        } else {
+          list.push(
+            <Link key="publish" to={`/project/${project}/changelog/detail?id=${id}`}>
+              发布详情
+            </Link>
+          )
         }
 
-        list.push(
-          <Link key="publish" to={`/project/publish/detail?id=${id}&name=${name}`}>
-            发布详情
-          </Link>
-        )
         return list
       }
     }
@@ -221,13 +190,14 @@ const Publish = props => {
       }}
     >
       {environmentList.length > 0 && (
-        <Tabs defaultActiveKey={environmentList[0]?.key}>
+        <Tabs defaultActiveKey={environmentList[0]?.value}>
           {environmentList.map((env, idx) => (
-            <Tabs.TabPane tab={env.name} key={env.key}>
+            <Tabs.TabPane tab={env.label} key={env.value}>
               <PublishList
                 columns={columns}
-                data={publishDataList[env.key] || []}
-                branches={branches}
+                data={publishDataList[env.value] || []}
+                projectName={name}
+                projectId={id}
                 showAddBtn={idx === 0}
               />
             </Tabs.TabPane>

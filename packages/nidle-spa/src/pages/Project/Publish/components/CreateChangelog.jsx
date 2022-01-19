@@ -2,6 +2,7 @@ import { useRequest, history } from 'umi'
 import { Button } from 'antd'
 import ProForm, { ModalForm, ProFormSelect } from '@ant-design/pro-form'
 import { PlusOutlined } from '@ant-design/icons'
+
 import { fetchBranches } from '@/services/changelog'
 
 const CreateChangelog = props => {
@@ -12,7 +13,8 @@ const CreateChangelog = props => {
   return (
     <ModalForm
       title="新建发布"
-      labelAlign="left"
+      width={500}
+      layout="horizontal"
       trigger={
         <Button type="primary">
           <PlusOutlined />

@@ -3,11 +3,7 @@
 const Service = require('egg').Service
 
 // 发布数据转换方法
-const publishDataTransform = (data, globalData) => {
-  // 按时间倒序排序
-  const handleSort = (first, second) => {
-    return new Date(second.updatedTime).getTime() - new Date(first.updatedTime).getTime()
-  }
+const publishDataTransform = data => {
   // 首先聚合同个发布周期的数据
   const periodMap = Object.create(null)
   data.forEach(item => {
@@ -19,7 +15,9 @@ const publishDataTransform = (data, globalData) => {
   })
   // 然后同个发布周期的数据按照发布开始时间倒序排序
   for (const period in periodMap) {
-    periodMap[period].sort(handleSort)
+    periodMap[period].sort((first, second) => {
+      return new Date(second.createdTime).getTime() - new Date(first.createdTime).getTime()
+    })
   }
   // 对所有发布做开始时间倒序排序
   const publishEnvMap = Object.create(null)
@@ -32,7 +30,6 @@ const publishDataTransform = (data, globalData) => {
     publishEnvMap[env].push(periodItem)
   })
   for (const env in publishEnvMap) {
-    publishEnvMap[env].sort(handleSort)
     // 转换成前端 table 需要的格式
     publishEnvMap[env] = publishEnvMap[env]
       .map(item => {
@@ -48,24 +45,10 @@ const publishDataTransform = (data, globalData) => {
           return item
         }
       })
-      .flat(Infinity)
-
-    /** 判断当前发布是否可以继续进行发布 */
-    const { environmentList } = globalData || { environmentList: [] }
-    const envListLen = environmentList.length
-    publishEnvMap[env].forEach((item, idx) => {
-      const { serverInfo, status, environment } = item
-      const { ip, output } = serverInfo
-      const firstIndex = publishEnvMap[env].findIndex(
-        ({ serverInfo: server }) => server.ip === ip && server.output === output
-      )
-      const currentEnvIdx = environmentList.findIndex(env => env.key === environment)
-
-      if (firstIndex === idx && status === 1 && currentEnvIdx < envListLen - 1) {
-        // 当前指定机器和目录下最新的发布
-        item.canPublish = true
-      }
-    })
+      .flat()
+      .sort((first, second) => {
+        return new Date(second.updatedTime).getTime() - new Date(first.updatedTime).getTime()
+      })
   }
   return publishEnvMap
 }
@@ -76,14 +59,14 @@ class PublishService extends Service {
     const { ctx, app } = this
     const { Op } = app.Sequelize
     // 获取项目下的所有发布
-    const list = await ctx.model.Changelog.findAll({ where: { project: projectId } })
+    const list = await ctx.model.Changelog.findAll({ where: { project: projectId }, raw: true })
     // 获取项目信息
     const currentProject = await ctx.service.project.findByPk(projectId)
     const { repositoryUrl } = currentProject
     // 获取开发人员信息
     const members = await ctx.service.member.getMembers(
-      { gitlabUserId: { [Op.in]: [...new Set(list.map(item => item.developer))] } },
-      { include: ['name', 'gitlabUserId'] }
+      { id: { [Op.in]: [...new Set(list.map(item => item.developer))] } },
+      { include: ['id', 'name'] }
     )
 
     list.forEach(item => {
@@ -92,14 +75,22 @@ class PublishService extends Service {
       const ip = '0.0.0.0'
       const output = '/test'
       // 开发者信息
-      const currentDeveloper = members.find(member => member.gitlabUserId === developer)
+      const currentDeveloper = members.find(member => member.id === developer)
       const name = currentDeveloper?.name || developer
 
       item.serverInfo = { ip, output }
       item.developer = name
       item.commitUrl = `${repositoryUrl}/commit/${commitId}`
     })
-    return publishDataTransform(list, app.globalData)
+    const publishListMap = publishDataTransform(list)
+    for (const env in publishListMap) {
+      publishListMap[env].forEach(changelog => {
+        const next = ctx.helper.nidleNext(changelog)
+        changelog.nextPublish = next
+      })
+    }
+
+    return publishListMap
   }
 }
 
