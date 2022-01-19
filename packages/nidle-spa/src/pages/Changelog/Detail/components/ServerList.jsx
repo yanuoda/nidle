@@ -95,7 +95,7 @@ const ServerInput = props => {
       disabled: !record.Server.status || (record.changelog && record.changelog !== id)
     })
   }
-  console.log('serverList:::', readonly)
+  console.log('serverList:::', readonly, serverList)
   return (
     <>
       <Table

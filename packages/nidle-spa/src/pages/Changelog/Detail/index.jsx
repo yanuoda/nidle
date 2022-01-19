@@ -25,7 +25,7 @@ const App = props => {
   const [config, setConfig] = useState({}) // 配置
   const [changelog, setChangelog] = useState({}) // 发布记录实例
   const [next, setNext] = useState({}) // 下一步
-  const [inputs, setInputs] = useState([]) // 输入配置
+  const [inputs, setInputs] = useState() // 输入配置
   const [current, setCurrent] = useState({ progress: 'start', stage: '' }) // 进度
   const [tabActive, setTabActive] = useState('inputs') // Tab Active
   const [logs, setLogs] = useState({}) // 日志
@@ -298,10 +298,6 @@ const App = props => {
       }
     })
   }
-  // 切换步骤
-  const handlerStepsChange = stage => {
-    setCurrent({ progress: current.progress, stage })
-  }
 
   const BaseInfo = (
     <ProCard
@@ -370,6 +366,7 @@ const App = props => {
         </Tabs.TabPane>
         <Tabs.TabPane key="inputs" tab="Inputs">
           {inputs ? (
+            // 服务器组件需要拿到changelog信息
             <ChangelogContext.Provider value={changelog}>
               <Inputs
                 readonly={changelog.active || changelog.statusEnum !== 0}
@@ -387,6 +384,11 @@ const App = props => {
       </Tabs>
     </ProCard>
   )
+
+  // 切换步骤
+  const handlerStepsChange = stage => {
+    setCurrent({ progress: current.progress, stage })
+  }
 
   return (
     <PageContainer
