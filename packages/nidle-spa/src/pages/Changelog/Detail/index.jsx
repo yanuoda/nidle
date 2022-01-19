@@ -16,11 +16,12 @@ import './index.less'
 
 const statusMap = dictsToMap(status)
 const modeMap = dictsToMap(modes)
+const intervalTime = 2000
 
 const App = props => {
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
-  const [detail, setDetail] = useState() // 配置
+  const [detail, setDetail] = useState() // 详情
   const [config, setConfig] = useState({}) // 配置
   const [changelog, setChangelog] = useState({}) // 发布记录实例
   const [next, setNext] = useState({}) // 下一步
@@ -134,9 +135,10 @@ const App = props => {
 
     setTabActive('log')
     if (statusEnum === 1) {
+      // 进行中，轮询日志
       interval = setInterval(async () => {
         getLogs()
-      }, 2000)
+      }, intervalTime)
 
       return () => {
         clearInterval(interval)
@@ -166,11 +168,11 @@ const App = props => {
 
       // 校准duration: 解决运行慢日志长时间没写入问题
       if (interval && logsRef.current.duration && logsRef.current.duration >= data.duration) {
-        data.duration = logsRef.current.duration + 2000
+        data.duration = logsRef.current.duration + intervalTime
         const last = data.stages.length - 1
         data.stages[last].steps[data.stages[last].steps.length - 1].duration =
-          logsRef.current.stages[last].steps[data.stages[last].steps.length - 1].duration + 2000
-        data.stages[last].duration = logsRef.current.stages[last].duration + 2000
+          logsRef.current.stages[last].steps[data.stages[last].steps.length - 1].duration + intervalTime
+        data.stages[last].duration = logsRef.current.stages[last].duration + intervalTime
       }
 
       setLogs(data)
@@ -197,8 +199,7 @@ const App = props => {
       breadcrumbName: '应用管理'
     },
     {
-      // TODO
-      path: '',
+      path: changelog ? `/project/publish?id=${changelog.id}&name=${changelog.projectName}` : '',
       breadcrumbName: changelog.projectName || '应用'
     },
     {

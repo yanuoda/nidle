@@ -82,14 +82,16 @@ const Input = props => {
           onSubmit: () => {
             handlerSubmit()
           },
+          submitButtonProps: {
+            size: 'large',
+            style: {
+              display: readonly ? 'none' : 'block',
+              marginLeft: '-8px'
+            }
+          },
           resetButtonProps: {
             style: {
               display: 'none'
-            }
-          },
-          submitButtonProps: {
-            style: {
-              display: readonly ? 'none' : 'block'
             }
           }
         }}
