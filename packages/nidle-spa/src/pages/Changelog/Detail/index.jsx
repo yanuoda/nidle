@@ -199,7 +199,7 @@ const App = props => {
       breadcrumbName: '应用管理'
     },
     {
-      path: changelog ? `/project/publish?id=${changelog.id}&name=${changelog.projectName}` : '',
+      path: changelog ? `/project/publish?id=${changelog.project}&name=${changelog.projectName}` : '',
       breadcrumbName: changelog.projectName || '应用'
     },
     {
