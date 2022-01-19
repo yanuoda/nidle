@@ -27,6 +27,24 @@ class MemberService extends Service {
     const user = await this.ctx.model.Member.create({ name, gitlabUserId, password })
     return user
   }
+
+  // 检查用户是否在项目用户列表里
+  async isProjectMember(projectId) {
+    const { ctx } = this
+
+    try {
+      const user = ctx.session.user.gitlabUserId
+      const project = await ctx.model.Project.findOne({ where: { id: projectId } })
+      // 获取 gitlab 应用成员
+      const memberList = await ctx.service.gitlab.getMembers(project.repositoryUrl)
+      const idx = memberList.findIndex(item => item.id === user && item.access_level > 20)
+
+      return idx > -1
+    } catch (err) {
+      ctx.logger.error(`service.member.isProjectMember: \n${err.message}\n${err.stack}`)
+      throw err
+    }
+  }
 }
 
 module.exports = MemberService

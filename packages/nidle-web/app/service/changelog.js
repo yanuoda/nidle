@@ -25,6 +25,7 @@ class ChangelogService extends Service {
       let commitId
 
       if (mode === nidleConfig.environments[0].value) {
+        // 从测试环境发布时，取分支的最新commitId，后续发布都基于此commitId
         const branchInfo = await ctx.service.gitlab.getBranch(project.gitlabId, branch)
         commitId = branchInfo.commit.id
       }
@@ -45,6 +46,7 @@ class ChangelogService extends Service {
         const changelog = await ctx.model.Changelog.findOne({ where: { id } })
         period = changelog.period
         commitId = changelog.commitId
+        options.commitId = commitId
 
         // 复用source、output
         const configRaw = fs.readFileSync(changelog.configPath)
@@ -61,7 +63,8 @@ class ChangelogService extends Service {
       }
 
       const fileName = `${project.name}_${now}`
-      const createConfig = await ctx.service.config.getByCreate(project, mode, commitId, fileName, options)
+      // 整合任务配置
+      const createConfig = await ctx.service.config.getByCreate(project, mode, commitId, fileName)
       const config = {
         ...options,
         ...createConfig
@@ -94,16 +97,21 @@ class ChangelogService extends Service {
         branch,
         developer: ctx.session.user.id,
         source,
+        // 如果没配置，即该环境没有构建任务，直接通过
         status: createConfig ? 'NEW' : 'SUCCESS',
         codeReviewStatus: 'NEW',
         environment: mode,
         configPath,
         logPath: createConfig ? config.log.all : null,
         active: 0,
-        commitId: commitId
+        commitId
       })
       const next = ctx.helper.nidleNext(changelog)
-      initConfig.inputs = await ctx.service.config.getInput(initConfig.inputs, initConfig.inputs, source)
+
+      if (source === 'web') {
+        // 转换成schemaForm格式
+        initConfig.inputs = await ctx.service.config.getInput(initConfig.inputs, initConfig.inputs, source)
+      }
 
       if (id) {
         // 将原记录设为已禁用
@@ -140,12 +148,14 @@ class ChangelogService extends Service {
       for (let i = 0, len = answers.length; i < len; i++) {
         const step = answers[i]
 
+        // 特殊标识，用来标识type=servers的字段，以在使用时添加私密信息
         if (step._serversKey) {
           const serverList = []
 
           for (let j = 0, slen = step.options[step._serversKey].length; j < slen; j++) {
             const item = step.options[step._serversKey][j]
             const server = await ctx.model.Server.findOne({ where: { id: item.serverId } })
+            // 更新服务器被占用
             await ctx.model.ProjectServer.update({ changelog: id }, { where: { id: item.id } })
 
             serverList.push({
@@ -182,6 +192,7 @@ class ChangelogService extends Service {
         )
       )
 
+      // 调度器是异步任务，需要在请求结束后继续执行
       ctx.app.runInBackground(async ctx => {
         async function update(data) {
           try {
@@ -293,13 +304,13 @@ class ChangelogService extends Service {
 
       if (!logPath) {
         if (type === 'error') {
-          // 只返回错误日志
+          // TODO: 只返回错误日志，这块逻辑还有问题，格式也不好支持，先从展示层面考虑
           const configRaw = fs.readFileSync(changelog.configPath)
           const config = JSON.parse(configRaw)
 
           logPath = config.log.error
         } else {
-          logPath = changelog.logPath
+          logPath = changelog.log.all
         }
       }
 
@@ -438,11 +449,8 @@ function getSteps(logs, steps, from = 0, end) {
 function getDuration(begin, end) {
   const beginTime = moment(begin)
   const endTime = moment(end)
-  const duration = moment.duration(endTime.diff(beginTime))
-  const m = duration.minutes()
-  const s = duration.seconds()
 
-  return m ? `${m}m${s}s` : s === 0 ? '<1s' : `${s}s`
+  return endTime.diff(beginTime)
 }
 
 module.exports = ChangelogService
