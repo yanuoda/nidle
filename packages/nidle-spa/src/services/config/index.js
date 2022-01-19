@@ -23,3 +23,11 @@ export async function start(params) {
     data: params
   })
 }
+
+// 获取项目配置
+export async function getConfigByApp(params) {
+  return request('/api/config/getByApp', {
+    method: 'POST',
+    data: params
+  })
+}
