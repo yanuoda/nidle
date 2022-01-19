@@ -334,12 +334,20 @@ class ChangelogService extends Service {
 
       if (len > 1) {
         result.startTime = logs[0].time
+        result.duration = getDuration(logs[0].time, logs[len - 1].time)
 
         if (changelog.statusEnum > 1) {
           result.endTime = logs[len - 1].time
-        }
 
-        result.duration = getDuration(logs[0].time, logs[len - 1].time)
+          if (!changelog.duration) {
+            await ctx.model.Changelog.update(
+              {
+                duration: result.duration
+              },
+              { where: { id } }
+            )
+          }
+        }
 
         // 分组
         const stages = []
