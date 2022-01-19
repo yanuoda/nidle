@@ -1,7 +1,7 @@
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
 import { Tabs, Button, Space, Modal, message } from 'antd'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, history } from 'umi'
 import { create, start, quit, detail as fetchDetail, fetchLog } from '@/services/changelog'
 import Steps from './components/Steps'
@@ -10,7 +10,7 @@ import Inputs from './components/Inputs'
 import Highlight from '@/components/Highlight'
 import { status } from '@/dicts/changelog'
 import { mode as modes } from '@/dicts/app'
-import { dictsToMap } from '@/utils/filter'
+import { dictsToMap, duration } from '@/utils/filter'
 import { ChangelogContext } from './context'
 import './index.less'
 
@@ -146,6 +146,11 @@ const App = props => {
     }
   }, [changelog.statusEnum, changelog.id])
 
+  const logsRef = useRef(logs)
+  useEffect(() => {
+    logsRef.current = logs
+  }, [logs])
+
   // 日志请求
   const getLogs = async () => {
     const { data, success, errorMessage } = await fetchLog({
@@ -155,6 +160,19 @@ const App = props => {
     })
 
     if (success === true) {
+      if (data.statusEnum > 1 && interval) {
+        clearInterval(interval)
+      }
+
+      // 校准duration: 解决运行慢日志长时间没写入问题
+      if (interval && logsRef.current.duration && logsRef.current.duration >= data.duration) {
+        data.duration = logsRef.current.duration + 2000
+        const last = data.stages.length - 1
+        data.stages[last].steps[data.stages[last].steps.length - 1].duration =
+          logsRef.current.stages[last].steps[data.stages[last].steps.length - 1].duration + 2000
+        data.stages[last].duration = logsRef.current.stages[last].duration + 2000
+      }
+
       setLogs(data)
       setChangelog({
         ...changelog,
@@ -163,12 +181,12 @@ const App = props => {
         stage: data.stage
       })
       setNext(data.next)
-
-      if (data.statusEnum > 1 && interval) {
-        clearInterval(interval)
-      }
     } else {
       message.error(errorMessage)
+
+      if (interval) {
+        clearInterval(interval)
+      }
     }
   }
 
@@ -318,7 +336,7 @@ const App = props => {
           </tr>
           <tr>
             <th>持续时间:</th>
-            <td>{logs.duration || '-'}</td>
+            <td>{duration(logs.duration)}</td>
             <th>状态:</th>
             <td>{statusMap[changelog.status + ''] || changelog.status}</td>
             <th>环境:</th>

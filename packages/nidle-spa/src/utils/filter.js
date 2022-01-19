@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 export const dictsToMap = function (dicts = []) {
   const map = {}
 
@@ -6,4 +8,16 @@ export const dictsToMap = function (dicts = []) {
   })
 
   return map
+}
+
+export const duration = function (time) {
+  if (!time) {
+    return '-'
+  }
+
+  const duration = moment.duration(time)
+  const m = duration.minutes()
+  const s = duration.seconds()
+
+  return m ? `${m}m${s}s` : s === 0 ? '<1s' : `${s}s`
 }
