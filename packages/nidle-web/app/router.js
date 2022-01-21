@@ -49,4 +49,11 @@ module.exports = app => {
   router.post('/api/changelog/detail', controller.changelog.detail)
   router.post('/api/changelog/log', controller.changelog.log)
   router.get('/api/project/publish/list', controller.project.publish.list)
+
+  // 配置模板
+  router.post('/api/template', controller.template.index)
+  router.post('/api/template/list', controller.template.list)
+  router.post('/api/template/add', controller.template.add)
+  router.post('/api/template/delete', controller.template.delete)
+  router.post('/api/template/modify', controller.template.modify)
 }

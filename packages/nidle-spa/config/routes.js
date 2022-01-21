@@ -42,6 +42,27 @@ export default [
       { component: './404' }
     ]
   },
+  {
+    path: '/template',
+    name: '配置模板管理',
+    icon: 'appstore',
+    routes: [
+      {
+        path: '/template/list',
+        name: '模板列表',
+        icon: 'table',
+        component: './Template'
+      },
+      {
+        path: '/template/detail',
+        name: '模板配置',
+        component: './Template/Detail',
+        hideInMenu: true
+      },
+      { path: '/template', redirect: '/template/list' },
+      { component: './404' }
+    ]
+  },
   { path: '/', redirect: '/welcome' },
   { component: './404' }
 ]

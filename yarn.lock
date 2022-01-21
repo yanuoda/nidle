@@ -21943,6 +21943,11 @@ react-side-effect@^2.1.0:
   resolved "https://registry.npmmirror.com/react-side-effect/download/react-side-effect-2.1.1.tgz#66c5701c3e7560ab4822a4ee2742dee215d72eb3"
   integrity sha1-ZsVwHD51YKtIIqTuJ0Le4hXXLrM=
 
+react-simple-code-editor@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.npm.taobao.org/react-simple-code-editor/download/react-simple-code-editor-0.11.0.tgz#bb57c7c29b570f2ab229872599eac184f5bc673c"
+  integrity sha1-u1fHwptXDyqyKYclmerBhPW8Zzw=
+
 react-sortable-hoc@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmmirror.com/react-sortable-hoc/download/react-sortable-hoc-2.0.0.tgz#f6780d8aa4b922a21f3e754af542f032677078b7"
