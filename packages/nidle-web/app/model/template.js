@@ -8,7 +8,7 @@ module.exports = app => {
     name: STRING(30),
     description: STRING(30),
     config: TEXT('long'),
-    status: INTEGER,
+    status: { type: INTEGER, defaultValue: 1 },
     createdTime: DATE,
     updatedTime: DATE
   })
