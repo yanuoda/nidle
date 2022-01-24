@@ -1,9 +1,9 @@
 const execa = require('execa')
 
-async function install(task) {
+async function install(task, config) {
   return new Promise((resolve, reject) => {
     const { source } = task
-    const shell = `cd ${source} && npm install`
+    const shell = `cd ${source} && npm install --production=${config.production}`
     const subprocess = execa(shell, {
       shell: true,
       preferLocal: true,
