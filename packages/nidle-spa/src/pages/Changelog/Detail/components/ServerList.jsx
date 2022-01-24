@@ -86,6 +86,7 @@ const ServerInput = props => {
           return {
             id: item.id,
             output: item.output,
+            ip: item.Server.ip,
             serverId: item.server
           }
         })
