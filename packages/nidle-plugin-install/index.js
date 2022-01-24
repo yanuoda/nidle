@@ -3,9 +3,9 @@ import install from './lib/index'
 
 class InstallPlugin {
   apply(scheduler) {
-    scheduler.add('install', task => {
+    scheduler.add('install', (task, config) => {
       return new PCancelable((resolve, reject, onCancel) => {
-        const subprocess = install(task)
+        const subprocess = install(task, config)
           .then(function () {
             resolve()
           })
