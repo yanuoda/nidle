@@ -19,8 +19,11 @@ class ConfigService extends Service {
       let templateConfig = {}
 
       if (config.extend) {
-        // TODO: 配置模板
-        templateConfig = require(`../mock/config/tmp-${config.extend}`)
+        const template = await ctx.model.Template.findOne({ where: { name: config.extend } })
+
+        if (template) {
+          templateConfig = JSON.parse(template.config)
+        }
       }
 
       // 合并模板
