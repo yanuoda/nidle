@@ -19,6 +19,17 @@ class InstallPlugin {
       })
     })
   }
+
+  input() {
+    return [
+      {
+        type: 'confirm',
+        name: 'production',
+        message: '--production',
+        default: false
+      }
+    ]
+  }
 }
 
 export default InstallPlugin
