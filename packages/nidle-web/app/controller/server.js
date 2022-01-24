@@ -63,7 +63,10 @@ class ProjectController extends Controller {
     const { ctx } = this
 
     try {
-      await ctx.model.Server.create(ctx.request.body)
+      await ctx.model.Server.create({
+        ...ctx.request.body,
+        status: 1
+      })
       this.success()
     } catch (err) {
       this.failed({
