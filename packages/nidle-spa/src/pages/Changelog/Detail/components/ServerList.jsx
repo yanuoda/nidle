@@ -92,10 +92,10 @@ const ServerInput = props => {
       )
     },
     getCheckboxProps: record => ({
-      disabled: !record.Server.status || (record.changelog && record.changelog !== id)
+      disabled: record.Server && (!record.Server.status || (record.changelog && record.changelog !== id))
     })
   }
-  console.log('serverList:::', readonly, serverList)
+
   return (
     <>
       <Table
@@ -113,6 +113,10 @@ const ServerInput = props => {
 }
 
 export default {
-  render: text => <ServerInput value={text} readonly />,
-  renderFormItem: (text, props) => <ServerInput {...props} {...props?.fieldProps} />
+  render: text => {
+    return <ServerInput value={text} readonly />
+  },
+  renderFormItem: (text, props) => {
+    return <ServerInput {...props} {...props?.fieldProps} readonly={false} />
+  }
 }
