@@ -37,7 +37,7 @@ module.exports = {
         quit: idx !== 0,
         environment: current,
         buttonText: '开始发布',
-        redirectUrl: `/project/${project}/changelog/detail?id=${id}&branch=${branch}&action=START&mode=${current.value}`
+        redirectUrl: `/project/${project}/changelog/detail?id=${id}`
       }
     }
 
@@ -80,10 +80,10 @@ module.exports = {
         return {
           next: 'WAITING.CODEREVIEW',
           label: '等待代码审核',
-          disabled: true,
           quit: true,
           environment: current,
-          buttonText: '等待代码审核'
+          buttonText: '等待代码审核',
+          redirectUrl: `/project/${project}/changelog/detail?id=${id}`
         }
       }
 
