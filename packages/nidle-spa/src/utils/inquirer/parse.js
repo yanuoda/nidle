@@ -8,15 +8,19 @@ export default function (questions = [], props) {
 
 function parse(question, props) {
   const keys = Object.keys(question)
+  const rules = []
+
+  if (question.required !== false) {
+    rules.push({
+      required: true,
+      message: '此项为必填项'
+    })
+  }
+
   const prop = {
     ...props,
     formItemProps: {
-      rules: [
-        {
-          required: true,
-          message: '此项为必填项'
-        }
-      ]
+      rules
     },
     fieldProps: {}
   }
