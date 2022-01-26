@@ -34,6 +34,12 @@ class MergePlugin {
       },
       {
         type: 'input',
+        name: 'sourceBranch',
+        message: 'merge request source branch',
+        required: false
+      },
+      {
+        type: 'input',
         name: 'targetBranch',
         message: 'merge request target branch'
       },

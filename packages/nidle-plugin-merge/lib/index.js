@@ -3,7 +3,7 @@ const axios = require('axios')
 function merge(task, config) {
   return new Promise((resolve, reject) => {
     const { repository } = task
-    const { apiUrl, privateToken, targetBranch, codeReview, autoMerge, removeSourceBranch } = config
+    const { apiUrl, privateToken, sourceBranch, targetBranch, codeReview, autoMerge, removeSourceBranch } = config
     const title = `${repository.branch} merge request to ${targetBranch} by ${repository.userName}`
 
     axios({
@@ -14,7 +14,7 @@ function merge(task, config) {
       },
       data: {
         id: repository.id,
-        source_branch: repository.branch,
+        source_branch: sourceBranch || repository.branch,
         target_branch: targetBranch,
         title
       }
@@ -22,7 +22,7 @@ function merge(task, config) {
       .then(({ data }) => {
         task.logger.info({
           name: 'merge-request',
-          detail: title + ' success'
+          detail: title + ' success\n'
         })
 
         if (codeReview === true) {
@@ -33,7 +33,7 @@ function merge(task, config) {
 
           task.logger.info({
             name: 'merge-request',
-            detail: 'request codeReview'
+            detail: 'request codeReview\n'
           })
         }
 
@@ -54,7 +54,7 @@ function merge(task, config) {
             .then(() => {
               task.logger.info({
                 name: 'merge-request',
-                detail: `auto accept merge request success: ${title}`
+                detail: `auto accept merge request success: ${title}\n`
               })
 
               removeBranch()
@@ -69,6 +69,8 @@ function merge(task, config) {
               })
               reject(error)
             })
+        } else {
+          resolve()
         }
 
         function removeBranch() {
@@ -84,7 +86,7 @@ function merge(task, config) {
               .then(() => {
                 task.logger.info({
                   name: 'merge-request',
-                  detail: `delete remote branch: ${repository.branch}`
+                  detail: `delete remote branch: ${repository.branch}\n`
                 })
 
                 resolve()
