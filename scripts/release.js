@@ -196,6 +196,9 @@ function updateVersion() {
     })
     fs.writeFileSync(pkgPath, JSON.stringify(pkgInfo, null, 2) + '\n')
   })
+  // update root package.json's version
+  rootPkgInfo.version = targetVersion
+  fs.writeFileSync(path.resolve(root, 'package.json'), JSON.stringify(rootPkgInfo, null, 2) + '\n')
 }
 
 /**
