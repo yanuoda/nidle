@@ -373,6 +373,47 @@ class ChangelogService extends Service {
       throw err
     }
   }
+
+  // merge hook
+  async mergeAccept(params) {
+    const { ctx } = this
+    const { project, object_attributes: detail } = params
+
+    if (detail.state === 'merged' || detail.state === 'closed') {
+      try {
+        const pj = await ctx.model.Project.findOne({ where: { name: project.name } })
+
+        if (!pj) {
+          throw new Error(`未识别的应用: ${project.name}`)
+        }
+
+        const changelog = await ctx.model.Changelog.findOne({
+          where: {
+            project: pj.id,
+            commitId: detail.last_commit.id,
+            active: 0,
+            codeReviewStatus: 'PENDING'
+          }
+        })
+
+        if (!changelog) {
+          throw new Error(`找不到相关记录: ${detail.last_commit.id}`)
+        }
+
+        await ctx.model.Changelog.update(
+          {
+            codeReviewStatus: detail.state === 'merged' ? 'SUCCESS' : 'FAIL'
+          },
+          { where: { id: changelog.id } }
+        )
+
+        return true
+      } catch (err) {
+        ctx.logger.error(`merge request hook: \n${err.message}\n${err.stack}`)
+        throw err
+      }
+    }
+  }
 }
 
 function transform(logs, stages, from = 0) {

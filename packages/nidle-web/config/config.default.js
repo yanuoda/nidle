@@ -71,5 +71,11 @@ module.exports = appInfo => {
     privateToken: GITLAB_PRIVATE_TOKEN
   }
 
+  config.security = {
+    csrf: {
+      ignore: '/api/changelog/mergeHook'
+    }
+  }
+
   return config
 }

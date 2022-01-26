@@ -48,6 +48,7 @@ module.exports = app => {
   router.post('/api/changelog/quit', controller.changelog.quit)
   router.post('/api/changelog/detail', controller.changelog.detail)
   router.post('/api/changelog/log', controller.changelog.log)
+  router.post('/api/changelog/mergeHook', controller.changelog.mergeAccept)
   router.get('/api/project/publish/list', controller.project.publish.list)
 
   // 配置模板

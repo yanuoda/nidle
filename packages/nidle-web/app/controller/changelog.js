@@ -125,6 +125,21 @@ class ChangelogController extends Controller {
       })
     }
   }
+
+  // merge hook
+  async mergeAccept() {
+    const { ctx } = this
+
+    try {
+      const result = await ctx.service.changelog.mergeAccept(ctx.request.body)
+
+      this.success(result)
+    } catch (err) {
+      this.failed({
+        msg: err.message
+      })
+    }
+  }
 }
 
 module.exports = ChangelogController
