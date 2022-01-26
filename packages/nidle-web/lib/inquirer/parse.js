@@ -34,7 +34,7 @@ function parse(question, value) {
   const keys = Object.keys(question)
   const prop = {}
 
-  if (value) {
+  if (typeof value !== 'undefined') {
     prop.default = value
   }
 
