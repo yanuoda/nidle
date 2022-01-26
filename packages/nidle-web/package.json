@@ -61,7 +61,8 @@
     "db:migrate:undo:all": "yarn sequelize db:migrate:undo:all",
     "test:db:migrate": "cross-env NODE_ENV=test yarn sequelize db:migrate",
     "test:db:migrate:undo": "cross-env NODE_ENV=test yarn sequelize db:migrate:undo",
-    "test:db:migrate:undo:all": "cross-env NODE_ENV=test yarn sequelize db:migrate:undo:all"
+    "test:db:migrate:undo:all": "cross-env NODE_ENV=test yarn sequelize db:migrate:undo:all",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s --commit-path ."
   },
   "ci": {
     "version": "10"
