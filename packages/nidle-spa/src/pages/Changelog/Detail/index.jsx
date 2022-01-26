@@ -215,10 +215,9 @@ const App = props => {
 
   // 下一步
   const handlerNildeAction = async () => {
-    setActionLoading(true)
-
     try {
       if (next.next === 'START') {
+        setActionLoading(true)
         // 开始构建
         if (inputs.length && !inputAnswers) {
           message.error('请先完成并保存Inputs配置！')
@@ -260,6 +259,8 @@ const App = props => {
           message.success(`创建${next.label}成功`)
         }
         setActionLoading(false)
+      } else if (next.next === 'WAITING.CODEREVIEW') {
+        window.open(`${config.repository.url}/merge_requests`)
       }
     } catch (err) {
       setActionLoading(false)
