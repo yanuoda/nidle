@@ -7,7 +7,7 @@
   "license": "MIT",
   "workspaces": {
     "packages": [
-      "packages/**/*"
+      "packages/*"
     ],
     "nohoist": [
       "nidle-web/**",
@@ -31,6 +31,14 @@
     "rimraf": "^3.0.2",
     "rollup": "^2.60.1",
     "rollup-plugin-node-resolve": "^5.2.0"
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "execa": "^5.1.1",
+    "inquirer": "^8.2.0",
+    "minimist": "^1.2.5",
+    "semver": "^7.3.5",
+    "walk-sync": "^3.0.0"
   },
   "scripts": {
     "clean": "lerna clean && rimraf node_modules",

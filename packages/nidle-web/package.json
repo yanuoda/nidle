@@ -17,7 +17,7 @@
     "moment": "^2.29.1",
     "mysql2": "^2.3.0",
     "nidle": "0.1.0",
-    "nidle-chain": "0.1.1",
+    "nidle-chain": "0.1.0",
     "nidle-plugin-build": "0.1.0",
     "nidle-plugin-clone": "0.1.0",
     "nidle-plugin-escheck": "0.1.0",
