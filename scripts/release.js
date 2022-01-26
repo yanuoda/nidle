@@ -133,7 +133,7 @@ async function main() {
     if (!yes) {
       return
     }
-
+    await buildModules()
     await publishPackages()
   }
 
@@ -199,6 +199,16 @@ function updateVersion() {
   // update root package.json's version
   rootPkgInfo.version = targetVersion
   fs.writeFileSync(path.resolve(root, 'package.json'), JSON.stringify(rootPkgInfo, null, 2) + '\n')
+}
+
+/**
+ * build modules
+ */
+async function buildModules() {
+  step('\nBuilding modules...')
+  await runIfNotDry('yarn', ['lerna', 'run', 'prerelease'], {
+    stdio: 'pipe'
+  })
 }
 
 /**
