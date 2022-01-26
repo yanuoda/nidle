@@ -47,7 +47,8 @@
     "pre-commit": "lint-staged",
     "lint": "eslint packages/**/{lib,src,app}/*.{js,jsx,mjs,ts,tsx}",
     "format": "prettier --write .",
-    "auto-fix": "prettier --write . && eslint packages/**/{lib,src,app}/*.{js,jsx,mjs,ts,tsx}"
+    "auto-fix": "prettier --write . && eslint packages/**/{lib,src,app}/*.{js,jsx,mjs,ts,tsx}",
+    "release": "node ./scripts/release.js --tag --publish"
   },
   "config": {
     "commitizen": {
