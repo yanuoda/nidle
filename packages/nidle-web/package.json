@@ -46,6 +46,8 @@
     "node": ">=10.0.0"
   },
   "scripts": {
+    "start": "egg-scripts start --daemon --title=nidle-web --env=prod",
+    "stop": "egg-scripts stop --title=nidle-web",
     "dev": "egg-bin dev",
     "autod": "autod",
     "test": "cross-env NODE_ENV=test egg-bin test",
