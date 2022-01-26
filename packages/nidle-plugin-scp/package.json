@@ -21,7 +21,8 @@
   },
   "scripts": {
     "build": "rm -rf ./dist && rollup -c",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn build",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s --commit-path ."
   },
   "bugs": {
     "url": "https://github.com/yanuoda/nidle/issues"
