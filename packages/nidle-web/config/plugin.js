@@ -27,3 +27,8 @@ exports.gitlab = {
   enable: true,
   path: path.join(root, 'lib/plugin/egg-gitlab')
 }
+
+exports.mailer = {
+  enable: false,
+  package: 'egg-mailer'
+}
