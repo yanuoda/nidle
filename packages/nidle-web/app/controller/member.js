@@ -40,6 +40,31 @@ class UserController extends Controller {
     this.ctx.session = null
     this.success()
   }
+
+  async modifyPassword() {
+    const { ctx, user } = this
+    const { oldPassword, newPassword } = ctx.request.body
+
+    try {
+      const { password } = await ctx.model.Member.findOne({
+        where: { id: user?.id },
+        attributes: ['password']
+      })
+      if (oldPassword !== password) {
+        this.failed({
+          msg: '旧密码输入错误，请重新输入！'
+        })
+        return
+      }
+      await ctx.model.Member.update({ password: newPassword }, { where: { id: user?.id } })
+      this.logout()
+    } catch (err) {
+      this.logger.error(err)
+      this.failed({
+        msg: '密码修改失败，请稍后重试！'
+      })
+    }
+  }
 }
 
 module.exports = UserController

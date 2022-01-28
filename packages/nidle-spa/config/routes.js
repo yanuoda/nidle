@@ -63,6 +63,7 @@ export default [
       { component: './404' }
     ]
   },
+  { path: '/modifypassword', name: '修改密码', icon: 'edit', component: './User/ModifyPassword' },
   { path: '/', redirect: '/welcome' },
   { component: './404' }
 ]
