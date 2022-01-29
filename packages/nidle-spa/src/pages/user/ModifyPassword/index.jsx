@@ -8,7 +8,7 @@ import { modifyPassword } from '@/services/user'
 
 const ModifyPassword = () => {
   return (
-    <PageContainer waterMarkProps={{}} header={{ title: null }}>
+    <PageContainer waterMarkProps={{}} header={{ title: '修改密码' }}>
       <Card>
         <ProForm
           layout="vertical"
