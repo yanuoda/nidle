@@ -45,7 +45,7 @@ if {$decompress==1} {
   # send "cd $dest_file && tar -zxpf ./$src_file -C ./$appname && rm -rf ./$src_file\n"
   send "cd $dest_file\n"
   expect "*#"
-  send "tar -zxpf ./$src_file -C ./$appname\n"
+  send "tar --no-same-owner -zxpf ./$src_file -C ./$appname\n"
   expect "*#"
   send "rm -rf ./$src_file\n"
   expect "*#"

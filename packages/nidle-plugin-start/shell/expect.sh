@@ -26,7 +26,7 @@ send "cd $src_file\n"
 expect "*#"
 
 # 备份
-send "tar -zcpf ./$app_name.bak.tar.gz ./$app_name\n"
+send "tar --no-same-owner -zcpf ./$app_name.bak.tar.gz ./$app_name\n"
 expect "*#"
 
 # 解压
