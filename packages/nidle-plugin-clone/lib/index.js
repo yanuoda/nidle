@@ -8,7 +8,7 @@ function clone(task) {
     const dirname = path.dirname(source)
 
     const shell = `cd ${dirname} &&
-      git clone ${repository.url} ${basename} --branch ${repository.branch} --progress`
+      git clone ${repository.url}.git ${basename} --branch ${repository.branch} --progress`
     const subprocess = execa(shell, {
       shell: true
     })
@@ -27,7 +27,7 @@ function clone(task) {
     subprocess.stderr.on('data', data => {
       const str = data.toString()
 
-      if (str.indexOf('fatal:') > -1) {
+      if (str.indexOf('fatal:') > -1 || str.indexOf('error:') > -1) {
         task.logger.error({
           name: 'clone',
           detail: str
