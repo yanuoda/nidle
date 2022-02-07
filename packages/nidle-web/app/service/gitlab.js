@@ -48,7 +48,6 @@ class GitlabService extends Service {
         url: `/projects/${id}/members`,
         method: 'GET'
       })
-      console.log(projectMembers)
       if (group) {
         groupMembers = await this.gitlabRequest({
           url: `/groups/${group}/members`,
