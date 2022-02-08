@@ -1,6 +1,6 @@
 {
   "name": "nidle-spa",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Nidle web client application.",
   "scripts": {
@@ -26,7 +26,8 @@
     "start:no-ui": "cross-env UMI_UI=none UMI_ENV=dev umi dev",
     "start:pre": "cross-env REACT_APP_ENV=pre UMI_ENV=dev umi dev",
     "test": "umi test",
-    "test:component": "umi test ./src/components"
+    "test:component": "umi test ./src/components",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s --commit-path ."
   },
   "browserslist": [
     "> 1%",

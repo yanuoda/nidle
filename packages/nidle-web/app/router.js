@@ -14,6 +14,7 @@ module.exports = app => {
   router.get('/api/user', controller.member.index)
   router.post('/api/user/login', controller.member.login)
   router.get('/api/user/logout', controller.member.logout)
+  router.post('/api/user/modifypassword', controller.member.modifyPassword)
 
   // 配置信息
   router.post('/api/config/getByApp', controller.config.getByApp)

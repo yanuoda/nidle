@@ -23,3 +23,11 @@ export async function logout(options) {
     ...(options || {})
   })
 }
+
+// 修改密码
+export async function modifyPassword(params = {}) {
+  return request('/api/user/modifypassword', {
+    method: 'POST',
+    data: params
+  })
+}

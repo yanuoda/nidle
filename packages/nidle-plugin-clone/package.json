@@ -1,6 +1,6 @@
 {
   "name": "nidle-plugin-clone",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "nidle plugin of clone source code",
   "keywords": [
     "clone",
@@ -12,16 +12,14 @@
   "license": "MIT",
   "main": "./dist/index.js",
   "module": "./index.js",
-  "publishConfig": {
-    "registry": "https://registry.npmmirror.com"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yanuoda/nidle.git"
   },
   "scripts": {
     "build": "rm -rf ./dist && rollup -c",
-    "prepublishOnly": "yarn build"
+    "prerelease": "yarn build",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s --commit-path ."
   },
   "bugs": {
     "url": "https://github.com/yanuoda/nidle/issues"
