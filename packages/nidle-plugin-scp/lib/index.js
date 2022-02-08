@@ -84,6 +84,10 @@ function scp(task, config) {
         })
         reject(new Error(error))
       })
+
+      subprocess.on('error', err => {
+        reject(err)
+      })
     } catch (err) {
       reject(err)
     }
