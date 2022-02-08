@@ -1,3 +1,12 @@
+## [0.1.2](https://github.com/yanuoda/nidle/compare/v0.1.1...v0.1.2) (2022-02-08)
+
+
+### Features
+
+* 修改密码页 ([d19e4af](https://github.com/yanuoda/nidle/commit/d19e4afebacbbf1a72c2989cf1abcc33b53065fc))
+
+
+
 ## 0.1.1 (2022-01-26)
 
 

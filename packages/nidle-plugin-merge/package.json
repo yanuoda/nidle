@@ -1,6 +1,6 @@
 {
   "name": "nidle-plugin-merge",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "nidle plugin of git merge request",
   "keywords": [
     "git merge request",

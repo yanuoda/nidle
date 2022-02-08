@@ -1,3 +1,13 @@
+## [0.1.2](https://github.com/yanuoda/nidle/compare/v0.1.1...v0.1.2) (2022-02-08)
+
+
+### Features
+
+* 修改密码页 ([d19e4af](https://github.com/yanuoda/nidle/commit/d19e4afebacbbf1a72c2989cf1abcc33b53065fc))
+* mailer ([f92ad20](https://github.com/yanuoda/nidle/commit/f92ad20d30f9c8b967f54bf56e43e15d69543b76))
+
+
+
 ## 0.1.1 (2022-01-26)
 
 

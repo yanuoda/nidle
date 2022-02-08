@@ -1,3 +1,12 @@
+## [0.1.2](https://github.com/yanuoda/nidle/compare/v0.1.1...v0.1.2) (2022-02-08)
+
+
+### Bug Fixes
+
+* git repository & error capture ([c0bf3a6](https://github.com/yanuoda/nidle/commit/c0bf3a649ff5410185158364e0d57430a9f3a211))
+
+
+
 ## 0.1.1 (2022-01-26)
 
 
