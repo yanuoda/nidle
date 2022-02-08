@@ -125,7 +125,11 @@ class ChangelogService extends Service {
 
       return {
         config,
-        changelog,
+        changelog: {
+          ...changelog.dataValues,
+          statusEnum: changelog.statusEnum,
+          projectName: project.name
+        },
         ...initConfig,
         next
       }
