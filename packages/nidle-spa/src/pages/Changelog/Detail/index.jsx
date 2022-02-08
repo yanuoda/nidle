@@ -175,9 +175,12 @@ const App = props => {
       if (interval && logsRef.current.duration && logsRef.current.duration >= data.duration) {
         data.duration = logsRef.current.duration + intervalTime
         const last = data.stages.length - 1
-        data.stages[last].steps[data.stages[last].steps.length - 1].duration =
-          logsRef.current.stages[last].steps[data.stages[last].steps.length - 1].duration + intervalTime
-        data.stages[last].duration = logsRef.current.stages[last].duration + intervalTime
+
+        if (data.stages[last] && data.stages[last].steps.length) {
+          data.stages[last].steps[data.stages[last].steps.length - 1].duration =
+            logsRef.current.stages[last].steps[data.stages[last].steps.length - 1].duration + intervalTime
+          data.stages[last].duration = logsRef.current.stages[last].duration + intervalTime
+        }
       }
 
       setLogs(data)
