@@ -58,9 +58,12 @@ function parse(question, value) {
       }
     }
 
-    const option = parser.parse(question[key], prop)
-    Object.assign(prop, option)
+    prop[key] = parser.parse(question[key], prop)
   })
+
+  if (typeof value !== 'undefined') {
+    prop.default = value
+  }
 
   return prop
 }
