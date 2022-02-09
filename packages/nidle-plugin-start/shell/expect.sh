@@ -23,37 +23,37 @@ expect {
 expect "Last login:*"
 
 send "cd $src_file\n"
-expect "*#"
+expect "\]\[#$]"
 
 # 备份
-send "tar --no-same-owner -zcpf ./$app_name.bak.tar.gz ./$app_name\n"
-expect "*#"
+send "tar -zcpf ./$app_name.bak.tar.gz ./$app_name\n"
+expect "\]\[#$]"
 
 # 解压
 send "rm -rf $app_name\n"
-expect "*#"
+expect "\]\[#$]"
 send "mkdir $app_name\n"
-expect "*#"
-send "tar -zxpf ./$tar_file -C ./$app_name\n"
-expect "*#"
+expect "\]\[#$]"
+send "tar --no-same-owner -zxpf ./$tar_file -C ./$app_name\n"
+expect "\]\[#$]"
 
 # 起服务
 send "cd $app_name\n"
-expect "*#"
+expect "\]\[#$]"
 send "/bin/sh ./$start_shell\n"
 
 expect {
   "Start got error" {
     # 错误，还原
     send "cd ..\n"
-    expect "*#"
+    expect "\]\[#$]"
     send "rm -rf $app_name\n"
-    expect "*#"
-    send "tar -zxpf ./$app_name.bak.tar.gz -C ./\n"
+    expect "\]\[#$]"
+    send "tar --no-same-owner -zxpf ./$app_name.bak.tar.gz -C ./\n"
 
     # 重启服务
     send "cd $app_name\n"
-    expect "*#"
+    expect "\]\[#$]"
     send "/bin/sh ./$start_shell\n"
     expect "egg started on"
     send "cd ..\n"
@@ -64,7 +64,7 @@ expect {
 }
 # 删除文件
 send "rm -rf ./$app_name.bak.tar.gz\n"
-expect "*#"
+expect "\]\[#$]"
 send "rm -rf ./$tar_file\n"
 
 # 退出
