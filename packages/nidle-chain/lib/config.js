@@ -7,7 +7,7 @@ export default class Config extends ChainedMap {
     this.stages = new ChainedMap(this)
     const output = (this.output = new ChainedMap(this))
     output.extend(['backup', 'cache', 'path'])
-    this.extend(['mode', 'log'])
+    this.extend(['mode', 'log', 'type'])
   }
 
   stage(name) {
@@ -19,7 +19,11 @@ export default class Config extends ChainedMap {
       obj.stages.forEach(item => this.stage(item.name).merge(item))
     }
 
-    return super.merge(obj, [...omit, 'stages'])
+    if ('output' in obj) {
+      this.output.merge(obj.output)
+    }
+
+    return super.merge(obj, [...omit, 'stages', 'output'])
   }
 
   toConfig() {
