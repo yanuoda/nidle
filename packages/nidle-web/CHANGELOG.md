@@ -1,3 +1,15 @@
+## [0.1.3](https://github.com/yanuoda/nidle/compare/v0.1.2...v0.1.3) (2022-02-10)
+
+
+### Bug Fixes
+
+* chain function must require from js file ([3e17725](https://github.com/yanuoda/nidle/commit/3e17725fdb845b131cc5bf6c654b1139b7bffb35))
+* changelog projectName ([8f06576](https://github.com/yanuoda/nidle/commit/8f0657634a2dc87f720f8a6b14cd22df54f57c3e))
+* dataType ([a9cfc18](https://github.com/yanuoda/nidle/commit/a9cfc18790bec0e14ed23cf4cb8debd1d3e9c30e))
+* default value ([e0ba268](https://github.com/yanuoda/nidle/commit/e0ba2683ca51f8488799a7258f0fcf4ef4f6809b))
+
+
+
 ## [0.1.2](https://github.com/yanuoda/nidle/compare/v0.1.1...v0.1.2) (2022-02-08)
 
 

@@ -1,3 +1,12 @@
+## [0.1.3](https://github.com/yanuoda/nidle/compare/v0.1.2...v0.1.3) (2022-02-10)
+
+
+### Bug Fixes
+
+* linux 新命令识别不一致 ([56b6b61](https://github.com/yanuoda/nidle/commit/56b6b61ff98466d5aaf5f753256783d2a7b7c9c6))
+
+
+
 ## [0.1.2](https://github.com/yanuoda/nidle/compare/v0.1.1...v0.1.2) (2022-02-08)
 
 

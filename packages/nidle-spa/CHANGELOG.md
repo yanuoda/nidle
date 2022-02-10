@@ -1,3 +1,12 @@
+## [0.1.3](https://github.com/yanuoda/nidle/compare/v0.1.2...v0.1.3) (2022-02-10)
+
+
+### Bug Fixes
+
+* steps undefined ([9e0db09](https://github.com/yanuoda/nidle/commit/9e0db094c1eac614785920bd446d826b846f2b53))
+
+
+
 ## [0.1.2](https://github.com/yanuoda/nidle/compare/v0.1.1...v0.1.2) (2022-02-08)
 
 
