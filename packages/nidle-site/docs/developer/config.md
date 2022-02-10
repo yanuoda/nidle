@@ -146,16 +146,26 @@ module.exports = {
   },
   stages: [], // 不扩展的情况可以不配
   chain: (config) => {
-    // 可以像数组一样移除，新增
-    config.stages.push({})
+    // 新增
+    config.stage('xxx')
+      .timeout(0)
     // 修改指定stage的配置
     config.stage('xxx').set('timeout', 0)
 
-    // 可以像数据一样移除、新增指定stage的steps
-    config.stage('xxx').steps.push({})
+    // 新增指定stage的steps
+    config.stage('xxx')
+      .step('xxx')
+        .package('xxx')
     // 修改指定step的配置
     config.stage('xxx').step('xxx').set('timeout', 0)
     config.stage('xxx').step('xxx').options({})
+
+    // 指定在 a step 前新增
+    config.stage('xxx')
+      .step('xxx')
+        .package('xxx')
+        .before('a')
+        .end()
   }
 }
 ```
