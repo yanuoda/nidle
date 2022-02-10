@@ -7,15 +7,17 @@ const extend = require('extend')
 const _ = require('lodash')
 const NildeChain = require('nidle-chain')
 const inputParse = require('../../lib/inquirer')
+const requireFromString = require('require-from-string')
 
 class ConfigService extends Service {
   // 获取应用对应环境配置
   async getByApp({ id, mode, branch = 'master' }) {
     const { ctx } = this
-    const fileName = `nidle.${mode}.config.json`
+    const fileName = `nidle.${mode}.config.js`
 
     try {
-      const config = await ctx.service.gitlab.getFile(id, branch, fileName)
+      const configStr = await ctx.service.gitlab.getFile(id, branch, fileName)
+      const config = requireFromString(configStr)
       let templateConfig = {}
 
       if (config.extend) {
@@ -27,6 +29,7 @@ class ConfigService extends Service {
       }
 
       // 合并模板
+      // TODO: 这个合并有点粗暴，没有考虑 stages 扩展的情况，只能在 chain 中扩展
       if (config.extend && !_.isEmpty(templateConfig)) {
         return extend(true, {}, templateConfig, config)
       }
@@ -110,9 +113,7 @@ class ConfigService extends Service {
 
         const newConfig = new NildeChain()
         newConfig.merge(config)
-
         chainFun(newConfig)
-
         return newConfig.toConfig()
       }
 

@@ -30,6 +30,7 @@
     "nidle-plugin-scp": "0.1.2",
     "nidle-plugin-start": "0.1.2",
     "node-gitlab": "^1.6.1",
+    "require-from-string": "^2.0.2",
     "semver": "^7.3.5",
     "swagger-egg": "^1.2.1"
   },
