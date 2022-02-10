@@ -16,7 +16,7 @@ class GitlabService extends Service {
    * gitlab 请求封装
    */
   async gitlabRequest(options) {
-    const { url, method, params, headers, ...rest } = options
+    const { url, method, params, headers, dataType = 'json', ...rest } = options
     const { data, status } = await this.ctx.curl(`${OAUTH_GITLAB_BASEURL}/api/v4${url}`, {
       method,
       data: params,
@@ -24,7 +24,7 @@ class GitlabService extends Service {
         'PRIVATE-TOKEN': GITLAB_PRIVATE_TOKEN,
         ...headers
       },
-      dataType: 'json',
+      dataType,
       ...rest
     })
 
@@ -71,7 +71,8 @@ class GitlabService extends Service {
     try {
       return await this.gitlabRequest({
         url: `/projects/${id}/repository/files/${encodeURIComponent(filePath)}/raw?ref=${branch}`,
-        method: 'GET'
+        method: 'GET',
+        dataType: 'text'
       })
     } catch (err) {
       throw err
