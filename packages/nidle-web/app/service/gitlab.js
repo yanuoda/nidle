@@ -32,7 +32,13 @@ class GitlabService extends Service {
       return data
     }
 
-    throw new Error(data.message)
+    let message = data.message
+
+    if (dataType === 'text') {
+      message = JSON.parse(data).message
+    }
+
+    throw new Error(message)
   }
 
   // 获取应用成员
