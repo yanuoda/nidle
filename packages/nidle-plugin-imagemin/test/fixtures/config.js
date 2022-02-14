@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   name: 'style-y8',
   type: 'publish',
   repository: {

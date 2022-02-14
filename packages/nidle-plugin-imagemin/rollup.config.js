@@ -7,5 +7,6 @@ export default {
     format: 'cjs',
     name: 'NidlePluginImagemin'
   },
-  plugins: [resolve()]
+  plugins: [resolve()],
+  external: ['imagemin', 'imagemin-gifsicle', 'imagemin-mozjpeg', 'imagemin-pngquant', 'imagemin-svgo']
 }

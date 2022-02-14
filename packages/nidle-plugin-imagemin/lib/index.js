@@ -1,10 +1,12 @@
-import path from 'path'
-import fs from 'fs'
-import imagemin from 'imagemin'
-import imageminJPG from 'imagemin-mozjpeg'
-import imageminPNG from 'imagemin-pngquant'
-import imageminGIF from 'imagemin-gifsicle'
-import imageminSVG from 'imagemin-svgo'
+// import path from 'path'
+// import fs from 'fs'
+const path = require('path')
+const fs = require('fs')
+const imagemin = require('imagemin')
+const imageminJPG = require('imagemin-mozjpeg')
+const imageminPNG = require('imagemin-pngquant')
+const imageminGIF = require('imagemin-gifsicle')
+const imageminSVG = require('imagemin-svgo')
 
 const extname = '.{jpeg,jpg,png,gif,svg}'
 
@@ -61,4 +63,5 @@ function minimage(task, config = {}) {
   })
 }
 
+module.exports = minimage
 export default minimage
