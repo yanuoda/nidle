@@ -45,8 +45,8 @@ class ChangelogService extends Service {
         // 现有发布记录上创建，复用period
         const changelog = await ctx.model.Changelog.findOne({ where: { id } })
         period = changelog.period
-        commitId = changelog.commitId
-        options.commitId = commitId
+        commitId = commitId || changelog.commitId
+        options.repository.commitId = commitId
 
         // 复用source、output
         const configRaw = fs.readFileSync(changelog.configPath)
