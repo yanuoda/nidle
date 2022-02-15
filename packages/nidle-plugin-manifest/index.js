@@ -38,7 +38,7 @@ class ManifestPlugin {
         message: 'CMS deployId'
       },
       {
-        type: 'confirm',
+        type: 'input',
         name: 'mode',
         message: '环境'
       }
