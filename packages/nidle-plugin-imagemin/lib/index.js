@@ -25,7 +25,7 @@ function minimage(task, config = {}) {
 
     task.logger.info({
       name: 'imagemin',
-      detail: `imagemin source direotry::\n${source.join('\n')}`
+      detail: `imagemin source direotry::\n${source.join('\n')}\n`
     })
 
     imagemin(source, {

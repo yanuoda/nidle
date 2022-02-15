@@ -13,7 +13,7 @@ function manifest(task, config) {
     })
 
     if (!manifestState) {
-      const error = 'manifest.json is not existed.'
+      const error = 'manifest.json is not existed.\n'
       task.logger.error({
         name: 'manifest',
         detail: error
@@ -43,13 +43,13 @@ function manifest(task, config) {
         if (success === true) {
           task.logger.info({
             name: 'manifest',
-            detail: 'Sync manifest success'
+            detail: 'Sync manifest success\n'
           })
           resolve()
         } else {
           task.logger.error({
             name: 'manifest',
-            detail: 'Sync manifest error:: ' + message
+            detail: 'Sync manifest error:: ' + message + '\n'
           })
           reject(new Error(message))
         }
@@ -57,7 +57,7 @@ function manifest(task, config) {
       .catch(err => {
         task.logger.info({
           name: 'manifest',
-          detail: 'Sync manifest error:: ' + err.message
+          detail: 'Sync manifest error:: ' + err.message + '\n'
         })
         reject(err)
       })

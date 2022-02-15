@@ -11,7 +11,7 @@ async function install(task, config) {
     })
     task.logger.info({
       name: 'install',
-      detail: `execa: ${shell}`
+      detail: `execa: ${shell}\n`
     })
 
     subprocess.stdout.on('data', data => {
@@ -47,7 +47,7 @@ async function install(task, config) {
         return
       }
 
-      const error = `child process fail: code === ${code}`
+      const error = `child process fail: code === ${code}\n`
       task.logger.error({
         name: 'install',
         detail: error

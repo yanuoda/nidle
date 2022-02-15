@@ -39,7 +39,7 @@ function escheck(task) {
         } else {
           task.logger.info({
             name: 'es-check',
-            detail: 'es-check success'
+            detail: 'es-check success\n'
           })
           resolve()
         }

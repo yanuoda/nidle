@@ -14,7 +14,7 @@ function clone(task) {
     })
     task.logger.info({
       name: 'clone',
-      detail: `execa: ${shell}`
+      detail: `execa: ${shell}\n`
     })
 
     subprocess.stdout.on('data', data => {
@@ -48,7 +48,7 @@ function clone(task) {
         return
       }
 
-      const error = `child process fail: code === ${code}`
+      const error = `child process fail: code === ${code}\n`
       task.logger.error({
         name: 'clone',
         detail: error

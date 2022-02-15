@@ -26,7 +26,7 @@ async function nvm(task) {
     }
 
     if (semver.valid(semver.coerce(requiredVersion)) === null) {
-      const error = `Invalid semantic version: ${requiredVersion}`
+      const error = `Invalid semantic version: ${requiredVersion}\n`
       task.logger.error({
         name: 'nvm',
         detail: error
@@ -151,7 +151,7 @@ async function nvm(task) {
         })
         task.logger.info({
           name: 'nvm',
-          detail: `Project match node version: ${nodeVersion} & execPath: ${execPath}`
+          detail: `Project match node version: ${nodeVersion} & execPath: ${execPath}\n`
         })
         task.processOptions = {
           ...(task.processOptions || {}),

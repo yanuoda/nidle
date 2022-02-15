@@ -11,7 +11,7 @@ function eslint(task) {
     })
     task.logger.info({
       name: 'eslint',
-      detail: `execa: ${shell}`
+      detail: `execa: ${shell}\n`
     })
 
     subprocess.stdout.on('data', data => {
@@ -61,7 +61,7 @@ function eslint(task) {
         return
       }
 
-      const error = `child process fail: code === ${code}`
+      const error = `child process fail: code === ${code}\n`
       task.logger.error({
         name: 'eslint',
         detail: error

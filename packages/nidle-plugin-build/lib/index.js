@@ -11,7 +11,7 @@ function build(task, config = {}) {
     })
 
     if (!buildFileState) {
-      const error = `build shell: ${sh} is not existed.`
+      const error = `build shell: ${sh} is not existed.\n`
       task.logger.error({
         name: 'build',
         detail: error
@@ -21,7 +21,7 @@ function build(task, config = {}) {
     }
 
     if (!config.output) {
-      const error = `config.output is required.`
+      const error = `config.output is required.\n`
       task.logger.error({
         name: 'build',
         detail: error
@@ -38,7 +38,7 @@ function build(task, config = {}) {
     })
     task.logger.info({
       name: 'build',
-      detail: `execa: ${shell}`
+      detail: `execa: ${shell}\n`
     })
 
     subprocess.stdout.on('data', data => {

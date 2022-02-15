@@ -73,7 +73,7 @@ function start(task, config) {
           return
         }
 
-        const error = `child process fail: code === ${code}`
+        const error = `child process fail: code === ${code}\n`
         task.logger.error({
           name: 'start',
           detail: error
