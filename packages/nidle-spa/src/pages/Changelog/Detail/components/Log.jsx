@@ -47,7 +47,7 @@ const Log = props => {
   const Panels = (stageLog.steps || []).map(step => {
     return (
       <Collapse.Panel header={`${step.name} - [${step.taskName}]`} key={step.name} extra={genExtra(step)}>
-        <Highlight configRaw={step.detail.replace(/\\r/g, '\n')} type="powershell"></Highlight>
+        <Highlight configRaw={step.detail} type="powershell"></Highlight>
       </Collapse.Panel>
     )
   })
