@@ -71,14 +71,10 @@ class PublishService extends Service {
 
     list.forEach(item => {
       const { developer, commitId } = item
-      // TODO: 获取服务器信息
-      const ip = '0.0.0.0'
-      const output = '/test'
       // 开发者信息
       const currentDeveloper = members.find(member => member.id === developer)
       const name = currentDeveloper?.name || developer
 
-      item.serverInfo = { ip, output }
       item.developer = name
       item.commitUrl = `${repositoryUrl}/commit/${commitId}`
     })

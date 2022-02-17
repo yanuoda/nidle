@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
-import { Tabs, Tooltip, Badge, Button } from 'antd'
+import { Tabs, Badge, Button } from 'antd'
 import { queryPublishData } from '@/services/publish'
 import { Link } from 'umi'
 
@@ -91,29 +91,17 @@ const Publish = props => {
       align: 'center'
     },
     {
-      title: '机器',
-      dataIndex: 'serverInfo',
-      align: 'center',
-      render(dom, { serverInfo }) {
-        const { ip, output } = serverInfo
-        return (
-          <Tooltip placement="top" title={output}>
-            <span>{ip}</span>
-          </Tooltip>
-        )
-      }
-    },
-    {
       title: '状态',
       dataIndex: 'status',
       align: 'center',
       initialValue: 'all',
       fixed: 'right',
-      width: 100,
+      width: 130,
       valueEnum: statusList,
-      render(dom, { status }) {
+      render(dom, { status, environment }) {
+        const { label: envName } = environmentList.find(env => env.value === environment)
         const { label, badgeStatus } = statusList.find(item => item.value === status)
-        return <Badge status={badgeStatus} text={label} />
+        return <Badge status={badgeStatus} text={`${envName} - ${label}`} />
       }
     },
     {
