@@ -3,7 +3,6 @@ import CreateChangelog from '../CreateChangelog'
 
 const PublishList = props => {
   const { columns, data, showAddBtn, projectName, projectId } = props
-  console.log('data >>>>>>>>> ', data)
 
   return (
     <>
