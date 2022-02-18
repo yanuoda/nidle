@@ -1,3 +1,12 @@
+## [0.1.4](https://github.com/yanuoda/nidle/compare/v0.1.3...v0.1.4) (2022-02-18)
+
+
+### Bug Fixes
+
+* input type ([1420083](https://github.com/yanuoda/nidle/commit/142008392757561beb294ded533d2c57b3e7d9a3))
+
+
+
 ## [0.1.3](https://github.com/yanuoda/nidle/compare/v0.1.2...v0.1.3) (2022-02-10)
 
 

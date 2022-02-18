@@ -1,3 +1,20 @@
+## [0.1.4](https://github.com/yanuoda/nidle/compare/v0.1.3...v0.1.4) (2022-02-18)
+
+
+### Bug Fixes
+
+* 日志格式化问题 ([ba0c2c1](https://github.com/yanuoda/nidle/commit/ba0c2c13321a94615ed87fbec217aaf87f7d1c54))
+* 应用配置没有执行chain ([afd511b](https://github.com/yanuoda/nidle/commit/afd511ba678c3e08259880c88cee14f3d60a2d15))
+* 重新发布commitId错误 ([d8287f0](https://github.com/yanuoda/nidle/commit/d8287f0af435b2ced74a002d6037af74ccd26b1c))
+* dataType=text message undefined ([346b275](https://github.com/yanuoda/nidle/commit/346b2756b5b38323d391d5602dfab816654b4f55))
+
+
+### Features
+
+* 发布记录状态展示环境信息 ([da0d977](https://github.com/yanuoda/nidle/commit/da0d977b79bbd901ac34a6d82d40807715e90104))
+
+
+
 ## [0.1.3](https://github.com/yanuoda/nidle/compare/v0.1.2...v0.1.3) (2022-02-10)
 
 

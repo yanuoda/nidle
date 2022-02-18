@@ -1,3 +1,17 @@
+## [0.1.4](https://github.com/yanuoda/nidle/compare/v0.1.3...v0.1.4) (2022-02-18)
+
+
+### Bug Fixes
+
+* 日志格式化问题 ([ba0c2c1](https://github.com/yanuoda/nidle/commit/ba0c2c13321a94615ed87fbec217aaf87f7d1c54))
+
+
+### Features
+
+* 发布记录状态展示环境信息 ([da0d977](https://github.com/yanuoda/nidle/commit/da0d977b79bbd901ac34a6d82d40807715e90104))
+
+
+
 ## [0.1.3](https://github.com/yanuoda/nidle/compare/v0.1.2...v0.1.3) (2022-02-10)
 
 

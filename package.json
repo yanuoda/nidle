@@ -1,6 +1,6 @@
 {
   "name": "nidle-monorepo",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "repository": "git@github.com:yanuoda/nidle.git",
   "author": "Renguang Han",
