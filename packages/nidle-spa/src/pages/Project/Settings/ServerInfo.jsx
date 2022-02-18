@@ -74,14 +74,14 @@ const ServerInfo = props => {
     }
   }
   const modifyServer = async params => {
-    const delRes = await modifyProjectServer(params)
-    const { success } = delRes || {}
+    const modifyRes = await modifyProjectServer(params)
+    const { success, data } = modifyRes || {}
 
     if (success) {
       const currentTab = serverTab
       setProjectServers(prevServers => ({
         ...prevServers,
-        [currentTab]: prevServers[currentTab].map(item => (params.id === item.id ? params : item))
+        [currentTab]: prevServers[currentTab].map(item => (data.id === item.id ? data : item))
       }))
       message.success('修改成功！')
     }

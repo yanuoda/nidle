@@ -35,8 +35,18 @@ class ProjectServerController extends Controller {
 
     try {
       const { id, server, output } = ctx.request.body
-      const res = await ctx.model.ProjectServer.update({ server, output }, { where: { id } })
-      this.success(res)
+      await ctx.model.ProjectServer.update({ server, output }, { where: { id } })
+      const result = await ctx.model.ProjectServer.findOne({
+        where: { id },
+        include: [
+          {
+            model: ctx.model.Server,
+            as: 'Server',
+            attributes: ['name', 'ip', 'description', 'status']
+          }
+        ]
+      })
+      this.success(result)
     } catch (err) {
       this.failed({
         msg: err.message
