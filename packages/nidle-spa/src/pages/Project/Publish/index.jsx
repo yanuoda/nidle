@@ -112,7 +112,7 @@ const Publish = props => {
       align: 'center',
       width: 300,
       render: (dom, { id, nextPublish, isChild, project }) => {
-        const { buttonText, redirectUrl, quit, disabled } = nextPublish || {}
+        const { buttonText, redirectUrl, quit } = nextPublish || {}
         const list = []
         if (!isChild) {
           if (buttonText && redirectUrl) {
@@ -141,13 +141,11 @@ const Publish = props => {
             )
           }
 
-          if (disabled) {
-            list.push(
-              <Link key="publish" to={`/project/${project}/changelog/detail?id=${id}`}>
-                发布详情
-              </Link>
-            )
-          }
+          list.push(
+            <Link key="publish" to={`/project/${project}/changelog/detail?id=${id}`}>
+              发布详情
+            </Link>
+          )
         } else {
           list.push(
             <Link key="publish" to={`/project/${project}/changelog/detail?id=${id}`}>
