@@ -23,6 +23,7 @@
     "nidle-plugin-clone": "0.1.4",
     "nidle-plugin-escheck": "0.1.4",
     "nidle-plugin-eslint": "0.1.4",
+    "nidle-plugin-imagemin": "^0.1.4",
     "nidle-plugin-install": "0.1.4",
     "nidle-plugin-manifest": "0.1.4",
     "nidle-plugin-merge": "0.1.4",
