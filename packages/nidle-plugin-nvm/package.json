@@ -1,6 +1,6 @@
 {
   "name": "nidle-plugin-nvm",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "nidle plugin of nvm node version manager",
   "keywords": [
     "nvm",
