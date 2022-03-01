@@ -1,3 +1,12 @@
+## [0.1.7](https://github.com/yanuoda/nidle/compare/v0.1.6...v0.1.7) (2022-03-01)
+
+
+### Bug Fixes
+
+* 延迟推送消息保证日志输出完整 ([f6a59a1](https://github.com/yanuoda/nidle/commit/f6a59a13ad78ebc7bd3fe3972136b6e0cc617a23))
+
+
+
 ## [0.1.6](https://github.com/yanuoda/nidle/compare/v0.1.5...v0.1.6) (2022-03-01)
 
 

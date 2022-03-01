@@ -1,6 +1,6 @@
 {
   "name": "nidle-chain",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Use a chaining API to generate and simplify the modification of nidle configurations.",
   "keywords": [
     "nidle",

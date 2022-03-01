@@ -1,6 +1,6 @@
 {
   "name": "nidle",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "author": "Renguang Han",
   "license": "MIT",
   "main": "./dist/index.js",

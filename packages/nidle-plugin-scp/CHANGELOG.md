@@ -1,3 +1,12 @@
+## [0.1.7](https://github.com/yanuoda/nidle/compare/v0.1.6...v0.1.7) (2022-03-01)
+
+
+### Bug Fixes
+
+* 添加服务器不需要验证判断 ([67256c1](https://github.com/yanuoda/nidle/commit/67256c11c586d12a6d0e798134af4c00440961bb))
+
+
+
 ## [0.1.6](https://github.com/yanuoda/nidle/compare/v0.1.5...v0.1.6) (2022-03-01)
 
 
