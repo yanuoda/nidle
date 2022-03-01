@@ -9,7 +9,8 @@ module.exports = {
   },
   source: '/Users/wangchangbin/git/nidle-output/style-y8/',
   output: {
-    path: '/Users/wangchangbin/git/nidle-output/output/style-y8/style-y8_1643162722168'
+    // path: '/Users/wangchangbin/git/nidle-output/output/style-y8/style-y8_1643162722168'
+    path: '/Users/wangchangbin/hna/style-y8/dist'
   },
   processOptions: {
     // execPath: '/Users/wangchangbin/.nvm/versions/node/v8.17.0/bin/node'

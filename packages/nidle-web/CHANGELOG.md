@@ -1,3 +1,12 @@
+## [0.1.6](https://github.com/yanuoda/nidle/compare/v0.1.5...v0.1.6) (2022-03-01)
+
+
+### Bug Fixes
+
+* 修复项目设置页修改服务器信息报错 ([c1146fe](https://github.com/yanuoda/nidle/commit/c1146fe8e8cd4673b7c41d16bd09ba485a4037b7))
+
+
+
 ## [0.1.5](https://github.com/yanuoda/nidle/compare/v0.1.4...v0.1.5) (2022-03-01)
 
 
