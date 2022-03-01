@@ -32,6 +32,12 @@ class ScpPlugin {
         name: 'decompress',
         message: '是否解压',
         default: true
+      },
+      {
+        type: 'confirm',
+        name: 'authenticity',
+        message: '服务器是否需要认证',
+        default: true
       }
     ]
   }

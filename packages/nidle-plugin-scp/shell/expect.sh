@@ -8,26 +8,11 @@ set src_file [lindex $argv 4]
 set dest_file [lindex $argv 5]
 set appname [lindex $argv 6]
 set decompress [lindex $argv 7]
+set authenticity [lindex $argv 8]
 
 # scp
 spawn sh -c "scp -p $dirname/$src_file $username@$host:$dest_file"
-expect {
-  "(yes/no)?" {
-    send "yes\n";
-    expect "*assword:" {
-      send "$password\n"
-    }
-  }
-  "*assword:*" {  
-    send "$password\n"
-  }
-}
-expect "100%"
-
-# 判断是否需要解压，node服务在起服务前才去解压
-if {$decompress==1} {
-  # ssh
-  spawn sh -c "ssh $username@$host"
+if {$authenticity==1} {
   expect {
     "(yes/no)?" {
       send "yes\n";
@@ -37,6 +22,26 @@ if {$decompress==1} {
     }
     "*assword:*" {  
       send "$password\n"
+    }
+  }
+}
+expect "100%"
+
+# 判断是否需要解压，node服务在起服务前才去解压
+if {$decompress==1} {
+  # ssh
+  spawn sh -c "ssh $username@$host"
+  if {$authenticity==1} {
+    expect {
+      "(yes/no)?" {
+        send "yes\n";
+        expect "*assword:" {
+          send "$password\n"
+        }
+      }
+      "*assword:*" {  
+        send "$password\n"
+      }
     }
   }
   expect "Last login:*"

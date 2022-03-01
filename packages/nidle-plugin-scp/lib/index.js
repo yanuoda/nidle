@@ -5,7 +5,7 @@ const execa = require('execa')
 function scp(task, config) {
   return new Promise((resolve, reject) => {
     const { output } = task
-    const { servers = [], decompress } = config || {}
+    const { servers = [], decompress, authenticity } = config || {}
 
     if (!servers.length) {
       return reject(new Error('server list is required.'))
@@ -35,7 +35,8 @@ function scp(task, config) {
         output.path,
         tarname,
         path.resolve(__dirname, '../shell/expect.sh'),
-        decompress === false ? 0 : 1
+        decompress === false ? 0 : 1,
+        authenticity === false ? 0 : 1
       ])
 
       subprocess.stdout.on('data', data => {
