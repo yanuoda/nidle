@@ -198,6 +198,7 @@ class ChangelogService extends Service {
 
       // 调度器是异步任务，需要在请求结束后继续执行
       ctx.app.runInBackground(async ctx => {
+        const nidleConfig = ctx.app.config.nidle
         async function update(data) {
           try {
             await ctx.model.Changelog.update(data, { where: { id } })
@@ -214,7 +215,14 @@ class ChangelogService extends Service {
 
         async function wait() {
           return new Promise(resolve => {
-            manager.on('completed', function () {
+            manager.on('completed', async function () {
+              const changelog = await ctx.model.Changelog.findOne({ where: { id } })
+              if (changelog.environment === nidleConfig.environments[nidleConfig.environments.length - 1].value) {
+                // 生产结束要释放资源
+                // 解除环境占用
+                await ctx.service.projectServer.cancelUsed(id)
+              }
+
               console.log('completed')
               resolve()
             })
