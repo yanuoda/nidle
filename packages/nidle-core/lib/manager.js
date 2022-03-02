@@ -100,9 +100,7 @@ class Manager extends EventEmitter {
         })
 
         log.end()
-        setTimeout(() => {
-          this.emit('completed')
-        }, 3000)
+        this.emit('completed')
       })
 
       scheduler.on('error', error => {
@@ -111,9 +109,7 @@ class Manager extends EventEmitter {
         })
 
         log.end()
-        setTimeout(() => {
-          this.emit('error', error)
-        }, 3000)
+        this.emit('error', error)
       })
 
       scheduler.on('stage.active', name => {
