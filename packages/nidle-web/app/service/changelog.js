@@ -224,13 +224,19 @@ class ChangelogService extends Service {
               }
 
               console.log('completed')
-              resolve()
+              delay()
             })
 
             manager.on('error', function () {
               console.log('end')
-              resolve()
+              delay()
             })
+
+            function delay() {
+              setTimeout(() => {
+                resolve()
+              }, nidleConfig.delayEnd || 0)
+            }
           })
         }
         await manager.start()

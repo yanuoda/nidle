@@ -25,5 +25,6 @@ exports.nidle = {
       value: 'production',
       label: '生产'
     }
-  ]
+  ],
+  delayEnd: 0
 }

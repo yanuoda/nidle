@@ -33,7 +33,8 @@ exports.nidle = {
       value: 'production',
       label: '生产'
     }
-  ]
+  ],
+  delayEnd: 2 * 60 * 1000
 }
 
 exports.logger = {
