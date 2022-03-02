@@ -1,6 +1,6 @@
 {
   "name": "nidle-plugin-start",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "nidle plugin of start egg server",
   "keywords": [
     "egg server start",

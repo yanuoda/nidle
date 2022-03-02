@@ -1,6 +1,6 @@
 {
   "name": "nidle-plugin-install",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "nidle plugin of install node module",
   "keywords": [
     "install",

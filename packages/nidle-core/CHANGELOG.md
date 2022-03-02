@@ -1,3 +1,12 @@
+## [0.1.8](https://github.com/yanuoda/nidle/compare/v0.1.7...v0.1.8) (2022-03-02)
+
+
+### Reverts
+
+* 延迟结束放在应用层 ([8795fb5](https://github.com/yanuoda/nidle/commit/8795fb5d2ae6797566b8cc3d401e35123243f2bd))
+
+
+
 ## [0.1.7](https://github.com/yanuoda/nidle/compare/v0.1.6...v0.1.7) (2022-03-01)
 
 

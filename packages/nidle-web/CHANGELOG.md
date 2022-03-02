@@ -1,3 +1,18 @@
+## [0.1.8](https://github.com/yanuoda/nidle/compare/v0.1.7...v0.1.8) (2022-03-02)
+
+
+### Bug Fixes
+
+* 插件没执行完时日志截取不完整问题修复 ([8a52e70](https://github.com/yanuoda/nidle/commit/8a52e70557913f08a2f4850f2f623a8abd5512b5))
+* 发布生产成功后释放机器 ([c88943d](https://github.com/yanuoda/nidle/commit/c88943d82e1e9de3c16e07561a52d8137e496135))
+
+
+### Features
+
+* 增加结束后延迟关闭后台进程，保证日志输出完整性 ([10bcd70](https://github.com/yanuoda/nidle/commit/10bcd704ef6aefb39711d9369f142eb74d4abfb5))
+
+
+
 ## [0.1.7](https://github.com/yanuoda/nidle/compare/v0.1.6...v0.1.7) (2022-03-01)
 
 
