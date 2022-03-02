@@ -477,7 +477,7 @@ function getSteps(logs, steps, from = 0, end) {
     )
 
     // 拼接详情
-    const list = logs.slice(stepStartIdx + 1, stepStartIdx > -1 ? stepEndIdx : logs.len)
+    const list = logs.slice(stepStartIdx + 1, stepEndIdx > -1 ? stepEndIdx : logs.length)
     step.detail = list
       .map(item => item.detail)
       .join('')
