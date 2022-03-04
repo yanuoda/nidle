@@ -56,6 +56,7 @@ const App = props => {
 
       // 创建完跳到详情页，避免用户刷新页面重复创建
       history.replace(`/project/${projectId}/changelog/detail?id=${data.changelog.id}`)
+      location.reload()
 
       setLoading(false)
       return true
