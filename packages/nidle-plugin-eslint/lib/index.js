@@ -47,6 +47,15 @@ function eslint(task) {
         return
       }
 
+      if (str.indexOf('WARN') > -1) {
+        task.logger.warn({
+          name: 'eslint',
+          detail: str
+        })
+
+        return
+      }
+
       task.logger.error({
         name: 'eslint',
         detail: str
