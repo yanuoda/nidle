@@ -32,40 +32,26 @@ function eslint(task) {
       })
     })
 
-    let isMissScript = false
-
     subprocess.stderr.on('data', data => {
       const str = data.toString()
 
-      if (str.indexOf('missing script:') > -1) {
-        task.logger.warn({
+      if (str.indexOf('error:') > -1 || str.indexOf('ERR!') > -1) {
+        task.logger.error({
           name: 'eslint',
           detail: str
         })
-        isMissScript = true
-
+        subprocess.cancel()
         return
       }
 
-      if (str.indexOf('WARN') > -1) {
-        task.logger.warn({
-          name: 'eslint',
-          detail: str
-        })
-
-        return
-      }
-
-      task.logger.error({
+      task.logger.warn({
         name: 'eslint',
         detail: str
       })
-
-      subprocess.cancel()
     })
 
     subprocess.on('close', code => {
-      if (code === 0 || isMissScript) {
+      if (code === 0) {
         resolve()
         return
       }
