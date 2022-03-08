@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react';
 import clsx from 'clsx';
 import Layout from '@theme/Layout';
@@ -17,7 +18,7 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/docs/document/intro">
-            Nidle Tutorial - 5min ⏱️
+            开始使用 ⏱️
           </Link>
         </div>
       </div>
@@ -27,6 +28,8 @@ function HomepageHeader() {
 
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
+  const introMP4 = require('../../static/img/nidle.mp4').default
+
   return (
     <Layout
       title={`Hello from ${siteConfig.title}`}
@@ -34,6 +37,14 @@ export default function Home() {
       <HomepageHeader />
       <main>
         <HomepageFeatures />
+        <section>
+          <div className="container">
+            <h3>视频介绍</h3>
+            <video width="100%" height="auto" controls="controls">
+              <source src={ introMP4 } type="video/mp4" />
+            </video>
+          </div>
+        </section>
       </main>
     </Layout>
   );
