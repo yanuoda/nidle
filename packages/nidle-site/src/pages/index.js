@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-unused-vars
-import React from 'react';
 import clsx from 'clsx';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
@@ -28,7 +26,7 @@ function HomepageHeader() {
 
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
-  const introMP4 = require('../../static/img/nidle.mp4').default
+  // const introMP4 = require('../../static/img/nidle.mp4').default
 
   return (
     <Layout
@@ -41,7 +39,7 @@ export default function Home() {
           <div className="container">
             <h3>视频介绍</h3>
             <video width="100%" height="auto" controls="controls">
-              <source src={ introMP4 } type="video/mp4" />
+              {/* <source src={ introMP4 } type="video/mp4" /> */}
             </video>
           </div>
         </section>
