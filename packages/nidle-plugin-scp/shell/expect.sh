@@ -26,11 +26,10 @@ if {$authenticity==1} {
   }
 }
 
-expect "*Permission denied*" {
-  exit 3
+expect  {
+  "*Permission denied*" {exit 3}
+  "100%"
 }
-
-expect "100%"
 
 # 判断是否需要解压，node服务在起服务前才去解压
 if {$decompress==1} {
