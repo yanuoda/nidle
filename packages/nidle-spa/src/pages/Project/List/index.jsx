@@ -25,16 +25,21 @@ const ProjectList = () => {
       align: 'center'
     },
     {
+      title: '仓库平台',
+      dataIndex: 'repositoryType',
+      align: 'center'
+    },
+    {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
       align: 'center',
       width: 300,
-      render: (dom, { id, name }) => [
-        <Link key="settings" to={`/project/settings?id=${id}&name=${name}`}>
+      render: (dom, { id, name, repositoryType }) => [
+        <Link key="settings" to={`/project/settings?id=${id}&type=${repositoryType}&name=${name}`}>
           设置
         </Link>,
-        <Link key="publish" to={`/project/publish?id=${id}&name=${name}`}>
+        <Link key="publish" to={`/project/publish?id=${id}&type=${repositoryType}&name=${name}`}>
           发布记录
         </Link>
       ]

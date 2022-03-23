@@ -7,11 +7,11 @@ module.exports = app => {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
     name: STRING(30),
     description: STRING,
-    owner: STRING(20),
-    repositoryType: { type: STRING(20), defaultValue: 'GIT' },
+    owner: STRING(100),
+    repositoryType: { type: STRING(20), defaultValue: 'GitLab' },
     repositoryUrl: STRING,
     postEmails: STRING(500),
-    gitlabId: { type: INTEGER, unique: true },
+    gitlabId: { type: INTEGER },
     createdTime: DATE,
     updatedTime: DATE
   })

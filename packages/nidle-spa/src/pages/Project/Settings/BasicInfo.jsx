@@ -1,5 +1,5 @@
 import ProCard from '@ant-design/pro-card'
-import ProForm, { ProFormText } from '@ant-design/pro-form'
+import ProForm, { ProFormText, ProFormRadio } from '@ant-design/pro-form'
 import { message } from 'antd'
 
 import { saveAndSyncProject } from '@/services/project'
@@ -21,14 +21,20 @@ const BasicInfo = props => {
           const params = projectData.id ? { id: projectData.id, ...values } : values
           const result = await saveAndSyncProject(params)
           const { success, data } = result || {}
-          const { id, name } = data || {}
+          const { id, name, repositoryType } = data || {}
           if (success) {
-            window.location.href = `/project/settings?id=${id}&name=${name}`
+            window.location.href = `/project/settings?id=${id}&type=${repositoryType}&name=${name}`
             message.success('应用信息保存成功，正在刷新页面...')
           }
         }}
         initialValues={{ name, repositoryUrl, description }}
       >
+        <ProFormRadio.Group
+          label="仓库平台"
+          name="repositoryType"
+          initialValue="GitLab"
+          options={['GitLab', 'GitHub']}
+        />
         <ProFormText
           width="xl"
           name="repositoryUrl"

@@ -1,11 +1,12 @@
 import { request } from 'umi'
 
 // 获取分支
-export async function fetchBranches(id) {
+export async function fetchBranches(id, type) {
   const result = await request('/api/project/branches', {
     method: 'GET',
     params: {
-      id
+      id,
+      type
     }
   })
 
@@ -13,7 +14,7 @@ export async function fetchBranches(id) {
     result.data = (result.data || []).map(item => {
       return {
         value: item.name,
-        label: `${item.name} [${item.commit.author_name}]`
+        label: item.commit.author_name ? `${item.name} [${item.commit.author_name}]` : item.name
       }
     })
   }

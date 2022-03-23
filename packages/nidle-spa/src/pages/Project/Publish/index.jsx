@@ -11,7 +11,7 @@ import { mode as environmentList } from '@/dicts/app'
 import styles from './index.less'
 
 const Publish = props => {
-  const { name, id } = props.location.query
+  const { name, id, type } = props.location.query
 
   // 面包屑导航自定义
   const routes = [
@@ -184,6 +184,7 @@ const Publish = props => {
                 data={publishDataList[env.value] || []}
                 projectName={name}
                 projectId={id}
+                projectType={type}
                 showAddBtn={idx === 0}
               />
             </Tabs.TabPane>

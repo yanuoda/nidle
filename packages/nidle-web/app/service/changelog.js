@@ -22,17 +22,22 @@ class ChangelogService extends Service {
       // 发布周期
       let period = now
       const project = await ctx.service.project.getBaseinfo(projectId)
-      let commitId
+      const repoTypeLower = project.repositoryType.toLocaleLowerCase()
+      let commitId, branchInfo
 
       if (mode === nidleConfig.environments[0].value) {
         // 从测试环境发布时，取分支的最新commitId，后续发布都基于此commitId
-        const branchInfo = await ctx.service.gitlab.getBranch(project.gitlabId, branch)
-        commitId = branchInfo.commit.id
+        if (repoTypeLower === 'gitlab') {
+          branchInfo = await ctx.service.gitlab.getBranch(project.gitlabId, branch)
+          commitId = branchInfo.commit.id
+        } else {
+          branchInfo = await ctx.service.github.getBranch(project.repositoryUrl, branch)
+          commitId = branchInfo.commit.sha
+        }
       }
-
       let options = {
         repository: {
-          type: project.repositoryType.toLocaleLowerCase(),
+          type: repoTypeLower,
           url: project.repositoryUrl,
           id: project.gitlabId,
           branch,
@@ -70,7 +75,6 @@ class ChangelogService extends Service {
         ...createConfig
       }
       let initConfig = {}
-
       if (createConfig) {
         const manager = new Nidle(extend(true, {}, config))
         initConfig = await manager.init()
@@ -94,6 +98,7 @@ class ChangelogService extends Service {
       const changelog = await ctx.model.Changelog.create({
         period,
         project: projectId,
+        projectType: repoTypeLower,
         branch,
         developer: ctx.session.user.id,
         source,

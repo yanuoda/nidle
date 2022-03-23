@@ -11,12 +11,17 @@ const requireFromString = require('require-from-string')
 
 class ConfigService extends Service {
   // 获取应用对应环境配置
-  async getByApp({ id, mode, branch = 'master' }) {
+  async getByApp({ id, mode, repositoryUrl, repositoryType, branch = 'master' }) {
     const { ctx } = this
     const fileName = `nidle.${mode}.config.js`
 
     try {
-      const configStr = await ctx.service.gitlab.getFile(id, branch, fileName)
+      let configStr = ''
+      if (repositoryType.toLocaleLowerCase() === 'gitlab') {
+        configStr = await ctx.service.gitlab.getFile(id, branch, fileName)
+      } else {
+        configStr = await ctx.service.github.getFile(repositoryUrl, fileName, branch)
+      }
       const config = requireFromString(configStr)
       let templateConfig = {}
 
@@ -54,6 +59,8 @@ class ConfigService extends Service {
       const nidleConfig = ctx.app.config.nidle
       const config = await this.getByApp({
         id: project.gitlabId,
+        repositoryType: project.repositoryType,
+        repositoryUrl: project.repositoryUrl,
         mode,
         branch
       })

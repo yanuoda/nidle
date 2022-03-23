@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react'
 
 /* 发布配置 */
 const ConfigInfo = props => {
-  const { gitlabId } = props.projectData
+  const { gitlabId, repositoryUrl, repositoryType } = props.projectData
   const [configRaw, setConfigRaw] = useState({})
   useEffect(async () => {
     const result = {}
@@ -16,6 +16,8 @@ const ConfigInfo = props => {
       const mode = env.value
       const { data, success } = await getConfigByApp({
         id: gitlabId,
+        repositoryUrl,
+        repositoryType,
         mode
       })
       if (success) {

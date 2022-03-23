@@ -29,17 +29,20 @@ class MemberService extends Service {
   }
 
   // 检查用户是否在项目用户列表里
-  async isProjectMember(projectId) {
+  async isProjectMember(projectId, type = 'gitlab') {
     const { ctx } = this
 
     try {
       const user = ctx.session.user.gitlabUserId
       const project = await ctx.model.Project.findOne({ where: { id: projectId } })
+      const typeLower = type.toLocaleLowerCase()
       // 获取 gitlab 应用成员
-      const memberList = await ctx.service.gitlab.getMembers(project.repositoryUrl)
+      const memberList = await ctx.service[typeLower].getMembers(project.repositoryUrl)
       const idx = memberList.findIndex(item => item.id === user && item.access_level > 20)
 
-      return idx > -1
+      // return idx > -1
+      // github 应用暂不做权限判断
+      return typeLower === 'gitlab' ? idx > -1 : true
     } catch (err) {
       ctx.logger.error(`service.member.isProjectMember: \n${err.message}\n${err.stack}`)
       throw err
