@@ -1,11 +1,11 @@
 const process = require('process')
 const path = require('path')
-const downloadNidle = require('./utils/downloadNidle')
-const customEnvConfig = require('./utils/customEnvConfig')
-const { installPackages } = require('./utils/installPackages')
-const dbMigration = require('./utils/dbMigration')
-const startServer = require('./utils/startServer')
-const buildSpa = require('./utils/buildSpa')
+const downloadNidle = require('./steps/downloadNidle')
+const customEnvConfig = require('./steps/customEnvConfig')
+const { installPackages } = require('./steps/installPackages')
+const dbMigration = require('./steps/dbMigration')
+const startServer = require('./steps/startServer')
+const buildSpa = require('./steps/buildSpa')
 
 const root = process.cwd()
 

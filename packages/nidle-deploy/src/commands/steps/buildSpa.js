@@ -1,8 +1,8 @@
 const process = require('process')
 const path = require('path')
 const execa = require('execa')
-const copyDir = require('./copyDir')
-const { step, errorLog } = require('./log')
+const copyDir = require('../utils/copyDir')
+const { step, errorLog } = require('../utils/log')
 
 /**
  * 编译打包 spa 项目，并复制到 nidle-web 的静态资源目录

@@ -1,18 +1,19 @@
 const process = require('process')
 const path = require('path')
 const semver = require('semver')
-const downloadNidle = require('./utils/downloadNidle')
-const diffAndInquireEnvConfig = require('./utils/diffAndInquireEnvConfig')
-const { installSpaPackages, installWebPackages } = require('./utils/installPackages')
-const dbMigration = require('./utils/dbMigration')
-const startServer = require('./utils/startServer')
-const buildSpa = require('./utils/buildSpa')
+const chalk = require('chalk')
+const downloadNidle = require('./steps/downloadNidle')
+const diffAndInquireEnvConfig = require('./steps/diffAndInquireEnvConfig')
+const { installSpaPackages, installWebPackages } = require('./steps/installPackages')
+const dbMigration = require('./steps/dbMigration')
+const startServer = require('./steps/startServer')
+const buildSpa = require('./steps/buildSpa')
 const getGithubTags = require('./utils/getGithubTags')
-const stopServer = require('./utils/stopServer')
+const stopServer = require('./steps/stopServer')
 const validateIfDepsUpdate = require('./utils/validateIfDepsUpdate')
 const { mkdir, rm } = require('./utils/mkdirAndRm')
-const coverNidleFiles = require('./utils/coverNidleFiles')
-const chalk = require('chalk')
+const coverNidleFiles = require('./steps/coverNidleFiles')
+const { version } = require('./utils/version')
 
 const root = process.cwd()
 
@@ -25,6 +26,12 @@ module.exports = async function updateCommand(ver) {
     updateVersion = ver
   } else {
     updateVersion = await getGithubTags()
+  }
+
+  // 判断是否是最新版/同一版本
+  if (version === updateVersion) {
+    console.log(chalk.green('当前已是最新版！\n'))
+    return
   }
   // 下载最新版 nidle
   const tempDir = path.resolve(root, 'nidle_temp')

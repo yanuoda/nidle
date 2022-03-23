@@ -1,7 +1,7 @@
 const path = require('path')
 const fsExtra = require('fs-extra')
 const inquirer = require('inquirer')
-const { step, errorLog } = require('./log')
+const { step, errorLog } = require('../utils/log')
 
 /**
  * 对比配置项是否有更新，有则询问并生成新的 .env 文件

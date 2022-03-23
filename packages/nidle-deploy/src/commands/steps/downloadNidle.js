@@ -1,7 +1,7 @@
 const ProgressBar = require('progress')
 const download = require('download')
-const { step, errorLog } = require('./log')
-const { version } = require('./version')
+const { step, errorLog } = require('../utils/log')
+const { version } = require('../utils/version')
 
 const bar = new ProgressBar('[:bar] :percent :etas', {
   complete: '=',

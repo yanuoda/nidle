@@ -1,6 +1,6 @@
 const path = require('path')
 const execa = require('execa')
-const { step, errorLog } = require('./log')
+const { step, errorLog } = require('../utils/log')
 
 /**
  * 启动服务

@@ -1,7 +1,7 @@
 const process = require('process')
 const path = require('path')
 const execa = require('execa')
-const { step, errorLog } = require('./log')
+const { step, errorLog } = require('../utils/log')
 
 /**
  * 安装 spa 依赖包

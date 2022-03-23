@@ -1,6 +1,6 @@
 const execa = require('execa')
 const path = require('path')
-const { step, errorLog } = require('./log')
+const { step, errorLog } = require('../utils/log')
 
 /**
  * 数据库创建和迁移
