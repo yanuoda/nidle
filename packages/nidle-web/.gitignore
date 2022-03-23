@@ -4,6 +4,7 @@ node_modules/
 coverage/
 .idea/
 run/
+public/
 .DS_Store
 *.swp
 .env

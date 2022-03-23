@@ -7,6 +7,7 @@ import routes from './routes'
 const { REACT_APP_ENV } = process.env
 
 export default defineConfig({
+  // publicPath: process.env.NODE_ENV === 'production' ? '/public/' : '/',
   hash: true,
   antd: {},
   dva: {
@@ -65,6 +66,6 @@ export default defineConfig({
   // ],
   nodeModulesTransform: {
     type: 'none'
-  },
-  exportStatic: {}
+  }
+  // history: { type: 'hash' }
 })

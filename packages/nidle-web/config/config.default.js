@@ -77,5 +77,9 @@ module.exports = appInfo => {
     }
   }
 
+  config.static = {
+    prefix: ''
+  }
+
   return config
 }
