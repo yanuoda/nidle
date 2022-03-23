@@ -56,7 +56,14 @@ const App = props => {
 
       // 创建完跳到详情页，避免用户刷新页面重复创建
       history.replace(`/project/${projectId}/changelog/detail?id=${data.changelog.id}`)
-      location.reload()
+
+      if (params.id) {
+        message.success('新建发布成功，即将刷新页面。', function () {
+          location.reload()
+        })
+
+        return
+      }
 
       setLoading(false)
       return true
