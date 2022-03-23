@@ -1,11 +1,11 @@
 const path = require('path')
 const copyDir = require('./copyDir')
-const { rm } = require('./mkdirAndRmdir')
+const { rm } = require('./mkdirAndRm')
 const { errorLog } = require('./log')
 
 module.exports = async function coverNidleFiles(oldPath, tempPath, isSpaDepsUpdate, isWebDepsUpdate) {
   const rmSpaGlob = isSpaDepsUpdate ? 'nidle-spa/**' : 'nidle-spa/{!(node_modules),.*}'
-  const rmWebGlob = isWebDepsUpdate ? 'nidle-web/**' : 'nidle-web/{!(node_modules),.!(env)}'
+  const rmWebGlob = isWebDepsUpdate ? 'nidle-web/**' : 'nidle-web/!(node_modules)'
 
   await rm(rmSpaGlob)
   await rm(rmWebGlob)

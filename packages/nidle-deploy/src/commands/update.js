@@ -2,7 +2,7 @@ const process = require('process')
 const path = require('path')
 const semver = require('semver')
 const downloadNidle = require('./utils/downloadNidle')
-// const customEnvConfig = require('./utils/customEnvConfig')
+const diffAndInquireEnvConfig = require('./utils/diffAndInquireEnvConfig')
 const { installSpaPackages, installWebPackages } = require('./utils/installPackages')
 const dbMigration = require('./utils/dbMigration')
 const startServer = require('./utils/startServer')
@@ -10,7 +10,7 @@ const buildSpa = require('./utils/buildSpa')
 const getGithubTags = require('./utils/getGithubTags')
 const stopServer = require('./utils/stopServer')
 const validateIfDepsUpdate = require('./utils/validateIfDepsUpdate')
-const { mkdir, rm } = require('./utils/mkdirAndRmdir')
+const { mkdir, rm } = require('./utils/mkdirAndRm')
 const coverNidleFiles = require('./utils/coverNidleFiles')
 const chalk = require('chalk')
 
@@ -31,7 +31,6 @@ module.exports = async function updateCommand(ver) {
   await mkdir('nidle_temp')
   await downloadNidle(tempDir, updateVersion)
 
-  /** 下载依赖 **/
   // 先验证是否有依赖更新，如果没有，则跳过依赖下载步骤
   const isSpaDepsUpdate = await validateIfDepsUpdate(
     path.resolve(root, 'nidle-spa'),
@@ -50,6 +49,9 @@ module.exports = async function updateCommand(ver) {
       }\n`
     )
   )
+
+  // 配置项 diff，并询问新增配置项
+  await diffAndInquireEnvConfig(root, tempDir)
   // 停止当前服务
   await stopServer(root)
   // 先进行更新文件覆盖

@@ -72,6 +72,6 @@ module.exports = [
   {
     name: 'REDIS_DB_INDEX',
     default: '0',
-    message: '请输入 redis db_index '
+    message: '请输入 redis 数据库 index '
   }
 ]
