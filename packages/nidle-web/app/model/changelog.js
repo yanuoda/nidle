@@ -8,7 +8,6 @@ module.exports = app => {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
     period: STRING(),
     project: INTEGER,
-    projectType: INTEGER,
     branch: STRING(30),
     commitId: STRING(),
     developer: INTEGER,

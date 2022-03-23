@@ -7,11 +7,11 @@ class ChangelogController extends Controller {
   // 新建，返回配置信息
   async create() {
     const { ctx } = this
-    const { id, mode, projectId, projectType } = ctx.request.body
+    const { id, mode, projectId } = ctx.request.body
 
     try {
       // 检查是否有权限
-      const isProjectMember = await ctx.service.member.isProjectMember(projectId, projectType)
+      const isProjectMember = await ctx.service.member.isProjectMember(projectId)
 
       if (!isProjectMember) {
         this.failed({
@@ -50,7 +50,7 @@ class ChangelogController extends Controller {
     try {
       const changelog = await ctx.model.Changelog.findOne({ where: { id } })
       // 检查是否有权限
-      const isProjectMember = await ctx.service.member.isProjectMember(changelog.project, changelog.projectType)
+      const isProjectMember = await ctx.service.member.isProjectMember(changelog.project)
 
       if (!isProjectMember) {
         this.failed({
@@ -77,7 +77,7 @@ class ChangelogController extends Controller {
     try {
       const changelog = await ctx.model.Changelog.findOne({ where: { id } })
       // 检查是否有权限
-      const isProjectMember = await ctx.service.member.isProjectMember(changelog.project, changelog.projectType)
+      const isProjectMember = await ctx.service.member.isProjectMember(changelog.project)
 
       if (!isProjectMember) {
         this.failed({

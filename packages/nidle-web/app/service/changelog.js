@@ -98,7 +98,6 @@ class ChangelogService extends Service {
       const changelog = await ctx.model.Changelog.create({
         period,
         project: projectId,
-        projectType: repoTypeLower,
         branch,
         developer: ctx.session.user.id,
         source,
