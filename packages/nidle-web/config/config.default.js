@@ -6,6 +6,7 @@ const {
   DB_USER,
   DB_PASS,
   DB_HOST,
+  DB_PORT,
   REDIS_HOST,
   REDIS_PORT,
   REDIS_PASSWORD,
@@ -28,7 +29,7 @@ module.exports = appInfo => {
   config.sequelize = {
     dialect: 'mysql',
     host: DB_HOST,
-    port: 3306,
+    port: DB_PORT,
     database: 'nidle_web',
     username: DB_USER,
     password: DB_PASS,

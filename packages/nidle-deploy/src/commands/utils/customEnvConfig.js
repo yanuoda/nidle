@@ -2,7 +2,6 @@ const fs = require('fs')
 const path = require('path')
 const inquirer = require('inquirer')
 const { step, errorLog } = require('./log')
-const envConfigQuestions = require('../dicts/envConfigQuestions')
 
 /**
  * 交互式询问用户配置并输出到 .env 文件
@@ -10,6 +9,7 @@ const envConfigQuestions = require('../dicts/envConfigQuestions')
  */
 module.exports = async function customEnvConfig(outPath) {
   step('询问服务配置...')
+  const envConfigQuestions = require(path.resolve(outPath, './nidle-web/.envQuestion.js'))
   const questions = envConfigQuestions.map(question => {
     const { name, message } = question
     return {
