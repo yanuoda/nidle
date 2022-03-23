@@ -43,7 +43,16 @@ const BasicInfo = props => {
           required
           rules={[{ required: true, message: '请输入 Git 地址' }]}
         />
-        <ProFormText width="xl" name="name" label="应用名称" placeholder="请输入名称" />
+        <ProFormText
+          width="xl"
+          name="name"
+          label="应用名称"
+          placeholder="请输入名称"
+          rules={[
+            { required: true, message: '请输入应用名称' },
+            { pattern: '^[A-Za-z0-9-]{3,30}$', message: '请输入3-30位 英文字母、数字、-的组合' }
+          ]}
+        />
         <ProFormText width="xl" name="description" label="应用描述" placeholder="请输入应用描述" />
       </ProForm>
     </ProCard>
