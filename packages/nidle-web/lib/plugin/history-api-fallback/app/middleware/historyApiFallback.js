@@ -9,12 +9,13 @@ module.exports = (options = {}) => {
     if (ctx.method !== 'GET' || ctx.accepts(options.accepts || ['json', 'html']) !== 'html') {
       return next()
     }
-    var parsedUrl = new url.URL(ctx.request.href)
-    var rewriteTarget
+
+    const parsedUrl = new url.URL(ctx.request.href)
+    let rewriteTarget
     options.rewrites = options.rewrites || []
-    for (var i = 0; i < options.rewrites.length; i++) {
-      var rewrite = options.rewrites[i]
-      var match = parsedUrl.pathname.match(rewrite.from)
+    for (let i = 0; i < options.rewrites.length; i++) {
+      const rewrite = options.rewrites[i]
+      const match = parsedUrl.pathname.match(rewrite.from)
       if (match !== null) {
         rewriteTarget = evaluateRewriteRule(parsedUrl, match, rewrite.to, ctx)
         ctx.url = rewriteTarget
@@ -22,7 +23,7 @@ module.exports = (options = {}) => {
       }
     }
 
-    var pathname = parsedUrl.pathname
+    const pathname = parsedUrl.pathname
     if (pathname.lastIndexOf('.') > pathname.lastIndexOf('/') && options.disableDotRule !== true) {
       return next()
     }

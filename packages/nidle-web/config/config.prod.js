@@ -41,8 +41,6 @@ exports.logger = {
   dir: '/frontend/nidle-output/nidle-web'
 }
 
-exports.historyApiFallback = {}
-
 // exports.mailer = {
 //   host: "smtp.ethereal.email",
 //   port: 587,

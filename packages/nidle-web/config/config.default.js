@@ -65,5 +65,9 @@ module.exports = appInfo => {
     prefix: ''
   }
 
+  exports.historyApiFallback = {
+    ignore: [/^\/api\//]
+  }
+
   return config
 }
