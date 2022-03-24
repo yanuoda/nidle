@@ -9,7 +9,6 @@ module.exports = (options = {}) => {
     if (ctx.method !== 'GET' || ctx.accepts(options.accepts || ['json', 'html']) !== 'html') {
       return next()
     }
-
     var parsedUrl = new url.URL(ctx.request.href)
     var rewriteTarget
     options.rewrites = options.rewrites || []
