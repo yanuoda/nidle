@@ -1,5 +1,6 @@
 'use strict'
 
 exports.historyApiFallback = {
-  disableDotRule: false
+  disableDotRule: false,
+  imageFallback: ''
 }

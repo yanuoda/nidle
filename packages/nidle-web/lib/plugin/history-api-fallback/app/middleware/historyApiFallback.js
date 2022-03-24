@@ -7,7 +7,18 @@ module.exports = (options = {}) => {
 
   return async function historyApiFallback(ctx, next) {
     if (ctx.method !== 'GET' || ctx.accepts(options.accepts || ['json', 'html']) !== 'html') {
-      return next()
+      await next()
+
+      if (ctx.body) {
+        return
+      }
+
+      if (ctx.accepts(['image', 'jpg', 'png', 'gif'])) {
+        ctx.body = options.imageFallback || ''
+        return
+      }
+
+      return
     }
 
     const parsedUrl = new url.URL(ctx.request.href)
