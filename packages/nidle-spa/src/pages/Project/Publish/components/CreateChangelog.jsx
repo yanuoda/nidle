@@ -7,7 +7,7 @@ import { fetchBranches } from '@/services/changelog'
 
 const CreateChangelog = props => {
   const { data: options } = useRequest(() => {
-    return fetchBranches(props.projectId, props.projectType)
+    return fetchBranches(props.projectId)
   })
 
   return (
@@ -27,7 +27,7 @@ const CreateChangelog = props => {
       }}
       onFinish={values => {
         history.push(
-          `/project/${props.projectId}/changelog/detail?branch=${values.branch}&projectName=${props.projectName}&projectType=${props.projectType}`
+          `/project/${props.projectId}/changelog/detail?branch=${values.branch}&projectName=${props.projectName}`
         )
         return true
       }}

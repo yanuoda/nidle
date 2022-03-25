@@ -10,7 +10,7 @@ class ProjectService extends Service {
   }
 
   // 获取应用详情信息
-  async getDetail(id, repositoryType) {
+  async getDetail(id) {
     const { ctx } = this
     const { Project } = ctx.model
 
@@ -19,7 +19,7 @@ class ProjectService extends Service {
       const resData = await Project.findOne({ where: { id } })
       const serverList = await this.getServer(id)
       // 获取 gitlab/github 应用成员
-      const memberList = await ctx.service[repositoryType.toLocaleLowerCase()].getMembers(resData.repositoryUrl)
+      const memberList = await ctx.service[resData.repositoryType].getMembers(resData.repositoryUrl)
 
       return {
         ...resData.dataValues,

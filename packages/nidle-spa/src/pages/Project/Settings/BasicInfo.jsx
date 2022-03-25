@@ -7,7 +7,7 @@ import { saveAndSyncProject } from '@/services/project'
 /* 基本信息 */
 const BasicInfo = props => {
   const { projectData } = props
-  const { name, repositoryUrl, description } = projectData
+  const { name, repositoryUrl, repositoryType = 'GitLab', description } = projectData
   return (
     <ProCard title="基础信息" headerBordered collapsible bordered type="inner">
       <ProForm
@@ -21,19 +21,21 @@ const BasicInfo = props => {
           const params = projectData.id ? { id: projectData.id, ...values } : values
           const result = await saveAndSyncProject(params)
           const { success, data } = result || {}
-          const { id, name, repositoryType } = data || {}
+          const { id, name } = data || {}
           if (success) {
-            window.location.href = `/project/settings?id=${id}&type=${repositoryType}&name=${name}`
+            window.location.href = `/project/settings?id=${id}&name=${name}`
             message.success('应用信息保存成功，正在刷新页面...')
           }
         }}
-        initialValues={{ name, repositoryUrl, description }}
+        initialValues={{ name, repositoryUrl, repositoryType, description }}
       >
         <ProFormRadio.Group
           label="仓库平台"
           name="repositoryType"
-          initialValue="GitLab"
-          options={['GitLab', 'GitHub']}
+          options={[
+            { label: 'GitLab', value: 'gitlab' },
+            { label: 'GitHub', value: 'github' }
+          ]}
         />
         <ProFormText
           width="xl"

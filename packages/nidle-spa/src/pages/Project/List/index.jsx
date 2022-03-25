@@ -35,11 +35,11 @@ const ProjectList = () => {
       valueType: 'option',
       align: 'center',
       width: 300,
-      render: (dom, { id, name, repositoryType }) => [
-        <Link key="settings" to={`/project/settings?id=${id}&type=${repositoryType}&name=${name}`}>
+      render: (dom, { id, name }) => [
+        <Link key="settings" to={`/project/settings?id=${id}&name=${name}`}>
           设置
         </Link>,
-        <Link key="publish" to={`/project/publish?id=${id}&type=${repositoryType}&name=${name}`}>
+        <Link key="publish" to={`/project/publish?id=${id}&name=${name}`}>
           发布记录
         </Link>
       ]

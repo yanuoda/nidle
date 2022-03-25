@@ -10,14 +10,14 @@ import ServerInfo from './ServerInfo'
 import { queryProjectDetail } from '@/services/project'
 
 const ProjectSettings = props => {
-  const { name: projectName, id, type } = props.location.query
+  const { name: projectName, id } = props.location.query
   const [pageLoading, setPageLoading] = useState(true)
   const [projectData, setProjectData] = useState({})
 
   useEffect(async () => {
     // 请求项目数据
     if (id) {
-      const res = await queryProjectDetail({ id, type })
+      const res = await queryProjectDetail({ id })
       const { success, data } = res || {}
       if (success) {
         setProjectData(data)

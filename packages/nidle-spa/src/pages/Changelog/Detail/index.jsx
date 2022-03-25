@@ -30,7 +30,7 @@ const App = props => {
   const [tabActive, setTabActive] = useState('inputs') // Tab Active
   const [logs, setLogs] = useState({}) // 日志
   const [inputAnswers, setInputAnswers] = useState(null) // inputs answer
-  const { branch, id, projectType, mode = modes[0].value, action } = props.location.query
+  const { branch, id, mode = modes[0].value, action } = props.location.query
   const { id: projectId } = props.match.params
 
   // 获取详情
@@ -38,7 +38,6 @@ const App = props => {
     const { data, success, errorMessage } = await fetchDetail({
       id
     })
-
     if (success === true) {
       setDetail(data)
       setLoading(false)
@@ -80,16 +79,14 @@ const App = props => {
       await createChangelog({
         branch,
         mode,
-        projectId,
-        projectType
+        projectId
       })
     } else if (action === 'CREATE') {
       await createChangelog({
         id,
         branch,
         mode,
-        projectId,
-        projectType
+        projectId
       })
     } else {
       await getDetail()
@@ -265,8 +262,7 @@ const App = props => {
           id: changelog.id,
           branch: changelog.branch,
           projectId: changelog.project,
-          mode: next.environment.value,
-          projectType
+          mode: next.environment.value
         })
 
         if (success === true) {
