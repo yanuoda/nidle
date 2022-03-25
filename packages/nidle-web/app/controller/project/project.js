@@ -41,7 +41,7 @@ class ProjectController extends Controller {
   async sync() {
     const { ctx } = this
     const { id, name, repositoryUrl: originRepoUrl, repositoryType, ...rest } = ctx.request.body
-    const BASEURL = repositoryType === 'gitlab' ? process.env.OAUTH_GITLAB_BASEURL : process.env.OAUTH_GITHUB_BASEURL
+    const BASEURL = repositoryType === 'github' ? process.env.OAUTH_GITHUB_BASEURL : process.env.OAUTH_GITLAB_BASEURL
     const repositoryUrl = originRepoUrl.replace('.git', '')
     let projectName = name
 
@@ -57,13 +57,13 @@ class ProjectController extends Controller {
       const projectMembers = await ctx.service[repositoryType].getMembers(repositoryUrl)
       let userList = [],
         username = ''
-      if (repositoryType === 'gitlab') {
-        username = projectMembers.find(member => member.access_level === 50)?.username
-      } else {
+      if (repositoryType === 'github') {
         userList = projectMembers.filter(member => member.role_name === 'admin')
         userList.forEach(el => {
           username += `;${el.login}`
         })
+      } else {
+        username = projectMembers.find(member => member.access_level === 50)?.username
       }
       if (username) {
         data.owner = username.indexOf(';') === 0 ? username.substring(username.indexOf(';') + 1) : username
@@ -116,10 +116,10 @@ class ProjectController extends Controller {
     try {
       const { gitlabId, repositoryUrl, repositoryType } = await ctx.service.project.findByPk(id)
       let branches
-      if (repositoryType === 'gitlab') {
-        branches = await ctx.service[repositoryType].getBranches(gitlabId)
-      } else {
+      if (repositoryType === 'github') {
         branches = await ctx.service[repositoryType].getBranches(repositoryUrl)
+      } else {
+        branches = await ctx.service[repositoryType].getBranches(gitlabId)
       }
       this.success(branches)
     } catch (err) {

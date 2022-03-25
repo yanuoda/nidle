@@ -27,12 +27,12 @@ class ChangelogService extends Service {
 
       if (mode === nidleConfig.environments[0].value) {
         // 从测试环境发布时，取分支的最新commitId，后续发布都基于此commitId
-        if (repositoryType === 'gitlab') {
-          branchInfo = await ctx.service.gitlab.getBranch(gitlabId, branch)
-          commitId = branchInfo.commit.id
-        } else {
+        if (repositoryType === 'github') {
           branchInfo = await ctx.service.github.getBranch(repositoryUrl, branch)
           commitId = branchInfo.commit.sha
+        } else {
+          branchInfo = await ctx.service.gitlab.getBranch(gitlabId, branch)
+          commitId = branchInfo.commit.id
         }
       }
       let options = {

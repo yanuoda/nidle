@@ -18,10 +18,10 @@ class ConfigService extends Service {
 
     try {
       let configStr = ''
-      if (repositoryType === 'gitlab') {
-        configStr = await ctx.service.gitlab.getFile(gitlabId, branch, fileName)
-      } else {
+      if (repositoryType === 'github') {
         configStr = await ctx.service.github.getFile(repositoryUrl, fileName, branch)
+      } else {
+        configStr = await ctx.service.gitlab.getFile(gitlabId, branch, fileName)
       }
       const config = requireFromString(configStr)
       let templateConfig = {}
