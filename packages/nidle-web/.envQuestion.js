@@ -26,7 +26,7 @@ module.exports = [
   },
   {
     name: 'DB_PORT',
-    default: '127.0.0.1',
+    default: '3306',
     message: '请输入数据库服务端口'
   },
   {

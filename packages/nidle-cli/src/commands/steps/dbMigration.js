@@ -1,17 +1,21 @@
 const execa = require('execa')
 const path = require('path')
-const { step, errorLog } = require('../utils/log')
+const Logger = require('../utils/log')
 
 /**
  * 数据库创建和迁移
  * @param {String} outPath nidle 下载目录
  */
 module.exports = async function dbMigration(outPath) {
-  step('开始数据库创建及迁移操作...')
+  const logger = new Logger('数据库创建及迁移')
+
   try {
+    logger.step()
     process.chdir(path.resolve(outPath, 'nidle-web'))
-    await execa('yarn', ['db:create'], { stdio: 'inherit' })
+    await execa('yarn', ['db:create'], { stdio: 'pipe' })
+    process.chdir(process.cwd())
+    logger.success()
   } catch (err) {
-    errorLog(`数据库创建和迁移失败，请重试！\n${err.message}`)
+    logger.errorLog(`数据库创建和迁移失败，请重试！\n${err.message}`)
   }
 }

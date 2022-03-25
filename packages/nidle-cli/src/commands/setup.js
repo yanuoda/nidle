@@ -6,6 +6,8 @@ const { installPackages } = require('./steps/installPackages')
 const dbMigration = require('./steps/dbMigration')
 const startServer = require('./steps/startServer')
 const buildSpa = require('./steps/buildSpa')
+const { version } = require('./utils/version')
+const chalk = require('chalk')
 
 const root = process.cwd()
 
@@ -14,6 +16,7 @@ const root = process.cwd()
  * @param {String} output nidle 下载相对目录
  */
 module.exports = async function setupCommand(output) {
+  console.log(chalk.yellow(`  开始安装 nidle@${version}\n`))
   const outPath = path.resolve(root, output || '.')
   // 下载 nidle
   await downloadNidle(outPath)

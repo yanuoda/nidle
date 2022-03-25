@@ -1,14 +1,13 @@
 const fs = require('fs')
 const path = require('path')
 const inquirer = require('inquirer')
-const { step, errorLog } = require('../utils/log')
+const Logger = require('../utils/log')
 
 /**
  * 交互式询问用户配置并输出到 .env 文件
  * @param {String} outPath nidle 下载目录
  */
 module.exports = async function customEnvConfig(outPath) {
-  step('询问服务配置...')
   const envConfigQuestions = require(path.resolve(outPath, './nidle-web/.envQuestion.js'))
   const questions = envConfigQuestions.map(question => {
     const { name, message } = question
@@ -34,8 +33,8 @@ FE_SUCCESS_CALLBACK=${NIDLE_URL}/\n
 FE_FAILED_CALLBACK=${NIDLE_URL}/user/login\n
 `
     fs.writeFileSync(path.resolve(outPath, './nidle-web/.env'), envRaw)
-    step('在 nidle-web 目录下生成配置文件 .env 成功！')
+    console.log()
   } catch (err) {
-    errorLog(`nidle-web 配置生成失败，请重试！\n${err.message}`)
+    new Logger('nidle-web 服务配置').errorLog(`nidle-web 配置生成失败，请重试！\n${err.message}`)
   }
 }

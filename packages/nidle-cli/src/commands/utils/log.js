@@ -1,13 +1,22 @@
 const chalk = require('chalk')
+const ora = require('ora')
 
-const step = msg => console.log(chalk.green(`${msg}\n`))
+module.exports = class Logger {
+  constructor(stepTitle) {
+    this.stepTitle = stepTitle
+    this.spinner = ora({ text: stepTitle, color: 'cyan' })
+  }
 
-const errorLog = msg => {
-  console.log(chalk.red(`${msg}\n`))
-  throw new Error('exit')
-}
+  step() {
+    return this.spinner.start()
+  }
 
-module.exports = {
-  step,
-  errorLog
+  success() {
+    return this.spinner.succeed(`${this.stepTitle}\n`)
+  }
+
+  errorLog(msg) {
+    this.spinner.fail(chalk.red(`${this.stepTitle}\n${msg}\n`))
+    throw new Error('exit')
+  }
 }

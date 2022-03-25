@@ -2,6 +2,7 @@ const process = require('process')
 const path = require('path')
 const semver = require('semver')
 const chalk = require('chalk')
+const fsExtra = require('fs-extra')
 const downloadNidle = require('./steps/downloadNidle')
 const diffAndInquireEnvConfig = require('./steps/diffAndInquireEnvConfig')
 const { installSpaPackages, installWebPackages } = require('./steps/installPackages')
@@ -11,9 +12,10 @@ const buildSpa = require('./steps/buildSpa')
 const getGithubTags = require('./utils/getGithubTags')
 const stopServer = require('./steps/stopServer')
 const validateIfDepsUpdate = require('./utils/validateIfDepsUpdate')
-const { mkdir, rm } = require('./utils/mkdirAndRm')
+const rm = require('./utils/rm')
 const coverNidleFiles = require('./steps/coverNidleFiles')
 const { version } = require('./utils/version')
+const Logger = require('./utils/log')
 
 const root = process.cwd()
 
@@ -30,12 +32,18 @@ module.exports = async function updateCommand(ver) {
 
   // 判断是否是最新版/同一版本
   if (version === updateVersion) {
-    console.log(chalk.green('当前已是最新版！\n'))
+    console.log('当前已是最新版！\n')
     return
   }
+  console.log(chalk.yellow(`  开始更新 nidle@${updateVersion}\n`))
   // 下载最新版 nidle
   const tempDir = path.resolve(root, 'nidle_temp')
-  await mkdir('nidle_temp')
+  try {
+    await fsExtra.ensureDir('nidle_temp')
+  } catch (err) {
+    new Logger('创建 nidle 更新文件临时目录').errorLog(err.message)
+  }
+
   await downloadNidle(tempDir, updateVersion)
 
   // 先验证是否有依赖更新，如果没有，则跳过依赖下载步骤
@@ -50,9 +58,9 @@ module.exports = async function updateCommand(ver) {
   console.log(
     chalk.yellow(
       `${
-        isSpaDepsUpdate ? 'nidle-spa 依赖有变化，将会重新下载！' : 'nidle-spa 依赖无变化，将沿用之前的 node_modules'
+        isSpaDepsUpdate ? '  nidle-spa 依赖有变化，将会重新下载！' : '  nidle-spa 依赖无变化，将沿用之前的 node_modules'
       }\n${
-        isWebDepsUpdate ? 'nidle-web 依赖有变化，将会重新下载！' : 'nidle-web 依赖无变化，将沿用之前的 node_modules'
+        isWebDepsUpdate ? '  nidle-web 依赖有变化，将会重新下载！' : '  nidle-web 依赖无变化，将沿用之前的 node_modules'
       }\n`
     )
   )
@@ -73,8 +81,6 @@ module.exports = async function updateCommand(ver) {
     await installWebPackages(root)
   }
 
-  // 询问 env 配置
-  // await customEnvConfig(root)
   // 打包 nidle-spa 并将静态资源放到 nidle-web 的静态资源目录下
   await buildSpa(root)
   // 运行数据库生成及迁移脚本
