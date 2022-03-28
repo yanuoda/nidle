@@ -44,7 +44,7 @@ module.exports = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: '文档',
           items: [
             {
               label: 'Tutorial',
@@ -70,12 +70,12 @@ module.exports = {
         //   ],
         // },
         {
-          title: 'More',
+          title: '更多',
           items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
+            // {
+            //   label: 'Blog',
+            //   to: '/blog',
+            // },
             {
               label: 'GitHub',
               href: 'https://github.com/yanuoda/nidle',
