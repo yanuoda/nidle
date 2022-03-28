@@ -37,6 +37,10 @@ module.exports = {
           dirName: 'document/advanced'
         }
       ]
+    },
+    {
+      type: 'doc',
+      id: 'document/plugin'
     }
   ],
   developer: [
