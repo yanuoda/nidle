@@ -14,8 +14,8 @@ const stopServer = require('./steps/stopServer')
 const validateIfDepsUpdate = require('./utils/validateIfDepsUpdate')
 const rm = require('./utils/rm')
 const coverNidleFiles = require('./steps/coverNidleFiles')
-const { version } = require('./utils/version')
 const Logger = require('./utils/log')
+const getCurrentVersion = require('./utils/getCurrentVersion')
 
 const root = process.cwd()
 
@@ -30,12 +30,15 @@ module.exports = async function updateCommand(ver) {
     updateVersion = await getGithubTags()
   }
 
+  // 获取当前已安装版本
+  const currentVersion = getCurrentVersion(root)
+
   // 判断是否是最新版/同一版本
-  if (version === updateVersion) {
+  if (currentVersion === updateVersion) {
     console.log('当前已是最新版！\n')
     return
   }
-  console.log(chalk.yellow(`  开始更新 nidle@${updateVersion}\n`))
+  console.log(chalk.yellow(`\n  开始更新 nidle@${updateVersion}\n`))
   // 下载最新版 nidle
   const tempDir = path.resolve(root, 'nidle_temp')
   try {

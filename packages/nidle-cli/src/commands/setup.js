@@ -16,7 +16,7 @@ const root = process.cwd()
  * @param {String} output nidle 下载相对目录
  */
 module.exports = async function setupCommand(output) {
-  console.log(chalk.yellow(`  开始安装 nidle@${version}\n`))
+  console.log(chalk.yellow(`\n  开始安装 nidle@${version}\n`))
   const outPath = path.resolve(root, output || '.')
   // 下载 nidle
   await downloadNidle(outPath)

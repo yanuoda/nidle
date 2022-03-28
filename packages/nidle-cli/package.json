@@ -1,6 +1,6 @@
 {
   "name": "nidle-cli",
-  "version": "0.1.2",
+  "version": "0.1.8",
   "description": "A cli tool to install and update nidle.",
   "author": "hanrenguang <413526182@qq.com>",
   "homepage": "https://github.com/yanuoda/nidle#readme",
