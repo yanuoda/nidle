@@ -2,10 +2,10 @@
 
 > nidle plugin of install node modules
 
-## Usage
-
+## Install
 ```
-const nidleInstall = require('nidle-plugin-install');
-
-// TODO: DEMONSTRATE API
+npm install nidle-plugin-install
 ```
+
+## Configuration
+* production 是否生产环境，只安装 dependencies，默认`false`

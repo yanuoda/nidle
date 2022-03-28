@@ -2,19 +2,19 @@
 
 > nidle plugin of nvm node version manager，required `nvm`
 
+## Install
+```
+npm install nidle-plugin-nvm
+```
+
+## Usage
+如果您有多个项目，且依赖不同的 `node version`，那么可以使用该插件.
+
 `nidle-plugin-nvm` 会根据
 * .nvmrc （`优先`）
 * package.json > engines > node
 
 获取应用所需的`node version`，并修改`task.processOptions.execPath`指向正确的 node 执行文件。
-
-## Usage
-
-```
-const nidleNvm = require('nidle-plugin-nvm');
-
-// TODO: DEMONSTRATE API
-```
 
 ## WHY
 #### 为什么`nidle-plugin-nvm`不直接`nvm use`管理应用的 node 版本，而是只给出执行文件路径？
