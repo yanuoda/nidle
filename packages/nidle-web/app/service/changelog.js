@@ -221,6 +221,7 @@ class ChangelogService extends Service {
                 // 生产结束要释放资源
                 // 解除环境占用
                 await ctx.service.projectServer.cancelUsed(id)
+                await manager.backup()
               }
 
               console.log('completed')
