@@ -273,6 +273,15 @@ class ChangelogService extends Service {
         { where: { id } }
       )
 
+      // 清除缓存
+      const changelog = await ctx.model.Changelog.findOne({ where: { id } })
+      const configRaw = fs.readFileSync(changelog.configPath)
+      const config = JSON.parse(configRaw)
+      const manager = new Nidle({
+        ...config
+      })
+      manager.clear()
+
       return true
     } catch (err) {
       ctx.logger.error(`退出发布: \n${err.message}\n${err.stack}`)
