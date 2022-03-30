@@ -10,13 +10,14 @@ const program = new Command()
 program
   .command('setup')
   .option('-o, --output <output>', '指定 nidle 安装包下载目录')
-  .action(async ({ output }) => {
-    setup(output).catch(() => {})
+  .option('-v, --version <version>', '指定 nidle 安装版本（如：0.1.1）')
+  .action(async ({ output, version: specifyVersion }) => {
+    setup(output, specifyVersion || version).catch(() => {})
   })
 
 program
   .command('update')
-  .option('--update-version <version>', '指定 nidle 更新版本')
+  .option('--update-version <version>', '指定 nidle 更新版本（如：0.1.1）')
   .action(async ({ updateVersion }) => {
     update(updateVersion).catch(() => {})
   })

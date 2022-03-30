@@ -6,6 +6,7 @@ const Logger = require('../utils/log')
 /**
  * 交互式询问用户配置并输出到 .env 文件
  * @param {String} outPath nidle 下载目录
+ * @returns nidle 服务地址
  */
 module.exports = async function customEnvConfig(outPath) {
   const envConfigQuestions = require(path.resolve(outPath, './nidle-web/.envQuestion.js'))
@@ -31,9 +32,11 @@ ${envRaw}
 OAUTH_GITLAB_REDIRECT_URI=${NIDLE_URL}/api/oauth/callback\n
 FE_SUCCESS_CALLBACK=${NIDLE_URL}/\n
 FE_FAILED_CALLBACK=${NIDLE_URL}/user/login\n
+NIDLE_URL=${NIDLE_URL}\n
 `
     fs.writeFileSync(path.resolve(outPath, './nidle-web/.env'), envRaw)
     console.log()
+    return NIDLE_URL
   } catch (err) {
     new Logger('nidle-web 服务配置').errorLog(`nidle-web 配置生成失败，请重试！\n${err.message}`)
   }

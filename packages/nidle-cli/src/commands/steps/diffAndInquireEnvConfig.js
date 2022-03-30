@@ -7,6 +7,7 @@ const Logger = require('../utils/log')
  * 对比配置项是否有更新，有则询问并生成新的 .env 文件
  * @param {String} oldPath nidle 旧版文件目录
  * @param {String} tempPath nidle 更新文件下载目录
+ * @returns nidle 服务地址
  */
 module.exports = async function diffAndInquireEnvConfig(oldPath, tempPath) {
   const logger = new Logger('增量询问服务配置')
@@ -37,6 +38,7 @@ module.exports = async function diffAndInquireEnvConfig(oldPath, tempPath) {
     }
     await fsExtra.writeFile(path.resolve(tempPath, './nidle-web/.env'), updateEnvRaw)
     logger.success()
+    return updateEnvRaw.match(/NIDLE_URL=(.*?)\n/)[1]
   } catch (err) {
     logger.errorLog(`nidle-web 配置文件更新失败，请重试！\n${err.message}`)
   }

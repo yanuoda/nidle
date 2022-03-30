@@ -69,7 +69,7 @@ module.exports = async function updateCommand(ver) {
   )
 
   // 配置项 diff，并询问新增配置项
-  await diffAndInquireEnvConfig(root, tempDir)
+  const nidleUrl = await diffAndInquireEnvConfig(root, tempDir)
   // 停止当前服务
   await stopServer(root)
   // 先进行更新文件覆盖
@@ -92,4 +92,5 @@ module.exports = async function updateCommand(ver) {
   await startServer(root)
   // 删除临时目录
   await rm(path.resolve(root, './nidle_temp'))
+  console.log(chalk.cyan(`  nidle 服务已启动，访问地址：${nidleUrl}\n`))
 }
