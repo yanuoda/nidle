@@ -18,6 +18,6 @@ module.exports = async function getGithubTags() {
     logger.success()
     return versionSortList.length > 0 ? `${versionSortList.pop()}` : null
   } catch (err) {
-    logger.errorLog(`检查 nidle 版本更新失败，请重试！\n${err.message}`)
+    logger.error(`检查 nidle 版本更新失败，请重试！\n${err.message}`)
   }
 }

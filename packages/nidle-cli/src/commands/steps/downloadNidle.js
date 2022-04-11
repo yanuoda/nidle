@@ -18,6 +18,6 @@ module.exports = async function downloadNidle(outPath, version) {
     })
     logger.success()
   } catch (err) {
-    logger.errorLog(`下载 nidle 失败，请重试！\n${err.message}`)
+    logger.error(`下载 nidle 失败，请重试！\n${err.message}`)
   }
 }

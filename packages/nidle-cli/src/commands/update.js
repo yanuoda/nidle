@@ -44,7 +44,7 @@ module.exports = async function updateCommand(ver) {
   try {
     await fsExtra.ensureDir('nidle_temp')
   } catch (err) {
-    new Logger('创建 nidle 更新文件临时目录').errorLog(err.message)
+    new Logger('创建 nidle 更新文件临时目录').error(err.message)
   }
 
   await downloadNidle(tempDir, updateVersion)

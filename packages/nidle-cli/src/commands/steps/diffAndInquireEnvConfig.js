@@ -40,6 +40,6 @@ module.exports = async function diffAndInquireEnvConfig(oldPath, tempPath) {
     logger.success()
     return updateEnvRaw.match(/NIDLE_URL=(.*?)\n/)[1]
   } catch (err) {
-    logger.errorLog(`nidle-web 配置文件更新失败，请重试！\n${err.message}`)
+    logger.error(`nidle-web 配置文件更新失败，请重试！\n${err.message}`)
   }
 }

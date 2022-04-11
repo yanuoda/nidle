@@ -18,7 +18,7 @@ async function installSpaPackages(outPath) {
     process.chdir(process.cwd())
     logger.success()
   } catch (err) {
-    logger.errorLog(`nidle-spa 依赖包安装失败，请重试！\n${err.message}`)
+    logger.error(`nidle-spa 依赖包安装失败，请重试！\n${err.message}`)
   }
 }
 
@@ -37,7 +37,7 @@ async function installWebPackages(outPath) {
     process.chdir(process.cwd())
     logger.success()
   } catch (err) {
-    logger.errorLog(`nidle-web 依赖包安装失败，请重试！\n${err.message}`)
+    logger.error(`nidle-web 依赖包安装失败，请重试！\n${err.message}`)
   }
 }
 

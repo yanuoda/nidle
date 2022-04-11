@@ -15,7 +15,7 @@ module.exports = class Logger {
     return this.spinner.succeed(`${this.stepTitle}\n`)
   }
 
-  errorLog(msg) {
+  error(msg) {
     this.spinner.fail(chalk.red(`${this.stepTitle}\n${msg}\n`))
     throw new Error('exit')
   }

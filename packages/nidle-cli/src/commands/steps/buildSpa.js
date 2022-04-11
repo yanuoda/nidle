@@ -16,12 +16,12 @@ module.exports = async function buildSpa(outPath) {
     await execa('yarn', ['build'], { stdio: 'pipe' })
     await copyDir(path.resolve(outPath, './nidle-spa/dist'), path.resolve(outPath, './nidle-web/app/public')).catch(
       err => {
-        logger.errorLog(`nidle-spa 静态资源移动到 nidle-web 失败，请重试！\n${err.message}`)
+        logger.error(`nidle-spa 静态资源移动到 nidle-web 失败，请重试！\n${err.message}`)
       }
     )
     process.chdir(process.cwd())
     logger.success()
   } catch (err) {
-    logger.errorLog(`nidle-spa 打包失败，请重试！\n${err.message}`)
+    logger.error(`nidle-spa 打包失败，请重试！\n${err.message}`)
   }
 }
