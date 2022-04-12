@@ -67,6 +67,7 @@ module.exports = async function updateCommand(ver, retry) {
     stepFlow.steps.some(step => {
       if (step.funcName === 'diffAndInquireEnvConfig') {
         nidleUrl = step.res.default
+        return true
       }
     })
     console.log(chalk.cyan(`  nidle 服务已启动，访问地址：${nidleUrl}\n`))
