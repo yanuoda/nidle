@@ -1,5 +1,5 @@
 const download = require('download')
-const Logger = require('../utils/log')
+const { Logger } = require('../utils')
 
 /**
  * 下载 nidle

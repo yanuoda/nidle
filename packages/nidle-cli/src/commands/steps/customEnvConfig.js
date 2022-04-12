@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const inquirer = require('inquirer')
-const Logger = require('../utils/log')
+const { Logger } = require('../utils')
 
 /**
  * 交互式询问用户配置并输出到 .env 文件

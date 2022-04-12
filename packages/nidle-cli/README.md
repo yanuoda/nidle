@@ -24,12 +24,12 @@ $ nidle-cli <command> --help
 ## API
 
 ```
-const nidleCli = require('nidle-cli')
-
 // setup
-nidleCli.setup(outputPath)
+const setup = require('nidle-cli/commands/setup')
+setup(outputPath)
 // update
-nidleCli.update(newVersion)
+const update = require('nidle-cli/commands/update')
+update(newVersion)
 ```
 
 ## License
