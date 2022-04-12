@@ -6,6 +6,7 @@
 
 - 自动化安装启动 `nidle`
 - 选定版本迁移更新
+- 支持断点续装
 
 ## Install
 
@@ -25,11 +26,11 @@ $ nidle-cli <command> --help
 
 ```
 // setup
-const setup = require('nidle-cli/commands/setup')
-setup(outputPath)
+const setup = require('nidle-cli/src/commands/setup')
+setup(outputPath, version, retryFlag)
 // update
-const update = require('nidle-cli/commands/update')
-update(newVersion)
+const update = require('nidle-cli/src/commands/update')
+update(newVersion, retryFlag)
 ```
 
 ## License
