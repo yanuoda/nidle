@@ -11,7 +11,7 @@ module.exports = async function downloadNidle(outPath, version) {
 
   try {
     logger.step()
-    const nidleAssetsUrl = `https://github.com/hanrenguang/nidle-test/releases/download/v${version}/nidle.tar.gz`
+    const nidleAssetsUrl = `https://github.com/yanuoda/nidle/releases/download/v${version}/nidle.tar.gz`
     await download(nidleAssetsUrl, outPath, {
       extract: true,
       retries: 0
