@@ -9,6 +9,12 @@ class ProjectController extends Controller {
     const { current, pageSize, ...body } = ctx.request.body
 
     try {
+      // 过滤空字段
+      for (const key in body) {
+        if (!body[key]) {
+          delete body[key]
+        }
+      }
       const { count, rows } = await ctx.model.Project.findAndCountAll({
         where: body,
         offset: (current - 1) * pageSize,

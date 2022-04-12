@@ -35,6 +35,7 @@ const ModifyPassword = () => {
             name="oldPassword"
             label="旧密码"
             required
+            placeholder="请输入旧密码（初始密码为 000000）"
             rules={[{ required: true, message: '请输入旧密码' }]}
           />
           <ProFormText.Password
@@ -42,6 +43,7 @@ const ModifyPassword = () => {
             name="newPassword"
             label="新密码"
             required
+            placeholder="请输入新密码"
             rules={[{ required: true, message: '请输入新密码' }]}
           />
           <ProFormText.Password
@@ -49,6 +51,7 @@ const ModifyPassword = () => {
             name="confirmPassword"
             label="确认密码"
             required
+            placeholder="请再次输入新密码"
             rules={[{ required: true, message: '请再其次输入新密码' }]}
           />
         </ProForm>
