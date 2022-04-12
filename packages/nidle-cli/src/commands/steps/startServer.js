@@ -16,6 +16,6 @@ module.exports = async function startServer(outPath) {
     process.chdir(process.cwd())
     logger.success()
   } catch (err) {
-    logger.error(`服务启动失败，请重试！\n${err.message}`)
+    logger.error(`服务启动失败，请重试！\n${err}`)
   }
 }

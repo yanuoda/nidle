@@ -21,6 +21,6 @@ module.exports = async function buildSpa(outPath) {
     process.chdir(process.cwd())
     logger.success()
   } catch (err) {
-    logger.error(`nidle-spa 打包失败，请重试！\n${err.message}`)
+    logger.error(`nidle-spa 打包失败，请重试！\n${err}`)
   }
 }

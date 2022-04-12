@@ -16,6 +16,6 @@ module.exports = async function dbMigration(outPath) {
     process.chdir(process.cwd())
     logger.success()
   } catch (err) {
-    logger.error(`数据库创建和迁移失败，请重试！\n${err.message}`)
+    logger.error(`数据库创建和迁移失败，请重试！\n${err}`)
   }
 }

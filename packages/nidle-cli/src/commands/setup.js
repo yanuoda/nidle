@@ -44,7 +44,7 @@ module.exports = async function setupCommand(output, version, retry) {
       }
     })
     console.log(chalk.cyan(`  nidle 服务已启动，访问地址：${nidleUrl}\n`))
-    rm(path.resolve(outPath, './setupContinueCtx.json'))
+    await rm(path.resolve(outPath, './setupContinueCtx.json'))
   } catch (err) {
     stepIndex = parseInt(err.message)
     stepFlow.errorIndex = stepIndex + 1

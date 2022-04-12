@@ -38,6 +38,6 @@ NIDLE_URL=${NIDLE_URL}\n
     console.log()
     return NIDLE_URL
   } catch (err) {
-    new Logger('nidle-web 服务配置').error(`nidle-web 配置生成失败，请重试！\n${err.message}`)
+    new Logger('nidle-web 服务配置').error(`nidle-web 配置生成失败，请重试！\n${err}`)
   }
 }

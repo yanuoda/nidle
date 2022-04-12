@@ -7,6 +7,7 @@ const startServer = require('./startServer')
 const stopServer = require('./stopServer')
 const coverNidleFiles = require('./coverNidleFiles')
 const diffAndInquireEnvConfig = require('./diffAndInquireEnvConfig')
+const { diffSpaDeps, diffWebDeps, diffDeps } = require('./diffDeps')
 
 module.exports = {
   downloadNidle,
@@ -19,5 +20,8 @@ module.exports = {
   startServer,
   stopServer,
   coverNidleFiles,
-  diffAndInquireEnvConfig
+  diffAndInquireEnvConfig,
+  diffSpaDeps,
+  diffWebDeps,
+  diffDeps
 }

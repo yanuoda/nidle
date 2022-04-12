@@ -19,8 +19,9 @@ program
 program
   .command('update')
   .option('--update-version <version>', '指定 nidle 更新版本（如：0.1.1）')
-  .action(async ({ updateVersion }) => {
-    update(updateVersion).catch(() => {})
+  .option('--retry', '断点续装')
+  .action(async ({ updateVersion, retry }) => {
+    update(updateVersion, retry).catch(() => {})
   })
 
 program.version(version).parse()
