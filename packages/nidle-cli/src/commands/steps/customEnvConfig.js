@@ -21,9 +21,9 @@ module.exports = async function customEnvConfig(outPath) {
   try {
     let envRaw = ''
     const answers = await inquirer.prompt(questions)
-    const { NIDLE_SERVER, NIDLE_PORT } = answers
-    const NIDLE_URL = `${NIDLE_SERVER}:${NIDLE_PORT}`
-    delete answers.NIDLE_SERVER
+    const { NIDLE_HOST, NIDLE_PORT } = answers
+    const NIDLE_URL = `http://${NIDLE_HOST}:${NIDLE_PORT}`
+    delete answers.NIDLE_HOST
     delete answers.NIDLE_PORT
     Object.keys(answers).forEach(config => (envRaw = `${envRaw}${config}=${answers[config]}\n`))
     // 根据输入的 nidle 服务启动地址和端口，得到其他配置项

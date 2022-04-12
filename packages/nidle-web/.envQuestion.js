@@ -1,8 +1,8 @@
 module.exports = [
   {
-    name: 'NIDLE_SERVER',
-    default: 'http://127.0.0.1',
-    message: '请输入 nidle 服务启动地址'
+    name: 'NIDLE_HOST',
+    default: '127.0.0.1',
+    message: '请输入 nidle 服务启动 IP '
   },
   {
     name: 'NIDLE_PORT',
