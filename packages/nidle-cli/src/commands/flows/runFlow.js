@@ -40,9 +40,9 @@ module.exports = async function runFlow(options = {}) {
         if ((condition && parseArgs(condition)[0]) || !condition) {
           // 如果存在前置条件且前置条件为 true || 不存在前置条件
           if (preFunc) {
-            // 如果存在前置步骤，则先执行前置步骤
+            // 如果存在前置处理步骤，则先执行前置处理步骤
             const [preFuncName, ...rest] = preFunc
-            await steps[preFuncName](...parseArgs(rest))
+            await helper[preFuncName](...parseArgs(rest))
           }
           const res = await steps[funcName](...parseArgs(args))
           step.res = typeof res === 'object' ? res : { default: res }
