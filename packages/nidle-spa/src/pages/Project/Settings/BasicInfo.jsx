@@ -7,7 +7,7 @@ import { saveAndSyncProject } from '@/services/project'
 /* 基本信息 */
 const BasicInfo = props => {
   const { projectData } = props
-  const { name, repositoryUrl, repositoryType = 'GitLab', description } = projectData
+  const { name, repositoryUrl, repositoryType = 'gitlab', description } = projectData
   return (
     <ProCard title="基础信息" headerBordered collapsible bordered type="inner">
       <ProForm

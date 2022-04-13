@@ -55,18 +55,16 @@ class ProjectController extends Controller {
       let res = null
       // 先获取 gitlab/github 项目 owner
       const projectMembers = await ctx.service[repositoryType].getMembers(repositoryUrl)
-      let userList = [],
-        username = ''
+      let username = ''
+
       if (repositoryType === 'github') {
-        userList = projectMembers.filter(member => member.role_name === 'admin')
-        userList.forEach(el => {
-          username += `;${el.login}`
-        })
+        username = projectMembers.filter(member => member.role_name === 'admin').map(item => item.login)[0]
       } else {
         username = projectMembers.find(member => member.access_level === 50)?.username
       }
+
       if (username) {
-        data.owner = username.indexOf(';') === 0 ? username.substring(username.indexOf(';') + 1) : username
+        data.owner = username
       }
 
       if (!id) {
@@ -115,12 +113,10 @@ class ProjectController extends Controller {
 
     try {
       const { gitlabId, repositoryUrl, repositoryType } = await ctx.service.project.findByPk(id)
-      let branches
-      if (repositoryType === 'github') {
-        branches = await ctx.service[repositoryType].getBranches(repositoryUrl)
-      } else {
-        branches = await ctx.service[repositoryType].getBranches(gitlabId)
-      }
+      const branches = await ctx.service[repositoryType].getBranches(
+        repositoryType === 'github' ? repositoryUrl : gitlabId
+      )
+
       this.success(branches)
     } catch (err) {
       console.error(err)

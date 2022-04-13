@@ -23,10 +23,11 @@ class ChangelogService extends Service {
       let period = now
       const project = await ctx.service.project.getBaseinfo(projectId)
       const { name, repositoryType, repositoryUrl, gitlabId } = project
-      let commitId, branchInfo
+      let commitId
 
       if (mode === nidleConfig.environments[0].value) {
         // 从测试环境发布时，取分支的最新commitId，后续发布都基于此commitId
+        let branchInfo
         if (repositoryType === 'github') {
           branchInfo = await ctx.service.github.getBranch(repositoryUrl, branch)
           commitId = branchInfo.commit.sha

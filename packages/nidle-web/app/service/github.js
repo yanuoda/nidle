@@ -4,6 +4,22 @@ const Service = require('egg').Service
 
 const { OAUTH_GITHUB_BASEURL, OAUTH_GITHUB_APIURL, GITHUB_PRIVATE_TOKEN } = process.env
 
+const regNamespace = /([a-zA-Z\-\d]+)\/([a-zA-Z\-\d]+)/
+
+const splitUrl = url => {
+  const projectPath = url.replace(`${OAUTH_GITHUB_BASEURL}/`, '')
+  const match = projectPath.match(regNamespace)
+
+  if (match) {
+    return {
+      repo: match[2],
+      owner: match[1]
+    }
+  } else {
+    throw new Error('Invalid repository url!')
+  }
+}
+
 class GithubService extends Service {
   /**
    * github 请求封装
@@ -33,20 +49,9 @@ class GithubService extends Service {
     throw new Error(message)
   }
 
-  splitUrl(url) {
-    const projectPath = url.replace(`${OAUTH_GITHUB_BASEURL}/`, '')
-    const owner = projectPath.split('/').length ? projectPath.split('/')[0] : null
-    const repo = projectPath.split('/').length >= 2 ? projectPath.split('/')[1] : null
-
-    return {
-      owner,
-      repo
-    }
-  }
-
   // 获取应用成员
   async getMembers(projectUrl) {
-    const url = this.splitUrl(projectUrl)
+    const url = splitUrl(projectUrl)
 
     try {
       return await this.githubRequest({
@@ -59,8 +64,8 @@ class GithubService extends Service {
     }
   }
 
-  async getFile(projectUrl, filePath, branch) {
-    const url = this.splitUrl(projectUrl)
+  async getFile(projectUrl, branch, filePath) {
+    const url = splitUrl(projectUrl)
 
     try {
       return await this.githubRequest({
@@ -78,7 +83,7 @@ class GithubService extends Service {
 
   // 获取某个项目的信息
   async getProjectDetail(projectUrl) {
-    const url = this.splitUrl(projectUrl)
+    const url = splitUrl(projectUrl)
 
     return await this.githubRequest({
       url: `/repos/${url.owner}/${url.repo}`,
@@ -88,7 +93,7 @@ class GithubService extends Service {
 
   // 获取项目分支信息
   async getBranches(projectUrl) {
-    const url = this.splitUrl(projectUrl)
+    const url = splitUrl(projectUrl)
 
     return await this.githubRequest({
       url: `/repos/${url.owner}/${url.repo}/branches`,
@@ -97,7 +102,7 @@ class GithubService extends Service {
   }
 
   async getBranch(projectUrl, branch) {
-    const url = this.splitUrl(projectUrl)
+    const url = splitUrl(projectUrl)
 
     return await this.githubRequest({
       url: `/repos/${url.owner}/${url.repo}/branches/${branch}`,

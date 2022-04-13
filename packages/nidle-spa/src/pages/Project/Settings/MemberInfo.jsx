@@ -20,14 +20,14 @@ const MemberInfo = props => {
                 avatar={<Avatar src={item.avatar_url} icon={<UserOutlined />} />}
                 title={
                   <>
-                    <a href={item.web_url || item.html_url} target="_blank" rel="noreferrer">
-                      {item.name || item.login}
+                    <a href={item.web_url} target="_blank" rel="noreferrer">
+                      {item.name}
                     </a>
-                    <span className={styles.memberUsername}> @{item.username || item.login}</span>
+                    <span className={styles.memberUsername}> @{item.username}</span>
                   </>
                 }
               />
-              <div>{item.role || item.role_name}</div>
+              <div>{item.role}</div>
             </Skeleton>
           </List.Item>
         )}

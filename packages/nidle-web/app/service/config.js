@@ -17,12 +17,11 @@ class ConfigService extends Service {
     const { gitlabId, repositoryType, repositoryUrl } = await ctx.model.Project.findOne({ where: { id: id } })
 
     try {
-      let configStr = ''
-      if (repositoryType === 'github') {
-        configStr = await ctx.service.github.getFile(repositoryUrl, fileName, branch)
-      } else {
-        configStr = await ctx.service.gitlab.getFile(gitlabId, branch, fileName)
-      }
+      const configStr = await ctx.service[repositoryType].getFile(
+        repositoryType === 'github' ? repositoryUrl : gitlabId,
+        branch,
+        fileName
+      )
       const config = requireFromString(configStr)
       let templateConfig = {}
 
