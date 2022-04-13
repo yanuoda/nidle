@@ -13,7 +13,7 @@ program
   .option('-v, --version <version>', '指定 nidle 安装版本（如：0.1.1）')
   .option('--retry', '断点续装')
   .action(async ({ output, version: specifyVersion, retry }) => {
-    setup(output, specifyVersion || version, retry).catch(() => {})
+    setup(output, specifyVersion, retry).catch(() => {})
   })
 
 program

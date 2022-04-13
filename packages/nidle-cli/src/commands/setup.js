@@ -2,9 +2,10 @@ const process = require('process')
 const path = require('path')
 const fs = require('fs')
 const chalk = require('chalk')
+const semver = require('semver')
 
 const { setupStepMessage, setupFlow, runFlow } = require('./flows')
-const { rm } = require('./utils')
+const { rm, getGithubTags } = require('./utils')
 
 const root = process.cwd()
 let stepIndex = -1
@@ -13,16 +14,24 @@ let stepIndex = -1
  * 安装命令
  * @param {String} output nidle 下载相对目录
  */
-module.exports = async function setupCommand(output, version, retry) {
+module.exports = async function setupCommand(output, specifyVersion, retry) {
   const outPath = path.resolve(root, output || '.')
   let stepFlow = {}
   let retryFlow = null
+  let setupVersion = specifyVersion
+
   if (retry) {
     // 断点续装需要获取中断时的上下文信息
     retryFlow = require(path.resolve(outPath, './setupContinueCtx.json'))
     console.log(chalk.yellow(`\n  开始接着上次失败处继续安装 nidle@${retryFlow.version}\n`))
+    setupVersion = retryFlow.version
   } else {
-    console.log(chalk.yellow(`\n  开始安装 nidle@${version}\n`))
+    if (specifyVersion && semver.valid(specifyVersion)) {
+      setupVersion = specifyVersion
+    } else {
+      setupVersion = await getGithubTags()
+    }
+    console.log(chalk.yellow(`\n  开始安装 nidle@${setupVersion}\n`))
   }
 
   try {
@@ -30,11 +39,11 @@ module.exports = async function setupCommand(output, version, retry) {
     stepFlow = retry ? retryFlow : setupFlow
     stepIndex = await runFlow({
       retry,
-      version: retry ? retryFlow.version : version,
+      version: setupVersion,
       root,
       outPath,
       stepFlow,
-      globalVars: { outPath, version: retry ? retryFlow.version : version }
+      globalVars: { outPath, version: setupVersion }
     })
 
     let nidleUrl = ''
