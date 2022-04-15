@@ -1,5 +1,6 @@
 module.exports = [
   '下载 nidle 源码压缩包并解压',
+  '检查本地 nidle-cli 的版本是否满足安装条件',
   '检查 nidle-spa 和 nidle-web 的依赖是否有更新',
   '配置 nidle-web .env 文件新增配置项',
   '停止 nidle-web 正在运行的服务（yarn stop）',

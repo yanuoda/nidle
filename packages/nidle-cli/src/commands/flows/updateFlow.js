@@ -8,6 +8,11 @@ module.exports = {
       res: null
     },
     {
+      funcName: 'checkVersion',
+      args: ['globalVars.tempDir'],
+      res: null
+    },
+    {
       funcName: 'diffDeps',
       args: ['globalVars.root', 'globalVars.tempDir'],
       res: null

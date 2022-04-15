@@ -8,6 +8,11 @@ module.exports = {
       res: null
     },
     {
+      funcName: 'checkVersion',
+      args: ['globalVars.outPath'],
+      res: null
+    },
+    {
       funcName: 'customEnvConfig',
       args: ['globalVars.outPath'],
       res: null

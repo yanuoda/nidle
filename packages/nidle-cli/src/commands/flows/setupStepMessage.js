@@ -1,5 +1,6 @@
 module.exports = [
   '下载 nidle 源码压缩包并解压',
+  '检查本地 nidle-cli 的版本是否满足安装条件',
   '在 nidle-web 目录下创建 .env 文件并完成配置',
   '下载 nidle-spa 的项目依赖',
   '下载 nidle-web 的项目依赖',
