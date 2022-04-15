@@ -38,7 +38,7 @@ module.exports = async function diffAndInquireEnvConfig(oldPath, tempPath) {
     }
     await fsExtra.writeFile(path.resolve(tempPath, './nidle-web/.env'), updateEnvRaw)
     logger.success()
-    return updateEnvRaw.match(/NIDLE_URL=(.*?)\n/)[1]
+    return updateEnvRaw.match(/NIDLE_URL\s*=\s*(.*?)\n/)[1]
   } catch (err) {
     logger.error(`nidle-web 配置文件更新失败，请重试！\n${err}`)
   }

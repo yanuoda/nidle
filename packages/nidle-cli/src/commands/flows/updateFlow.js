@@ -29,14 +29,14 @@ module.exports = {
     },
     {
       condition: ['diffDeps.isSpaDepsUpdate'],
-      preFunc: ['rmSpaNodeModules', 'globalVars.root'],
+      clearFunc: ['rmSpaNodeModules', 'globalVars.root'],
       funcName: 'installSpaPackages',
       args: ['globalVars.root'],
       res: null
     },
     {
       condition: ['diffDeps.isWebDepsUpdate'],
-      preFunc: ['rmWebNodeModules', 'globalVars.root'],
+      clearFunc: ['rmWebNodeModules', 'globalVars.root'],
       funcName: 'installWebPackages',
       args: ['globalVars.root'],
       res: null

@@ -3,7 +3,7 @@ const getCurrentVersion = require('./getCurrentVersion')
 const getGithubTags = require('./getGithubTags')
 const Logger = require('./log')
 const rm = require('./rm')
-const validateIfDepsUpdate = require('./validateIfDepsUpdate')
+const { validateIfDepsUpdate, validateIfDevDepsUpdate } = require('./validateIfDepsUpdate')
 const { version } = require('./version')
 
 module.exports = {
@@ -13,5 +13,6 @@ module.exports = {
   Logger,
   rm,
   validateIfDepsUpdate,
+  validateIfDevDepsUpdate,
   version
 }

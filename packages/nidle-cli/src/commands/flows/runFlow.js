@@ -29,24 +29,25 @@ module.exports = async function runFlow(options = {}) {
 
   try {
     for (const [index, step] of flowSteps.entries()) {
+      const { args, funcName, clearFunc, condition, preFunc } = step
       // 执行所有未执行步骤
-      if (index >= errorIndex) {
-        const { args, funcName, clearFunc, condition, preFunc } = step
+      if (index >= errorIndex && ((condition && parseArgs(condition)[0]) || !condition)) {
+        // 未执行步骤 && (存在前置条件 && 前置条件为 true || 不存在前置条件)
+
         if (retry && clearFunc) {
           // 如果是断点续装，则需要做一些清理工作
           const [clearFuncName, ...rest] = clearFunc
           await helper[clearFuncName](...parseArgs(rest))
         }
-        if ((condition && parseArgs(condition)[0]) || !condition) {
-          // 如果存在前置条件且前置条件为 true || 不存在前置条件
-          if (preFunc) {
-            // 如果存在前置处理步骤，则先执行前置处理步骤
-            const [preFuncName, ...rest] = preFunc
-            await helper[preFuncName](...parseArgs(rest))
-          }
-          const res = await steps[funcName](...parseArgs(args))
-          step.res = typeof res === 'object' ? res : { default: res }
+
+        if (preFunc) {
+          // 如果存在前置处理步骤，则先执行前置处理步骤
+          const [preFuncName, ...rest] = preFunc
+          await helper[preFuncName](...parseArgs(rest))
         }
+
+        const res = await steps[funcName](...parseArgs(args))
+        step.res = typeof res === 'object' ? res : { default: res }
       }
       stepIndex++
     }
