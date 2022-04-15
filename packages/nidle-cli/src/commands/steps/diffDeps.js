@@ -1,18 +1,20 @@
 const path = require('path')
 const chalk = require('chalk')
-const { validateIfDepsUpdate } = require('../utils')
+const { validateIfDepsUpdate, validateIfDevDepsUpdate } = require('../utils')
 
 async function diffSpaDeps(root, tempDir) {
-  await validateIfDepsUpdate(path.resolve(root, 'nidle-spa'), path.resolve(tempDir, 'nidle-spa'))
+  const isDepsUpdate = validateIfDepsUpdate(path.resolve(root, 'nidle-spa'), path.resolve(tempDir, 'nidle-spa'))
+  const isDevDepsUpdate = validateIfDevDepsUpdate(path.resolve(root, 'nidle-spa'), path.resolve(tempDir, 'nidle-spa'))
+  return isDepsUpdate || isDevDepsUpdate
 }
 
 async function diffWebDeps(root, tempDir) {
-  await validateIfDepsUpdate(path.resolve(root, 'nidle-web'), path.resolve(tempDir, 'nidle-web'))
+  return validateIfDepsUpdate(path.resolve(root, 'nidle-web'), path.resolve(tempDir, 'nidle-web'))
 }
 
 async function diffDeps(root, tempDir) {
-  const isSpaDepsUpdate = await diffSpaDeps(root, tempDir)
-  const isWebDepsUpdate = await diffWebDeps(root, tempDir)
+  const isSpaDepsUpdate = diffSpaDeps(root, tempDir)
+  const isWebDepsUpdate = diffWebDeps(root, tempDir)
 
   console.log(
     chalk.yellow(
