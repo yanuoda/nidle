@@ -4,7 +4,6 @@ const { version, Logger } = require('../utils')
 
 module.exports = function checkVersion(outPath) {
   const logger = new Logger('检查本地 nidle-cli 的版本是否满足安装条件')
-  logger.step()
   const packageInfo = require(path.resolve(outPath, './nidle-web/package.json'))
   const { version: currentVersion, nidleCli } = packageInfo
   const isSatisfies = semver.satisfies(version, nidleCli?.version)

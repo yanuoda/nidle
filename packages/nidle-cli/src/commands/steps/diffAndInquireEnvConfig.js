@@ -13,7 +13,6 @@ module.exports = async function diffAndInquireEnvConfig(oldPath, tempPath) {
   const logger = new Logger('增量询问服务配置')
 
   try {
-    logger.step()
     const { questions: oldEnvQuestions } = require(path.resolve(oldPath, './nidle-web/.envQuestion.js'))
     const { questions: newEnvQuestions } = require(path.resolve(tempPath, './nidle-web/.envQuestion.js'))
 

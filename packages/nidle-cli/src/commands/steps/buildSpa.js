@@ -1,7 +1,5 @@
-const process = require('process')
 const path = require('path')
-const execa = require('execa')
-const { copyDir, Logger } = require('../utils')
+const { copyDir, Logger, runCommand } = require('../utils')
 
 /**
  * 编译打包 spa 项目，并复制到 nidle-web 的静态资源目录
@@ -10,9 +8,8 @@ const { copyDir, Logger } = require('../utils')
 module.exports = async function buildSpa(outPath) {
   const logger = new Logger('打包构建 nidle-spa')
   try {
-    logger.step()
     process.chdir(path.resolve(outPath, 'nidle-spa'))
-    await execa('yarn', ['build'], { stdio: 'pipe' })
+    await runCommand('yarn', ['build'])
     await copyDir(path.resolve(outPath, './nidle-spa/dist'), path.resolve(outPath, './nidle-web/app/public')).catch(
       err => {
         logger.error(`nidle-spa 静态资源移动到 nidle-web 失败，请重试！\n${err.message}`)

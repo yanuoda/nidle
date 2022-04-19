@@ -1,4 +1,3 @@
-const process = require('process')
 const path = require('path')
 const fs = require('fs')
 const chalk = require('chalk')
@@ -14,7 +13,8 @@ let stepIndex = -1
  * 安装命令
  * @param {String} output nidle 下载相对目录
  */
-module.exports = async function setupCommand(output, specifyVersion, retry) {
+module.exports = async function setupCommand(output, specifyVersion) {
+  const retry = !!process.env.retry
   const outPath = path.resolve(root, output || '.')
   let stepFlow = {}
   let retryFlow = null

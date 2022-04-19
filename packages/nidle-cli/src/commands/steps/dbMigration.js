@@ -1,6 +1,5 @@
-const execa = require('execa')
 const path = require('path')
-const { Logger } = require('../utils')
+const { Logger, runCommand } = require('../utils')
 
 /**
  * 数据库创建和迁移
@@ -10,9 +9,8 @@ module.exports = async function dbMigration(outPath) {
   const logger = new Logger('数据库创建及迁移')
 
   try {
-    logger.step()
     process.chdir(path.resolve(outPath, 'nidle-web'))
-    await execa('yarn', ['db:create'], { stdio: 'pipe' })
+    await runCommand('yarn', ['db:create'])
     process.chdir(process.cwd())
     logger.success()
   } catch (err) {

@@ -1,6 +1,5 @@
 const path = require('path')
-const execa = require('execa')
-const { Logger } = require('../utils')
+const { Logger, runCommand } = require('../utils')
 
 /**
  * 启动服务
@@ -10,9 +9,8 @@ module.exports = async function startServer(outPath) {
   const logger = new Logger('停止服务')
 
   try {
-    logger.step()
     process.chdir(path.resolve(outPath, 'nidle-web'))
-    await execa('yarn', ['stop'], { stdio: 'pipe' })
+    await runCommand('yarn', ['stop'])
     process.chdir(process.cwd())
     logger.success()
   } catch (err) {

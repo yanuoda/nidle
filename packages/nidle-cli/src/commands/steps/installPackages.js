@@ -1,7 +1,5 @@
-const process = require('process')
 const path = require('path')
-const execa = require('execa')
-const { Logger } = require('../utils')
+const { Logger, runCommand } = require('../utils')
 
 /**
  * 安装 spa 依赖包
@@ -11,10 +9,9 @@ async function installSpaPackages(outPath) {
   const logger = new Logger('下载 nidle-spa 依赖')
 
   try {
-    logger.step()
     const spaRoot = path.resolve(outPath, 'nidle-spa')
     process.chdir(spaRoot)
-    await execa('yarn', [], { stdio: 'pipe' })
+    await runCommand('yarn', [])
     process.chdir(process.cwd())
     logger.success()
   } catch (err) {
@@ -30,10 +27,9 @@ async function installWebPackages(outPath) {
   const logger = new Logger('下载 nidle-web 依赖')
 
   try {
-    logger.step()
     const webRoot = path.resolve(outPath, 'nidle-web')
     process.chdir(webRoot)
-    await execa('yarn', ['install', '--prod'], { stdio: 'pipe' })
+    await runCommand('yarn', ['install', '--prod'])
     process.chdir(process.cwd())
     logger.success()
   } catch (err) {

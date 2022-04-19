@@ -1,4 +1,3 @@
-const process = require('process')
 const path = require('path')
 const semver = require('semver')
 const chalk = require('chalk')
@@ -13,9 +12,11 @@ const root = process.cwd()
 /**
  * 更新命令
  */
-module.exports = async function updateCommand(ver, retry) {
+module.exports = async function updateCommand(ver) {
+  const retry = !!process.env.retry
   let updateVersion = null
   let retryFlow = null
+
   if (retry) {
     // 断点续装需要获取中断时的上下文信息
     retryFlow = require(path.resolve(root, './updateContinueCtx.json'))
@@ -55,7 +56,6 @@ module.exports = async function updateCommand(ver, retry) {
     // 收集相应信息，注入上下文变量等
     stepFlow = retry ? retryFlow : updateFlow
     stepIndex = await runFlow({
-      retry,
       version: updateVersion,
       root,
       outPath: root,

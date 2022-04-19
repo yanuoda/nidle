@@ -8,7 +8,6 @@ module.exports = async function getGithubTags() {
   const logger = new Logger('检查 nidle 版本更新')
 
   try {
-    logger.step()
     const { data } = await octokit.request('GET /repos/{owner}/{repo}/tags', {
       owner: 'yanuoda',
       repo: 'nidle'

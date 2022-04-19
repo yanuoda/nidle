@@ -2,7 +2,8 @@ const steps = require('../steps')
 const helper = require('../helper')
 
 module.exports = async function runFlow(options = {}) {
-  const { retry, stepFlow, version, root, outPath, globalVars } = options
+  const retry = !!process.env.retry
+  const { stepFlow, version, root, outPath, globalVars } = options
   let stepIndex = -1
   let errorIndex = -1
 
