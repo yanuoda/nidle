@@ -14,8 +14,8 @@ module.exports = async function diffAndInquireEnvConfig(oldPath, tempPath) {
 
   try {
     logger.step()
-    const oldEnvQuestions = require(path.resolve(oldPath, './nidle-web/.envQuestion.js'))
-    const newEnvQuestions = require(path.resolve(tempPath, './nidle-web/.envQuestion.js'))
+    const { questions: oldEnvQuestions } = require(path.resolve(oldPath, './nidle-web/.envQuestion.js'))
+    const { questions: newEnvQuestions } = require(path.resolve(tempPath, './nidle-web/.envQuestion.js'))
 
     const updateConfigQuestions = newEnvQuestions
       .filter(newEnv => {

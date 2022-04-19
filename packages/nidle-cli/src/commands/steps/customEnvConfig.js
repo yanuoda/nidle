@@ -9,7 +9,7 @@ const { Logger } = require('../utils')
  * @returns nidle 服务地址
  */
 module.exports = async function customEnvConfig(outPath) {
-  const envConfigQuestions = require(path.resolve(outPath, './nidle-web/.envQuestion.js'))
+  const { questions: envConfigQuestions, handler } = require(path.resolve(outPath, './nidle-web/.envQuestion.js'))
   const questions = envConfigQuestions.map(question => {
     const { name, message } = question
     return {
@@ -19,21 +19,8 @@ module.exports = async function customEnvConfig(outPath) {
   })
 
   try {
-    let envRaw = ''
     const answers = await inquirer.prompt(questions)
-    const { NIDLE_HOST, NIDLE_PORT } = answers
-    const NIDLE_URL = `http://${NIDLE_HOST}:${NIDLE_PORT}`
-    delete answers.NIDLE_HOST
-    delete answers.NIDLE_PORT
-    Object.keys(answers).forEach(config => (envRaw = `${envRaw}${config}=${answers[config]}\n`))
-    // 根据输入的 nidle 服务启动地址和端口，得到其他配置项
-    envRaw = `
-${envRaw}
-OAUTH_GITLAB_REDIRECT_URI=${NIDLE_URL}/api/oauth/callback\n
-FE_SUCCESS_CALLBACK=${NIDLE_URL}/\n
-FE_FAILED_CALLBACK=${NIDLE_URL}/user/login\n
-NIDLE_URL=${NIDLE_URL}\n
-`
+    const { envRaw, NIDLE_URL } = handler(answers)
     fs.writeFileSync(path.resolve(outPath, './nidle-web/.env'), envRaw)
     console.log()
     return NIDLE_URL
