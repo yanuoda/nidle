@@ -1,4 +1,0 @@
-exports.gitlab = {
-  api: '',
-  privateToken: ''
-}

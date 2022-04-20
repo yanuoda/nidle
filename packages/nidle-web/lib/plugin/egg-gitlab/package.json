@@ -1,8 +1,0 @@
-{
-  "eggPlugin": {
-    "name": "gitlab"
-  },
-  "dependencies": {
-    "node-gitlab": "^1.6.1"
-  }
-}

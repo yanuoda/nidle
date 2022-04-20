@@ -23,12 +23,12 @@ exports.redis = {
   package: 'egg-redis'
 }
 
-exports.gitlab = {
-  enable: true,
-  path: path.join(root, 'lib/plugin/egg-gitlab')
-}
-
 exports.mailer = {
   enable: false,
   package: 'egg-mailer'
+}
+
+exports.historyApiFallback = {
+  enable: true,
+  path: path.join(root, 'lib/plugin/history-api-fallback')
 }
