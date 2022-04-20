@@ -22,7 +22,7 @@ const FeatureList = [
     title: '配置简单，可控',
     description: (
       <>
-        Nidle预设了assets、h5、egg web基础模板，简单extend即可以实现基本的自动化部署流程，同时插件暴露的配置通过界面可以灵活设置。
+        Nidle可以通过 extend 模板即可以实现基本的自动化部署流程，同时插件暴露的配置通过界面可以灵活设置。
       </>
     ),
   },
