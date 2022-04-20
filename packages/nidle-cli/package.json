@@ -14,7 +14,8 @@
     "url": "git+https://github.com/yanuoda/nidle.git"
   },
   "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
+    "test": "echo \"Error: run tests from root\" && exit 1",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s --commit-path ."
   },
   "bugs": {
     "url": "https://github.com/yanuoda/nidle/issues"

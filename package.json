@@ -48,7 +48,8 @@
     "lint": "eslint packages/**/{lib,src,app}/*.{js,jsx,mjs,ts,tsx}",
     "format": "prettier --write .",
     "auto-fix": "prettier --write . && eslint packages/**/{lib,src,app}/*.{js,jsx,mjs,ts,tsx}",
-    "release": "node ./scripts/release.js --tag --publish"
+    "release": "node ./scripts/release.js --tag --publish",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
   "config": {
     "commitizen": {
