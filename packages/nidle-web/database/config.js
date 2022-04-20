@@ -1,6 +1,6 @@
 require('../.dotenv.js')
 
-const { DB_USER, DB_PASS, DB_HOST } = process.env
+const { DB_USER, DB_PASS, DB_HOST, DB_PORT } = process.env
 
 module.exports = {
   development: {
@@ -8,6 +8,7 @@ module.exports = {
     password: DB_PASS,
     database: 'nidle_web',
     host: DB_HOST,
+    port: DB_PORT,
     dialect: 'mysql',
     timezone: '+08:00'
   },
@@ -16,6 +17,7 @@ module.exports = {
     password: DB_PASS,
     database: 'nidle_web_unittest',
     host: DB_HOST,
+    port: DB_PORT,
     dialect: 'mysql',
     timezone: '+08:00'
   }

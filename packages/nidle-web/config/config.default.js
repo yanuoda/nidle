@@ -2,17 +2,7 @@
 
 require('../.dotenv.js')
 
-const {
-  DB_USER,
-  DB_PASS,
-  DB_HOST,
-  REDIS_HOST,
-  REDIS_PORT,
-  REDIS_PASSWORD,
-  REDIS_DB_INDEX,
-  OAUTH_GITLAB_BASEURL,
-  GITLAB_PRIVATE_TOKEN
-} = process.env
+const { DB_USER, DB_PASS, DB_HOST, DB_PORT, REDIS_HOST, REDIS_PORT, REDIS_PASSWORD, REDIS_DB_INDEX } = process.env
 
 module.exports = appInfo => {
   // eslint-disable-next-line node/no-exports-assign
@@ -28,7 +18,7 @@ module.exports = appInfo => {
   config.sequelize = {
     dialect: 'mysql',
     host: DB_HOST,
-    port: 3306,
+    port: DB_PORT,
     database: 'nidle_web',
     username: DB_USER,
     password: DB_PASS,
@@ -65,16 +55,18 @@ module.exports = appInfo => {
     agent: true
   }
 
-  // node gitlab api
-  config.gitlab = {
-    api: `${OAUTH_GITLAB_BASEURL}/api/v4`,
-    privateToken: GITLAB_PRIVATE_TOKEN
-  }
-
   config.security = {
     csrf: {
       ignore: '/api/changelog/mergeHook'
     }
+  }
+
+  config.static = {
+    prefix: ''
+  }
+
+  exports.historyApiFallback = {
+    ignore: [/^\/api\//]
   }
 
   return config

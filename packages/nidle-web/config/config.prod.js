@@ -1,8 +1,12 @@
+require('../.dotenv.js')
+
+const { NIDLE_HOST, NIDLE_PORT } = process.env
+
 // 启动配置项
 exports.cluster = {
   listen: {
-    hostname: '0.0.0.0',
-    port: 7001
+    hostname: NIDLE_HOST,
+    port: parseInt(NIDLE_PORT)
   }
 }
 
