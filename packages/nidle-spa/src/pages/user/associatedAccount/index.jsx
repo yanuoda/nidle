@@ -9,7 +9,7 @@ const associatedAccount = () => {
   const handleRelevance = () => {
     console.log(initialState)
     console.log(type)
-    window.location.href = `/api/oauth?type=${type}`
+    // window.location.href = `/api/oauth?type=${type}`
   }
 
   return (

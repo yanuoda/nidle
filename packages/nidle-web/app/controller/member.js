@@ -4,7 +4,9 @@ const Controller = require('../core/base_controller')
 
 class UserController extends Controller {
   async index() {
-    const { user } = this
+    const { user, ctx } = this
+    console.log('ctx user --> ', ctx.session)
+    console.log('user --> ', user)
     if (user) {
       this.success(user)
     } else {
@@ -16,6 +18,7 @@ class UserController extends Controller {
 
   async login() {
     const { ctx } = this
+    console.log('login ctx.session -> ', ctx.session)
 
     try {
       const user = await ctx.service.member.find(ctx.request.body)

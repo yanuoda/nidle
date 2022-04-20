@@ -11,6 +11,9 @@ module.exports = {
           { transaction: t }
         )
       }),
+      queryInterface.removeConstraint('member', 'gitlabUserId', {
+        unique: false
+      }),
       queryInterface.sequelize.transaction(t => {
         return queryInterface.changeColumn(
           'member',
@@ -18,6 +21,9 @@ module.exports = {
           { type: Sequelize.DataTypes.INTEGER },
           { transaction: t }
         )
+      }),
+      queryInterface.removeConstraint('member', 'githubUserId', {
+        unique: false
       })
     ])
   },

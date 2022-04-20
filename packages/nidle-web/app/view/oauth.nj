@@ -7,7 +7,11 @@
     <title>oauth</title>
   </head>
   <body>
-    {% if type === 'success' %}
+    {% if type === 'rela_success' %}
+      <p>关联成功，跳转中...</p>
+    {% elif type === 'rela_failed' %}
+      <p>关联失败，跳转中...</p>
+    {% elif type === 'success' %}
       <p>登录成功，跳转中...</p>
     {% else %}
       <p>登录失败，正在跳转回登录页...</p>

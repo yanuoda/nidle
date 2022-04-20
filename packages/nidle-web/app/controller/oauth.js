@@ -32,10 +32,17 @@ class OAuthController extends Controller {
 
   async redirect() {
     const { ctx } = this
-    const { FE_SUCCESS_CALLBACK, FE_FAILED_CALLBACK } = process.env
-    const type = ctx?.session?.user ? 'success' : 'failed'
+    console.log(ctx.query)
+    const { FE_SUCCESS_CALLBACK, FE_FAILED_CALLBACK, RELA_CALLBACK } = process.env
+    const type = ctx?.query?.t ? ctx.query.t : ctx?.session?.user ? 'success' : 'failed'
+    let url
+    if (type === 'rela_success' || type === 'rela_failed') {
+      url = RELA_CALLBACK
+    } else {
+      url = type === 'success' ? FE_SUCCESS_CALLBACK : FE_FAILED_CALLBACK
+    }
     await ctx.render('oauth.nj', {
-      FECallbackURL: type === 'success' ? FE_SUCCESS_CALLBACK : FE_FAILED_CALLBACK,
+      FECallbackURL: url,
       type
     })
   }
@@ -86,9 +93,11 @@ class OAuthController extends Controller {
   }
 
   async githubOauth() {
-    const { ctx } = this
+    const { ctx, user } = this
     const { code } = ctx.query
-
+    const gitlabUserId = ctx?.session?.user?.gitlabUserId
+    console.log('oauth user -- >> ', user)
+    console.log('当前是否已登录 gitlab 账号 -- >> ', gitlabUserId)
     const params = {
       client_id: OAUTH_GITHUB_CLIENT_ID,
       client_secret: OAUTH_GITHUB_CLIENT_SECRET,
@@ -99,7 +108,8 @@ class OAuthController extends Controller {
       const tokenRes = await ctx.curl(`${OAUTH_GITHUB_BASEURL}/login/oauth/access_token`, {
         method: 'POST',
         data: params,
-        dataType: 'json'
+        dataType: 'json',
+        timeout: 10000
       })
       // 获取 gitlab 用户信息
       const userInfo = await ctx.curl(`${OAUTH_GITHUB_APIURL}/user`, {
@@ -110,13 +120,10 @@ class OAuthController extends Controller {
         dataType: 'json'
       })
       const { id: githubUserId, login: name } = userInfo?.data || {}
-      const gitlabUserId = ctx?.session?.user?.gitlabUserId
       // 关联 gitlab 账号
-      console.log('当前是否已登录 gitlab 账号 -- >> ', gitlabUserId)
       if (gitlabUserId) {
         const hasGlUser = await ctx.service.member.find({ gitlabUserId })
         if (hasGlUser && hasGlUser.status === 0) {
-          console.log('ok')
           await ctx.model.Member.update(
             { githubUserId, status: 1 },
             {
@@ -124,7 +131,7 @@ class OAuthController extends Controller {
             }
           )
         }
-        return
+        return ctx.redirect('/api/oauth/redirect?t=rela_success')
       }
       // 查找 or 注册用户
       let currentUser = await ctx.service.member.find({ githubUserId })
@@ -141,7 +148,9 @@ class OAuthController extends Controller {
       console.log()
       ctx.logger.error(new Error('GitHub OAuth failed >>>>> ', err.message))
     }
-    ctx.redirect('/api/oauth/redirect')
+    // 已有登录信息还需要认证时则是关联操作
+    const redirectUrl = gitlabUserId ? '/api/oauth/redirect?t=rela_failed' : '/api/oauth/redirect'
+    ctx.redirect(redirectUrl)
   }
 }
 
