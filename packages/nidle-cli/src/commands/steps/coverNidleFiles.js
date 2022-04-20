@@ -1,17 +1,11 @@
 const path = require('path')
-const { copyDir, Logger, rm } = require('../utils')
+const { Logger, runCommand } = require('../utils')
 
-module.exports = async function coverNidleFiles(oldPath, tempPath, isSpaDepsUpdate, isWebDepsUpdate) {
-  const rmSpaGlob = isSpaDepsUpdate ? 'nidle-spa/**' : 'nidle-spa/{!(node_modules),.*}'
-  const rmWebGlob = isWebDepsUpdate ? 'nidle-web/**' : 'nidle-web/!(node_modules)'
-
-  await rm(rmSpaGlob)
-  await rm(rmWebGlob)
-
-  await copyDir(path.resolve(tempPath, './nidle-spa'), path.resolve(oldPath, './nidle-spa')).catch(err => {
+module.exports = async function coverNidleFiles(oldPath, tempPath) {
+  await runCommand('cp', [path.resolve(tempPath, './nidle-spa'), oldPath, '-r']).catch(err => {
     new Logger('nidle-spa 更新文件文件拷贝').error(`nidle-spa 更新文件拷贝失败，请重试！\n${err}`)
   })
-  await copyDir(path.resolve(tempPath, './nidle-web'), path.resolve(oldPath, './nidle-web')).catch(err => {
+  await runCommand('cp', [path.resolve(tempPath, './nidle-web'), oldPath, '-r']).catch(err => {
     new Logger('nidle-web 更新文件文件拷贝').error(`nidle-web 更新文件拷贝失败，请重试！\n${err}`)
   })
 }
