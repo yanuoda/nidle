@@ -29,7 +29,7 @@ module.exports = {
     },
     {
       funcName: 'coverNidleFiles',
-      args: ['globalVars.root', 'globalVars.tempDir', 'diffDeps.isSpaDepsUpdate', 'diffDeps.isWebDepsUpdate'],
+      args: ['globalVars.root', 'globalVars.tempDir'],
       res: null
     },
     {
