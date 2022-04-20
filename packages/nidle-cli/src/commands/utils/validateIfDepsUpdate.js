@@ -16,7 +16,7 @@ function diff(oldDeps, mergeDeps) {
     return true
   }
 
-  for (const [mergeDepKey, mergeDepVal] of mergeDeps) {
+  for (const [mergeDepKey, mergeDepVal] of mergeDepsList) {
     const oldDepVal = oldDeps[mergeDepKey]
     if (!oldDepVal || oldDepVal !== mergeDepVal) {
       return true
