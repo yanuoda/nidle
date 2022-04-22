@@ -18,7 +18,6 @@ const {
 class OAuthController extends Controller {
   async index() {
     const { ctx } = this
-    console.log(ctx.query.type)
     if (ctx.query.type === 'github') {
       ctx.redirect(
         `${OAUTH_GITHUB_BASEURL}/login/oauth/authorize?client_id=${OAUTH_GITHUB_CLIENT_ID}&scope=${OAUTH_GITHUB_SCOPE}&state=1`
@@ -32,7 +31,6 @@ class OAuthController extends Controller {
 
   async redirect() {
     const { ctx } = this
-    console.log(ctx.query)
     const { FE_SUCCESS_CALLBACK, FE_FAILED_CALLBACK, RELA_CALLBACK } = process.env
     const type = ctx?.query?.t ? ctx.query.t : ctx?.session?.user ? 'success' : 'failed'
     let url
@@ -50,6 +48,7 @@ class OAuthController extends Controller {
   async oauth() {
     const { ctx } = this
     const { code } = ctx.query
+    const githubUserId = ctx?.session?.user?.githubUserId
 
     const params = {
       client_id: OAUTH_GITLAB_CLIENT_ID,
@@ -73,31 +72,46 @@ class OAuthController extends Controller {
         },
         dataType: 'json'
       })
-      // 查找 or 注册用户
       const { id: gitlabUserId, username: name } = userInfo?.data || {}
+      // 关联 github 账号
+      if (githubUserId) {
+        const hasGlUser = await ctx.service.member.find({ githubUserId })
+        if (hasGlUser && hasGlUser.status === 0) {
+          await ctx.model.Member.update(
+            { gitlabUserId, status: 1 },
+            {
+              where: { githubUserId }
+            }
+          )
+          ctx.session.user.gitlabUserId = gitlabUserId
+        }
+        return ctx.redirect('/api/oauth/redirect?t=rela_success')
+      }
+      // 查找 or 注册用户
       let currentUser = await ctx.service.member.find({ gitlabUserId })
       if (!currentUser) {
         currentUser = await ctx.service.member.registerUser({ name, gitlabUserId })
       }
       console.log('currentUser >>>>> ', currentUser)
       // session
-      const { id } = currentUser
-      ctx.session.user = { id, name, gitlabUserId }
+      const { id, githubUserId: ghId } = currentUser
+      ctx.session.user = { id, name, gitlabUserId, githubUserId: ghId }
     } catch (err) {
       console.log('GitLab OAuth failed >>>>> \n')
       console.error(err)
       console.log()
       ctx.logger.error(new Error('GitLab OAuth failed >>>>> ', err.message))
     }
-    ctx.redirect('/api/oauth/redirect')
+    // 已有登录信息还需要认证时则是关联操作
+    const redirectUrl = githubUserId ? '/api/oauth/redirect?t=rela_failed' : '/api/oauth/redirect'
+    ctx.redirect(redirectUrl)
   }
 
   async githubOauth() {
-    const { ctx, user } = this
+    const { ctx } = this
     const { code } = ctx.query
     const gitlabUserId = ctx?.session?.user?.gitlabUserId
-    console.log('oauth user -- >> ', user)
-    console.log('当前是否已登录 gitlab 账号 -- >> ', gitlabUserId)
+
     const params = {
       client_id: OAUTH_GITHUB_CLIENT_ID,
       client_secret: OAUTH_GITHUB_CLIENT_SECRET,
@@ -131,6 +145,7 @@ class OAuthController extends Controller {
             }
           )
         }
+        ctx.session.user.githubUserId = githubUserId
         return ctx.redirect('/api/oauth/redirect?t=rela_success')
       }
       // 查找 or 注册用户
@@ -140,8 +155,8 @@ class OAuthController extends Controller {
       }
       console.log('currentUser >>>>> ', currentUser)
       // session
-      const { id } = currentUser
-      ctx.session.user = { id, name, githubUserId }
+      const { id, gitlabUserId: glId } = currentUser
+      ctx.session.user = { id, name, githubUserId, gitlabUserId: glId }
     } catch (err) {
       console.log('GitHub OAuth failed >>>>> \n')
       console.error(err)

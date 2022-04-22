@@ -3,6 +3,7 @@
 const Service = require('egg').Service
 
 const { OAUTH_GITHUB_BASEURL, OAUTH_GITHUB_APIURL, GITHUB_PRIVATE_TOKEN } = process.env
+// const roleNameList = ['admin', 'write', 'read', 'none']
 
 const regNamespace = /([a-zA-Z\-\d]+)\/([a-zA-Z\-\d]+)/
 

@@ -70,9 +70,9 @@ class ProjectController extends Controller {
       if (!id) {
         // 新增
         // 先获取项目的 gitlab/github id，存储在数据库中
-        const { id: github } = await ctx.service[repositoryType].getProjectDetail(repositoryUrl)
-        if (github) {
-          data.gitlabId = github
+        const { id: gitId } = await ctx.service[repositoryType].getProjectDetail(repositoryUrl)
+        if (gitId) {
+          data.gitlabId = gitId
         }
         res = await ctx.model.Project.create(data)
       } else {

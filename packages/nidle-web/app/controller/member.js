@@ -4,9 +4,7 @@ const Controller = require('../core/base_controller')
 
 class UserController extends Controller {
   async index() {
-    const { user, ctx } = this
-    console.log('ctx user --> ', ctx.session)
-    console.log('user --> ', user)
+    const { user } = this
     if (user) {
       this.success(user)
     } else {
@@ -18,14 +16,13 @@ class UserController extends Controller {
 
   async login() {
     const { ctx } = this
-    console.log('login ctx.session -> ', ctx.session)
 
     try {
       const user = await ctx.service.member.find(ctx.request.body)
 
       if (user) {
-        const { id, name, gitlabUserId } = user
-        this.setSession('user', { id, name, gitlabUserId })
+        const { id, name, gitlabUserId, githubUserId } = user
+        this.setSession('user', { id, name, gitlabUserId, githubUserId })
         this.success(this.user)
       } else {
         this.failed({

@@ -33,15 +33,20 @@ class MemberService extends Service {
     const { ctx } = this
 
     try {
-      const user = ctx.session.user.gitlabUserId
       const { repositoryType, repositoryUrl } = await ctx.model.Project.findOne({ where: { id: projectId } })
-      // 获取 gitlab 应用成员
+      const user = ctx.session.user[`${repositoryType}UserId`]
+      if (!user) {
+        throw new Error(`未关联 ${repositoryType} 账号`)
+      }
+      // 获取 gitlab/github 应用成员
       const memberList = await ctx.service[repositoryType].getMembers(repositoryUrl)
-      const idx = memberList.findIndex(item => item.id === user && item.access_level > 20)
-
-      // return idx > -1
-      // github 应用暂不做权限判断
-      return repositoryType === 'github' ? true : idx > -1
+      let idx
+      if (repositoryType === 'github') {
+        idx = memberList.findIndex(item => item.id === user && item.role_name !== 'none' && item.role_name !== 'read')
+      } else {
+        idx = memberList.findIndex(item => item.id === user && item.access_level > 20)
+      }
+      return idx > -1
     } catch (err) {
       ctx.logger.error(`service.member.isProjectMember: \n${err.message}\n${err.stack}`)
       throw err

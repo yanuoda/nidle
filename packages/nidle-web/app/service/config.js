@@ -42,7 +42,7 @@ class ConfigService extends Service {
       return config
     } catch (err) {
       ctx.logger.error(`获取应用对应环境配置: \n${err.message}\n${err.stack}`)
-      if (err.message === '404 File Not Found') {
+      if (err.message === '404 File Not Found' || err.message === 'Not Found') {
         // 如果是文件没找到，说明该应用在此环境没有发布机器，特殊处理，不抛出错误
         return ''
       }
