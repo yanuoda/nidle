@@ -21,8 +21,8 @@ class UserController extends Controller {
       const user = await ctx.service.member.find(ctx.request.body)
 
       if (user) {
-        const { id, name, gitlabUserId } = user
-        this.setSession('user', { id, name, gitlabUserId })
+        const { id, name, gitlabUserId, githubUserId } = user
+        this.setSession('user', { id, name, gitlabUserId, githubUserId })
         this.success(this.user)
       } else {
         this.failed({

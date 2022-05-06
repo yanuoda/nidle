@@ -46,38 +46,45 @@ class ProjectController extends Controller {
   // 保存并同步应用信息
   async sync() {
     const { ctx } = this
-    const { id, name, repositoryUrl: originRepoUrl, ...rest } = ctx.request.body
-    const { OAUTH_GITLAB_BASEURL } = process.env
+    const { id, name, repositoryUrl: originRepoUrl, repositoryType, ...rest } = ctx.request.body
+    const BASEURL = repositoryType === 'github' ? process.env.OAUTH_GITHUB_BASEURL : process.env.OAUTH_GITLAB_BASEURL
     const repositoryUrl = originRepoUrl.replace('.git', '')
     let projectName = name
 
     if (!name) {
-      projectName = repositoryUrl.replace(`${OAUTH_GITLAB_BASEURL}/`, '')
+      projectName = repositoryUrl.replace(`${BASEURL}/`, '')
     }
 
-    const data = { name: projectName, repositoryUrl, ...rest }
+    const data = { name: projectName, repositoryUrl, repositoryType, ...rest }
 
     try {
       let res = null
-      // 先获取 gitlab 项目 owner
-      const gitlabProjectMembers = await ctx.service.gitlab.getMembers(repositoryUrl)
-      const { username } = gitlabProjectMembers.find(member => member.access_level === 50) || {}
+      // 先获取 gitlab/github 项目 owner
+      const projectMembers = await ctx.service[repositoryType].getMembers(repositoryUrl)
+      let username = ''
+
+      if (repositoryType === 'github') {
+        username = projectMembers.filter(member => member.role_name === 'admin').map(item => item.login)[0]
+      } else {
+        username = projectMembers.find(member => member.access_level === 50)?.username
+      }
+
       if (username) {
         data.owner = username
       }
 
       if (!id) {
         // 新增
-        // 先获取项目的 gitlab id，存储在数据库中
-        const { id: gitlabId } = await ctx.service.gitlab.getProjectDetail(repositoryUrl)
-        if (gitlabId) {
-          data.gitlabId = gitlabId
+        // 先获取项目的 gitlab/github id，存储在数据库中
+        const { id: gitId } = await ctx.service[repositoryType].getProjectDetail(repositoryUrl)
+        if (gitId) {
+          data.gitlabId = gitId
         }
         res = await ctx.model.Project.create(data)
       } else {
         // 修改
         await ctx.model.Project.update(data, { where: { id } })
-        res = { id, name: projectName }
+        res = { id, name: projectName, repositoryType }
       }
 
       this.success(res)
@@ -105,14 +112,17 @@ class ProjectController extends Controller {
     }
   }
 
-  // 获取项目的 gitlab 分支信息
+  // 获取项目的 gitlab/github 分支信息
   async getBranches() {
     const { ctx } = this
     const { id } = ctx.query
 
     try {
-      const { gitlabId } = await ctx.service.project.findByPk(id)
-      const branches = await ctx.service.gitlab.getBranches(gitlabId)
+      const { gitlabId, repositoryUrl, repositoryType } = await ctx.service.project.findByPk(id)
+      const branches = await ctx.service[repositoryType].getBranches(
+        repositoryType === 'github' ? repositoryUrl : gitlabId
+      )
+
       this.success(branches)
     } catch (err) {
       console.error(err)

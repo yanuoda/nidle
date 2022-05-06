@@ -13,7 +13,7 @@ export async function fetchBranches(id) {
     result.data = (result.data || []).map(item => {
       return {
         value: item.name,
-        label: `${item.name} [${item.commit.author_name}]`
+        label: item.commit.author_name ? `${item.name} [${item.commit.author_name}]` : item.name
       }
     })
   }

@@ -25,6 +25,11 @@ const ProjectList = () => {
       align: 'center'
     },
     {
+      title: '仓库平台',
+      dataIndex: 'repositoryType',
+      align: 'center'
+    },
+    {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',

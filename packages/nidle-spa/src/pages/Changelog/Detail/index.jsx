@@ -38,7 +38,6 @@ const App = props => {
     const { data, success, errorMessage } = await fetchDetail({
       id
     })
-
     if (success === true) {
       setDetail(data)
       setLoading(false)

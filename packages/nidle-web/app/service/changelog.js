@@ -22,19 +22,25 @@ class ChangelogService extends Service {
       // 发布周期
       let period = now
       const project = await ctx.service.project.getBaseinfo(projectId)
+      const { name, repositoryType, repositoryUrl, gitlabId } = project
       let commitId
 
       if (mode === nidleConfig.environments[0].value) {
         // 从测试环境发布时，取分支的最新commitId，后续发布都基于此commitId
-        const branchInfo = await ctx.service.gitlab.getBranch(project.gitlabId, branch)
-        commitId = branchInfo.commit.id
+        let branchInfo
+        if (repositoryType === 'github') {
+          branchInfo = await ctx.service.github.getBranch(repositoryUrl, branch)
+          commitId = branchInfo.commit.sha
+        } else {
+          branchInfo = await ctx.service.gitlab.getBranch(gitlabId, branch)
+          commitId = branchInfo.commit.id
+        }
       }
-
       let options = {
         repository: {
-          type: project.repositoryType.toLocaleLowerCase(),
-          url: project.repositoryUrl,
-          id: project.gitlabId,
+          type: repositoryType,
+          url: repositoryUrl,
+          id: gitlabId,
           branch,
           commitId,
           userName: ctx.session.user.name
@@ -62,7 +68,7 @@ class ChangelogService extends Service {
         await ctx.service.projectServer.cancelUsed(id)
       }
 
-      const fileName = `${project.name}_${now}`
+      const fileName = `${name}_${now}`
       // 整合任务配置
       const createConfig = await ctx.service.config.getByCreate(project, mode, commitId, fileName)
       const config = {
@@ -70,7 +76,6 @@ class ChangelogService extends Service {
         ...createConfig
       }
       let initConfig = {}
-
       if (createConfig) {
         const manager = new Nidle(extend(true, {}, config))
         initConfig = await manager.init()
@@ -128,7 +133,7 @@ class ChangelogService extends Service {
         changelog: {
           ...changelog.dataValues,
           statusEnum: changelog.statusEnum,
-          projectName: project.name
+          projectName: name
         },
         ...initConfig,
         next

@@ -6,11 +6,12 @@ module.exports = app => {
   const Member = app.model.define('member', {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
     gitlabUserId: { type: INTEGER, unique: true },
+    githubUserId: { type: INTEGER, unique: true },
     login: STRING(30),
     name: { type: STRING(30), allowNull: false, unique: true },
     password: STRING(32),
     role: INTEGER,
-    status: INTEGER,
+    status: { type: INTEGER, defaultValue: 0 },
     createdTime: DATE,
     updatedTime: DATE
   })

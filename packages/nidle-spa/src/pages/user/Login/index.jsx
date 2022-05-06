@@ -1,4 +1,4 @@
-import { GitlabFilled, LockOutlined, UserOutlined } from '@ant-design/icons'
+import { GitlabFilled, GithubFilled, LockOutlined, UserOutlined } from '@ant-design/icons'
 import { message } from 'antd'
 import { ProFormText, LoginForm } from '@ant-design/pro-form'
 import { history, useModel } from 'umi'
@@ -39,8 +39,8 @@ const Login = () => {
     }
   }
 
-  const goOAuthGitlab = () => {
-    window.location.href = '/api/oauth'
+  const goOAuth = type => {
+    window.location.href = `/api/oauth?type=${type}`
   }
 
   return (
@@ -52,7 +52,8 @@ const Login = () => {
           subTitle={'基于 Node 的自动化部署框架'}
           actions={[
             '其他登录方式 :',
-            <GitlabFilled key="GitlabFilled" className={styles.icon} onClick={goOAuthGitlab} />
+            <GitlabFilled key="GitlabFilled" className={styles.icon} onClick={() => goOAuth('gitlab')} />,
+            <GithubFilled key="GithubFilled" className={styles.icon} onClick={() => goOAuth('github')} />
           ]}
           onFinish={async values => {
             await handleSubmit(values)

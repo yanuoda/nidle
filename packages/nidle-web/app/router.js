@@ -9,6 +9,7 @@ module.exports = app => {
   router.get('/api/oauth', controller.oauth.index)
   router.get('/api/oauth/redirect', controller.oauth.redirect)
   router.get('/api/oauth/callback', controller.oauth.oauth)
+  router.get('/api/oauth/ghCallback', controller.oauth.githubOauth)
 
   // 用户
   router.get('/api/user', controller.member.index)

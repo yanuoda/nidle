@@ -64,6 +64,7 @@ export default [
     ]
   },
   { path: '/modifypassword', name: '修改密码', icon: 'edit', component: './User/ModifyPassword' },
+  { path: '/associatedAccount', name: '关联账号', icon: 'heart', component: './User/associatedAccount' },
   { path: '/', redirect: '/welcome' },
   { component: './404' }
 ]

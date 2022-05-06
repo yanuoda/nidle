@@ -14,9 +14,14 @@ class ConfigService extends Service {
   async getByApp({ id, mode, branch = 'master' }) {
     const { ctx } = this
     const fileName = `nidle.${mode}.config.js`
+    const { gitlabId, repositoryType, repositoryUrl } = await ctx.model.Project.findOne({ where: { id: id } })
 
     try {
-      const configStr = await ctx.service.gitlab.getFile(id, branch, fileName)
+      const configStr = await ctx.service[repositoryType].getFile(
+        repositoryType === 'github' ? repositoryUrl : gitlabId,
+        branch,
+        fileName
+      )
       const config = requireFromString(configStr)
       let templateConfig = {}
 
@@ -37,7 +42,7 @@ class ConfigService extends Service {
       return config
     } catch (err) {
       ctx.logger.error(`获取应用对应环境配置: \n${err.message}\n${err.stack}`)
-      if (err.message === '404 File Not Found') {
+      if (err.message === '404 File Not Found' || err.message === 'Not Found') {
         // 如果是文件没找到，说明该应用在此环境没有发布机器，特殊处理，不抛出错误
         return ''
       }
@@ -53,7 +58,7 @@ class ConfigService extends Service {
     try {
       const nidleConfig = ctx.app.config.nidle
       const config = await this.getByApp({
-        id: project.gitlabId,
+        id: project.id,
         mode,
         branch
       })
