@@ -56,37 +56,41 @@ const publishDataTransform = data => {
 class PublishService extends Service {
   // 获取项目下的所有发布数据
   async getPublishList(projectId) {
-    const { ctx, app } = this
-    const { Op } = app.Sequelize
-    // 获取项目下的所有发布
-    const list = await ctx.model.Changelog.findAll({ where: { project: projectId }, raw: true })
-    // 获取项目信息
-    const currentProject = await ctx.service.project.findByPk(projectId)
-    const { repositoryUrl } = currentProject
-    // 获取开发人员信息
-    const members = await ctx.service.member.getMembers(
-      { id: { [Op.in]: [...new Set(list.map(item => item.developer))] } },
-      { include: ['id', 'name'] }
-    )
+    try {
+      const { ctx, app } = this
+      const { Op } = app.Sequelize
+      // 获取项目下的所有发布
+      const list = await ctx.model.Changelog.findAll({ where: { project: projectId }, raw: true })
+      // 获取项目信息
+      const currentProject = await ctx.service.project.findByPk(projectId)
+      const { repositoryUrl } = currentProject
+      // 获取开发人员信息
+      const members = await ctx.service.member.getMembers(
+        { id: { [Op.in]: [...new Set(list.map(item => item.developer))] } },
+        { include: ['id', 'name'] }
+      )
 
-    list.forEach(item => {
-      const { developer, commitId } = item
-      // 开发者信息
-      const currentDeveloper = members.find(member => member.id === developer)
-      const name = currentDeveloper?.name || developer
+      list.forEach(item => {
+        const { developer, commitId } = item
+        // 开发者信息
+        const currentDeveloper = members.find(member => member.id === developer)
+        const name = currentDeveloper?.name || developer
 
-      item.developer = name
-      item.commitUrl = `${repositoryUrl}/commit/${commitId}`
-    })
-    const publishListMap = publishDataTransform(list)
-    for (const env in publishListMap) {
-      publishListMap[env].forEach(changelog => {
-        const next = ctx.helper.nidleNext(changelog)
-        changelog.nextPublish = next
+        item.developer = name
+        item.commitUrl = `${repositoryUrl}/commit/${commitId}`
       })
-    }
+      const publishListMap = publishDataTransform(list)
+      for (const env in publishListMap) {
+        publishListMap[env].forEach(changelog => {
+          const next = ctx.helper.nidleNext(changelog)
+          changelog.nextPublish = next
+        })
+      }
 
-    return publishListMap
+      return publishListMap
+    } catch (err) {
+      throw err
+    }
   }
 }
 

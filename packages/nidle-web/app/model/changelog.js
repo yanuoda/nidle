@@ -8,10 +8,11 @@ module.exports = app => {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
     period: STRING(),
     project: INTEGER,
+    type: STRING(), // 发布类型
     branch: STRING(30),
     commitId: STRING(),
     developer: INTEGER,
-    source: STRING(20),
+    source: STRING(20), // 来源
     status: {
       type: ENUM,
       values: statusEnums

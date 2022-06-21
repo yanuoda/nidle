@@ -1,12 +1,14 @@
 module.exports = {
-  nidleNext(changelog) {
+  nidleNext(changelog, mode) {
     const { environments } = this.app.config.nidle
 
     if (!changelog) {
       return {
         next: 'CREATE',
         label: '新建发布',
-        environment: environments[0]
+        environment: {
+          value: mode
+        }
       }
     }
 

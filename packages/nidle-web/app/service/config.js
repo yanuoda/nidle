@@ -11,7 +11,7 @@ const requireFromString = require('require-from-string')
 
 class ConfigService extends Service {
   // 获取应用对应环境配置
-  async getByApp({ id, mode, branch = 'master' }) {
+  async getByApp({ id, mode, type, branch = 'master' }) {
     const { ctx } = this
     const fileName = `nidle.${mode}.config.js`
     const { gitlabId, repositoryType, repositoryUrl } = await ctx.model.Project.findOne({ where: { id: id } })
@@ -22,7 +22,15 @@ class ConfigService extends Service {
         branch,
         fileName
       )
-      const config = requireFromString(configStr)
+
+      let config = requireFromString(configStr)
+
+      if (typeof config === 'function') {
+        config = config({
+          type
+        })
+      }
+
       let templateConfig = {}
 
       if (config.extend) {
@@ -52,7 +60,7 @@ class ConfigService extends Service {
   }
 
   // 发布时获取对应环境配置
-  async getByCreate(project, mode, branch, fileName) {
+  async getByCreate({ project, mode, branch, type, fileName, isNew }) {
     const { ctx } = this
 
     try {
@@ -60,7 +68,8 @@ class ConfigService extends Service {
       const config = await this.getByApp({
         id: project.id,
         mode,
-        branch
+        branch,
+        type
       })
 
       if (!config) {
@@ -68,7 +77,7 @@ class ConfigService extends Service {
         return ''
       }
 
-      if (mode === nidleConfig.environments[0].value) {
+      if (isNew) {
         // 处理细节output
         config.source = path.resolve(nidleConfig.source, config.source || config.name, fileName)
 
@@ -155,9 +164,9 @@ class ConfigService extends Service {
     }
   }
 
-  async setInput(values, groups) {
+  async setInput(values, groups, notTransform) {
     try {
-      return inputParse.transform(values, groups)
+      return inputParse.transform(values, groups, notTransform)
     } catch (err) {
       this.ctx.logger.error(`setInput: \n${err.message}\n${err.stack}`)
       throw err

@@ -15,7 +15,7 @@ class ChangelogService extends Service {
     const { ctx } = this
     const nidleConfig = ctx.app.config.nidle
     // id是非必须的，只有在发布周期创建新的发布记录才传
-    const { id, branch, projectId, mode, source = 'web' } = ctx.request.body
+    const { id, branch, type, projectId, mode, source = 'web' } = ctx.request.body
 
     try {
       const now = new Date().getTime()
@@ -43,7 +43,7 @@ class ChangelogService extends Service {
           id: gitlabId,
           branch,
           commitId,
-          userName: ctx.session.user.name
+          userName: ctx.session.user?.name || type
         }
       }
 
@@ -70,7 +70,15 @@ class ChangelogService extends Service {
 
       const fileName = `${name}_${now}`
       // 整合任务配置
-      const createConfig = await ctx.service.config.getByCreate(project, mode, commitId, fileName)
+      const createConfig = await ctx.service.config.getByCreate({
+        project,
+        mode,
+        branch,
+        type,
+        commitId,
+        fileName,
+        isNew: !id
+      })
       const config = {
         ...options,
         ...createConfig
@@ -100,7 +108,8 @@ class ChangelogService extends Service {
         period,
         project: projectId,
         branch,
-        developer: ctx.session.user.id,
+        type,
+        developer: ctx.session.user?.id,
         source,
         // 如果没配置，即该环境没有构建任务，直接通过
         status: createConfig ? 'NEW' : 'SUCCESS',
@@ -145,11 +154,11 @@ class ChangelogService extends Service {
   }
 
   // 开始构建任务
-  async start({ id, configPath, inputs = [], options: inputAnswers }) {
+  async start({ id, configPath, inputs = [], options: inputAnswers, notTransform = false }) {
     const { ctx } = this
 
     try {
-      const answers = inputs.length ? await ctx.service.config.setInput(inputAnswers, inputs) : {}
+      const answers = inputs.length ? await ctx.service.config.setInput(inputAnswers, inputs, notTransform) : {}
       const configRaw = fs.readFileSync(configPath)
       const config = JSON.parse(configRaw)
       const options = _.cloneDeep(answers)
@@ -163,6 +172,15 @@ class ChangelogService extends Service {
 
           for (let j = 0, slen = step.options[step._serversKey].length; j < slen; j++) {
             const item = step.options[step._serversKey][j]
+
+            if (typeof item.serverId === 'undefined') {
+              // 查找serverId
+              const server = await ctx.model.ProjectServer.findOne({
+                id: item.id
+              })
+              item.serverId = server.server
+            }
+
             const server = await ctx.model.Server.findOne({ where: { id: item.serverId } })
             // 更新服务器被占用
             await ctx.model.ProjectServer.update({ changelog: id }, { where: { id: item.id } })
@@ -420,7 +438,8 @@ class ChangelogService extends Service {
           throw new Error(`未识别的应用: ${project.name}`)
         }
 
-        const changelog = await ctx.model.Changelog.findOne({
+        // 先查找是不是codeReview的
+        let changelog = await ctx.model.Changelog.findOne({
           where: {
             project: pj.id,
             commitId: detail.last_commit.id,
@@ -429,16 +448,52 @@ class ChangelogService extends Service {
           }
         })
 
+        // 再查找是不是webhook的
+        if (!changelog) {
+          changelog = await ctx.model.Changelog.findOne({
+            where: {
+              project: pj.id,
+              branch: detail.target_branch,
+              active: 0
+            }
+          })
+        }
+
         if (!changelog) {
           throw new Error(`找不到相关记录: ${detail.last_commit.id}`)
         }
 
-        await ctx.model.Changelog.update(
-          {
-            codeReviewStatus: detail.state === 'merged' ? 'SUCCESS' : 'FAIL'
-          },
-          { where: { id: changelog.id } }
-        )
+        if (changelog.codeReviewStatus === 'PENDING') {
+          // code review
+          await ctx.model.Changelog.update(
+            {
+              codeReviewStatus: detail.state === 'merged' ? 'SUCCESS' : 'FAIL'
+            },
+            { where: { id: changelog.id } }
+          )
+        } else {
+          // webhook发布
+          // 1. 新建发布记录
+          ctx.request.body = {
+            id: changelog.id,
+            branch: changelog.branch,
+            type: changelog.type,
+            projectId: changelog.project,
+            mode: changelog.environment
+          }
+          const newChangelog = await this.create()
+
+          // 2. 开始构建
+          const configRaw = fs.readFileSync(changelog.configPath)
+          const config = JSON.parse(configRaw)
+          await this.start({
+            id: newChangelog.changelog.id,
+            configPath: newChangelog.changelog.configPath,
+            inputs: config.inputs,
+            options: config.options || [],
+            notTransform: true
+          })
+        }
 
         return true
       } catch (err) {
