@@ -7,9 +7,7 @@ import { addProjectServer } from '@/services/project'
 import { queryServerList } from '@/services/server'
 
 const AddProjectServer = props => {
-  // TODO: type = add 只添加、all 添加、修改
-  const { type, mode, projectId } = props
-  console.log(type)
+  const { mode, projectId } = props
   const [serverModalVisible, setServerModalVisible] = useState(false)
   const [serverList, setServerList] = useState([])
   const { data: servers, loading } = useRequest(() => {

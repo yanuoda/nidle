@@ -30,7 +30,7 @@ const App = props => {
   const [tabActive, setTabActive] = useState('inputs') // Tab Active
   const [logs, setLogs] = useState({}) // 日志
   const [inputAnswers, setInputAnswers] = useState(null) // inputs answer
-  const { branch, id, mode = modes[0].value, action } = props.location.query
+  const { branch, type = 'normal', id, mode = modes[0].value, action } = props.location.query
   const { id: projectId } = props.match.params
 
   // 获取详情
@@ -78,6 +78,7 @@ const App = props => {
     if (!id) {
       await createChangelog({
         branch,
+        type,
         mode,
         projectId
       })
@@ -85,6 +86,7 @@ const App = props => {
       await createChangelog({
         id,
         branch,
+        type,
         mode,
         projectId
       })
@@ -183,10 +185,14 @@ const App = props => {
         data.duration = logsRef.current.duration + intervalTime
         const last = data.stages.length - 1
 
-        if (data.stages[last] && data.stages[last].steps.length) {
-          data.stages[last].steps[data.stages[last].steps.length - 1].duration =
-            logsRef.current.stages[last].steps[data.stages[last].steps.length - 1].duration + intervalTime
-          data.stages[last].duration = logsRef.current.stages[last].duration + intervalTime
+        try {
+          if (data.stages[last] && data.stages[last].steps.length) {
+            data.stages[last].steps[data.stages[last].steps.length - 1].duration =
+              logsRef.current.stages[last].steps[data.stages[last].steps.length - 1].duration + intervalTime
+            data.stages[last].duration = logsRef.current.stages[last].duration + intervalTime
+          }
+        } catch (err) {
+          console.error(err)
         }
       }
 
