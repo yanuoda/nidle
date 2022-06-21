@@ -266,6 +266,7 @@ const App = props => {
         setActionLoading(true)
         const success = await createChangelog({
           id: changelog.id,
+          type: changelog.type,
           branch: changelog.branch,
           projectId: changelog.project,
           mode: next.environment.value
