@@ -12,7 +12,7 @@ module.exports = {
       }
     }
 
-    const { status, codeReviewStatus, environment, active, project, id, branch } = changelog
+    const { status, codeReviewStatus, environment, active, project, id, branch, type } = changelog
 
     if (active === 1) {
       // 已创建新的发布，发布结束
@@ -61,7 +61,7 @@ module.exports = {
         quit: status === 'FAIL',
         environment: current,
         buttonText: '重新开始',
-        redirectUrl: `/project/${project}/changelog/detail?id=${id}&branch=${branch}&action=CREATE&mode=${current.value}`
+        redirectUrl: `/project/${project}/changelog/detail?id=${id}&branch=${branch}&action=CREATE&mode=${current.value}&type=${type}`
       }
     }
 
@@ -72,7 +72,7 @@ module.exports = {
         label: '重新发布',
         environment: environments[0],
         buttonText: '重新发布',
-        redirectUrl: `/project/${project}/changelog/detail?id=${id}&branch=${branch}&action=CREATE&mode=${environments[0].value}`
+        redirectUrl: `/project/${project}/changelog/detail?id=${id}&branch=${branch}&action=CREATE&mode=${environments[0].value}&type=${type}`
       }
     }
 
