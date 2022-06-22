@@ -11,7 +11,7 @@ const requireFromString = require('require-from-string')
 
 class ConfigService extends Service {
   // 获取应用对应环境配置
-  async getByApp({ id, mode, type, branch = 'master' }) {
+  async getByApp({ id, mode, type, branch = 'master', isNew }) {
     const { ctx } = this
     const fileName = `nidle.${mode}.config.js`
     const { gitlabId, repositoryType, repositoryUrl } = await ctx.model.Project.findOne({ where: { id: id } })
@@ -27,7 +27,8 @@ class ConfigService extends Service {
 
       if (typeof config === 'function') {
         config = config({
-          type
+          type,
+          isNew
         })
       }
 
@@ -69,7 +70,8 @@ class ConfigService extends Service {
         id: project.id,
         mode,
         branch,
-        type
+        type,
+        isNew
       })
 
       if (!config) {
