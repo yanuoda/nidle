@@ -87,6 +87,11 @@ class ChangelogService extends Service {
       if (createConfig) {
         const manager = new Nidle(extend(true, {}, config))
         initConfig = await manager.init()
+
+        // 重新开始 || webhook自动构建，要清除源文件
+        if (id && (type === 'webhook' || mode === nidleConfig.environments[0].value)) {
+          manager.clear()
+        }
       }
 
       // 将配置存起来
@@ -176,7 +181,9 @@ class ChangelogService extends Service {
             if (typeof item.serverId === 'undefined') {
               // 查找serverId
               const server = await ctx.model.ProjectServer.findOne({
-                id: item.id
+                where: {
+                  id: item.id
+                }
               })
               item.serverId = server.server
             }
@@ -291,7 +298,8 @@ class ChangelogService extends Service {
       await ctx.service.projectServer.cancelUsed(id)
       await ctx.model.Changelog.update(
         {
-          status: 'CANCEL'
+          status: 'CANCEL',
+          active: 1
         },
         { where: { id } }
       )
