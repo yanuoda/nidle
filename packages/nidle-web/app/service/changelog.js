@@ -299,7 +299,7 @@ class ChangelogService extends Service {
       await ctx.model.Changelog.update(
         {
           status: 'CANCEL',
-          active: 1
+          active: 2
         },
         { where: { id } }
       )

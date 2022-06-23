@@ -31,7 +31,7 @@ module.exports = app => {
     environment: STRING(20),
     stage: STRING(20),
     duration: INTEGER,
-    active: INTEGER,
+    active: INTEGER, // 0: 进行中; 1: 已结束并禁用; 2: 退出发布准备重新开始
     configPath: STRING(),
     logPath: STRING(),
     createdTime: DATE,
