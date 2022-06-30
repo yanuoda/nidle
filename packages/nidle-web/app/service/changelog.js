@@ -462,7 +462,8 @@ class ChangelogService extends Service {
             where: {
               project: pj.id,
               branch: detail.target_branch,
-              active: 0
+              active: 0,
+              type: 'webhook'
             }
           })
         }
