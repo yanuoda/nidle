@@ -481,6 +481,10 @@ class ChangelogService extends Service {
             { where: { id: changelog.id } }
           )
         } else {
+          if (detail.state === 'closed') {
+            return
+          }
+
           // webhook发布
           // 1. 新建发布记录
           ctx.request.body = {
