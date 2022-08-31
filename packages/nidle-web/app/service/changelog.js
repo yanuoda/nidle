@@ -447,7 +447,7 @@ class ChangelogService extends Service {
         }
 
         // 先查找是不是codeReview的
-        let changelog = await ctx.model.Changelog.findOne({
+        const changelog = await ctx.model.Changelog.findOne({
           where: {
             project: pj.id,
             commitId: detail.last_commit.id,
@@ -456,23 +456,7 @@ class ChangelogService extends Service {
           }
         })
 
-        // 再查找是不是webhook的
-        if (!changelog) {
-          changelog = await ctx.model.Changelog.findOne({
-            where: {
-              project: pj.id,
-              branch: detail.target_branch,
-              active: 0,
-              type: 'webhook'
-            }
-          })
-        }
-
-        if (!changelog) {
-          throw new Error(`找不到相关记录: ${detail.last_commit.id}`)
-        }
-
-        if (changelog.codeReviewStatus === 'PENDING') {
+        if (changelog && changelog.codeReviewStatus === 'PENDING') {
           // code review
           await ctx.model.Changelog.update(
             {
@@ -480,11 +464,29 @@ class ChangelogService extends Service {
             },
             { where: { id: changelog.id } }
           )
-        } else {
-          if (detail.state === 'closed') {
-            return
-          }
 
+          return true
+        }
+
+        if (detail.state === 'closed') {
+          return
+        }
+
+        // 再查找是不是webhook的
+        const changelogs = await ctx.model.Changelog.findAll({
+          where: {
+            project: pj.id,
+            branch: detail.target_branch,
+            active: 0,
+            type: 'webhook'
+          }
+        })
+
+        if (!changelogs.length) {
+          throw new Error(`找不到相关记录: ${detail.last_commit.id}`)
+        }
+
+        for (const changelog of changelogs) {
           // webhook发布
           // 1. 新建发布记录
           ctx.request.body = {
