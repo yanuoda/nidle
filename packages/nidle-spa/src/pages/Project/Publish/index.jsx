@@ -91,6 +91,11 @@ const Publish = props => {
       align: 'center'
     },
     {
+      title: '发布类型',
+      dataIndex: 'type',
+      align: 'center'
+    },
+    {
       title: '状态',
       dataIndex: 'status',
       align: 'center',
