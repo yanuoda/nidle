@@ -100,6 +100,17 @@ module.exports = {
         }
       }
 
+      if (type === 'webhook') {
+        // webhook发布成功，还在当前状态等待下一次发布，可以退出
+        return {
+          next: 'END',
+          label: '发布成功',
+          disabled: true,
+          quit: true,
+          environment: current
+        }
+      }
+
       if (idx + 1 >= environments.length) {
         // 发布结束
         return {
