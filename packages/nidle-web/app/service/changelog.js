@@ -25,7 +25,7 @@ class ChangelogService extends Service {
       const { name, repositoryType, repositoryUrl, gitlabId } = project
       let commitId
 
-      if (!id || mode === nidleConfig.environments[0].value) {
+      if (!id || mode === nidleConfig.environments[0].value || type === 'webhook') {
         // 从测试环境发布时，取分支的最新commitId，后续发布都基于此commitId
         let branchInfo
         if (repositoryType === 'github') {
