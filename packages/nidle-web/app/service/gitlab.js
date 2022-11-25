@@ -99,7 +99,8 @@ class GitlabService extends Service {
   // 获取项目分支信息
   async getBranches(projectGitlabId) {
     return await this.gitlabRequest({
-      url: `/projects/${projectGitlabId}/repository/branches`,
+      // 现在将分页限制放开限制为100条；如果以后还超出此限制，需要做分页请求；参考https://docs.gitlab.com/ee/api/#pagination
+      url: `/projects/${projectGitlabId}/repository/branches?per_page=100`,
       method: 'GET'
     })
   }
