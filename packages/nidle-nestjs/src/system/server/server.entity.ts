@@ -27,13 +27,13 @@ export class Server {
   status: number;
 
   @Column({
-    type: 'timestamp',
+    type: 'datetime',
     default: () => 'CURRENT_TIMESTAMP',
   })
   createdTime: Date;
 
   @Column({
-    type: 'timestamp',
+    type: 'datetime',
     default: () => 'CURRENT_TIMESTAMP',
     onUpdate: 'CURRENT_TIMESTAMP',
   })
