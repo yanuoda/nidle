@@ -19,6 +19,13 @@ import { ServerService } from './server.service';
 export class ServerController {
   constructor(private readonly serverService: ServerService) {}
 
+  @ApiOperation({ summary: '添加服务器' })
+  @Post('add')
+  async addServer(@Body() param: CreateServerDTO): Promise<FormatResponse> {
+    await this.serverService.create(param);
+    return {};
+  }
+
   @ApiOperation({ summary: '查询服务器列表' })
   @Post('list')
   async getServerList(
@@ -26,7 +33,7 @@ export class ServerController {
   ): Promise<ResServerListDTO> {
     const { current, pageSize: _pageSize } = queryParam;
     const { page, pageSize } = formatPageParams(current, _pageSize);
-    const { list, total } = await this.serverService.getServerList({
+    const { list, total } = await this.serverService.findAll({
       ...queryParam,
       current: page,
       pageSize,
@@ -37,29 +44,22 @@ export class ServerController {
   @ApiOperation({ summary: '查询服务器' })
   @Get('query')
   async getServer(@Query('id') id: number): Promise<ResServerDTO> {
-    const dataValues = await this.serverService.getServer(id);
+    const dataValues = await this.serverService.findOne(id);
     // 兼容原接口数据格式
     return { data: { dataValues } };
-  }
-
-  @ApiOperation({ summary: '添加服务器' })
-  @Post('add')
-  async addServer(@Body() param: CreateServerDTO): Promise<FormatResponse> {
-    await this.serverService.createServer(param);
-    return {};
   }
 
   @ApiOperation({ summary: '编辑服务器' })
   @Post('modify')
   async modifyServer(@Body() param: UpdateServerDTO): Promise<FormatResponse> {
-    await this.serverService.updateServer(param);
+    await this.serverService.update(param);
     return {};
   }
 
   @ApiOperation({ summary: '删除服务器' })
   @Post('delete')
   async deleteServer(@Body() { id }: RemoveServerDTO): Promise<FormatResponse> {
-    await this.serverService.deleteServer(id);
+    await this.serverService.remove(id);
     return {};
   }
 }

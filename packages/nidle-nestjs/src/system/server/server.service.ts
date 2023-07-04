@@ -16,7 +16,14 @@ export class ServerService {
     private readonly serverRepository: Repository<Server>,
   ) {}
 
-  async getServerList({
+  async create(param: CreateServerDTO) {
+    const newServer = new Server();
+    Object.assign(newServer, param);
+    newServer.status = 1;
+    return await this.serverRepository.save(newServer);
+  }
+
+  async findAll({
     environment,
     name,
     ip,
@@ -38,7 +45,7 @@ export class ServerService {
     return { list, total };
   }
 
-  async getServer(id: number) {
+  async findOne(id: number) {
     const existServer = await this.serverRepository.findOne({ where: { id } });
     if (!existServer) {
       throw new Error(`服务器id:${id}不存在`);
@@ -46,14 +53,7 @@ export class ServerService {
     return existServer;
   }
 
-  async createServer(param: CreateServerDTO) {
-    const newServer = new Server();
-    Object.assign(newServer, param);
-    newServer.status = 1;
-    return await this.serverRepository.save(newServer);
-  }
-
-  async updateServer({ id, ...restParam }: UpdateServerDTO) {
+  async update({ id, ...restParam }: UpdateServerDTO) {
     const existServer = await this.serverRepository.findOne({ where: { id } });
     if (!existServer) {
       throw new Error(`服务器id:${id}不存在`);
@@ -62,7 +62,7 @@ export class ServerService {
     return await this.serverRepository.save(existServer);
   }
 
-  async deleteServer(id: number) {
+  async remove(id: number) {
     return await this.serverRepository.delete({ id });
   }
 }
