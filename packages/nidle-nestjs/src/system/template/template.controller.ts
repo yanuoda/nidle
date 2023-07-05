@@ -25,8 +25,8 @@ export class TemplateController {
   async create(
     @Body() createTemplateDto: CreateTemplateDto,
   ): Promise<CreateTemplateResponseDTO> {
-    const newTemp = await this.templateService.create(createTemplateDto);
-    return { id: newTemp.id };
+    const { id } = await this.templateService.create(createTemplateDto);
+    return { id };
   }
 
   @ApiOperation({ summary: '查询模板列表' })

@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, FindManyOptions, FindOptionsWhere, Like } from 'typeorm';
+import { Repository } from 'typeorm';
 
+import { buildLikeWhere } from 'src/utils';
 import {
   CreateTemplateDto,
   QueryTemplateListDTO,
@@ -29,17 +30,13 @@ export class TemplateService {
     current,
     pageSize,
   }: QueryTemplateListDTO) {
-    const options: FindManyOptions<Template> = {
+    const [list, total] = await this.templateRepository.findAndCount({
       select: ['id', 'name', 'description'],
       skip: (current - 1) * pageSize,
       take: pageSize,
       order: { createdTime: 'DESC' },
-    };
-    const _where: FindOptionsWhere<Template> = { status: 1 };
-    if (name) _where.name = Like(`${name}%`);
-    if (description) _where.description = Like(`${description}%`);
-    options.where = _where;
-    const [list, total] = await this.templateRepository.findAndCount(options);
+      where: buildLikeWhere<Template>({ name, description }, { status: 1 }),
+    });
     return { list, total };
   }
 
@@ -54,12 +51,7 @@ export class TemplateService {
   }
 
   async update({ id, ...restParam }: UpdateTemplateDto) {
-    const existTemplate = await this.templateRepository.findOne({
-      where: { id },
-    });
-    if (!existTemplate) {
-      throw new Error(`模板id:${id}不存在`);
-    }
+    const existTemplate = await this.findOne(id);
     Object.assign(existTemplate, restParam);
     return await this.templateRepository.save(existTemplate);
   }

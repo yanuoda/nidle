@@ -25,8 +25,8 @@ export class ServerController {
   async addServer(
     @Body() param: CreateServerDTO,
   ): Promise<CreateServerResponseDTO> {
-    const newServer = await this.serverService.create(param);
-    return { id: newServer.id };
+    const { id } = await this.serverService.create(param);
+    return { id };
   }
 
   @ApiOperation({ summary: '查询服务器列表' })
