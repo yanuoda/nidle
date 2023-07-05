@@ -1,18 +1,19 @@
-import { Controller, Get, Query, Post, Body } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { formatPageParams } from 'src/utils';
 import { FormatResponse } from 'src/common/base.dto';
-
+import { ServerService } from './server.service';
 import {
   CreateServerDTO,
   QeuryServerListDTO,
   RemoveServerDTO,
-  ResServerDTO,
-  ResServerListDTO,
+  CreateServerResponseDTO,
+  QueryServerResponseDTO,
+  QueryServerListResponseDTO,
   UpdateServerDTO,
+  QueryServerDTO,
 } from './server.dto';
-import { ServerService } from './server.service';
 
 @ApiTags('服务器相关接口')
 @Controller('server')
@@ -21,16 +22,18 @@ export class ServerController {
 
   @ApiOperation({ summary: '添加服务器' })
   @Post('add')
-  async addServer(@Body() param: CreateServerDTO): Promise<FormatResponse> {
-    await this.serverService.create(param);
-    return {};
+  async addServer(
+    @Body() param: CreateServerDTO,
+  ): Promise<CreateServerResponseDTO> {
+    const newServer = await this.serverService.create(param);
+    return { id: newServer.id };
   }
 
   @ApiOperation({ summary: '查询服务器列表' })
   @Post('list')
   async getServerList(
     @Body() queryParam: QeuryServerListDTO,
-  ): Promise<ResServerListDTO> {
+  ): Promise<QueryServerListResponseDTO> {
     const { current, pageSize: _pageSize } = queryParam;
     const { page, pageSize } = formatPageParams(current, _pageSize);
     const { list, total } = await this.serverService.findAll({
@@ -43,7 +46,9 @@ export class ServerController {
 
   @ApiOperation({ summary: '查询服务器' })
   @Get('query')
-  async getServer(@Query('id') id: number): Promise<ResServerDTO> {
+  async getServer(
+    @Query() { id }: QueryServerDTO,
+  ): Promise<QueryServerResponseDTO> {
     const dataValues = await this.serverService.findOne(id);
     // 兼容原接口数据格式
     return { data: { dataValues } };

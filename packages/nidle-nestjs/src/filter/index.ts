@@ -1,11 +1,12 @@
+import { Response } from 'express';
 import {
   ExceptionFilter,
   Catch,
   ArgumentsHost,
   HttpException,
   HttpStatus,
+  HttpExceptionBody,
 } from '@nestjs/common';
-import { Response } from 'express';
 
 @Catch()
 export class AllExceptionFilter implements ExceptionFilter {
@@ -13,15 +14,23 @@ export class AllExceptionFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     // const request = ctx.getRequest<Request>();
-    const httpStatus =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    response.status(httpStatus).json({
-      statusCode: httpStatus,
+    let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+    let message = exception.message || '服务器出错了';
+
+    if (exception instanceof HttpException) {
+      statusCode = exception.getStatus();
+      const exceptionRes = exception.getResponse();
+      message =
+        typeof exceptionRes === 'string'
+          ? exceptionRes
+          : String((exceptionRes as HttpExceptionBody).message);
+    }
+
+    response.status(statusCode).json({
+      statusCode,
+      message,
       success: false,
-      message: exception?.message || '服务器出错了',
     });
   }
 }
