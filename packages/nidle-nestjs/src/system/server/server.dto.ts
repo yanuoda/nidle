@@ -24,7 +24,7 @@ export class CreateServerDTO {
   readonly password?: string;
 }
 export class CreateServerResponseDTO extends FormatResponse {
-  id: number;
+  readonly id: number;
 }
 
 export class QeuryServerListDTO extends PageQuery {
@@ -36,21 +36,21 @@ export class QeuryServerListDTO extends PageQuery {
   readonly name?: string;
   readonly ip?: string;
 }
-class ServerPickedList {
+class ServerPicked {
   readonly id: number;
   readonly name?: string;
   readonly ip?: string;
 }
 export class QueryServerListResponseDTO extends FormatResponse {
-  @ApiProperty({ type: [ServerPickedList] })
-  readonly data: Array<ServerPickedList>;
+  @ApiProperty({ type: [ServerPicked] })
+  readonly data: ServerPicked[];
   readonly total: number;
 }
 
 export class QueryServerDTO {
   @IsNumberString()
   @IsNotEmpty()
-  id: number;
+  readonly id: number;
 }
 export class QueryServerResponseDTO extends FormatResponse {
   readonly data: { dataValues: Server };
@@ -59,11 +59,11 @@ export class QueryServerResponseDTO extends FormatResponse {
 export class UpdateServerDTO extends CreateServerDTO {
   @IsNumber()
   @IsNotEmpty()
-  id: number;
+  readonly id: number;
 }
 
 export class RemoveServerDTO {
   @IsNumber()
   @IsNotEmpty()
-  id: number;
+  readonly id: number;
 }
