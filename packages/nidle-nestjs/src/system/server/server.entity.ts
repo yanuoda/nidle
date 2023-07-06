@@ -1,4 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+
+import { ProjectServer } from '../project/project.entity';
 
 @Entity({ name: 'server' })
 export class Server {
@@ -38,4 +40,7 @@ export class Server {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updatedTime: Date;
+
+  @OneToMany(() => ProjectServer, (projectServer) => projectServer.server)
+  projectServers: ProjectServer[];
 }

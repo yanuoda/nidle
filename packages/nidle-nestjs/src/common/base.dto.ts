@@ -15,3 +15,9 @@ export class FormatResponse {
    */
   readonly statusCode?: number;
 }
+
+export enum Environment {
+  development = 'development',
+  pre = 'pre',
+  production = 'production',
+}

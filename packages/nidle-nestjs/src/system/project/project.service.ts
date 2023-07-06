@@ -3,10 +3,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { buildLikeWhere } from 'src/utils';
+import { Environment } from 'src/common/base.dto';
 import {
   CreateProjectDto,
   CreateOrUpdateProjectDto,
   QueryProjectListDto,
+  ProjectData,
+  ServerList,
 } from './project.dto';
 import { Project } from './project.entity';
 
@@ -44,18 +47,36 @@ export class ProjectService {
     return { list, total };
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<ProjectData> {
+    const existProject = await this.projectRepository.findOne({
+      where: { id },
+      relations: { projectServers: { server: true } },
+    });
+    if (!existProject) {
+      throw new Error(`项目id:${id}不存在`);
+    }
+    const { projectServers, ...restColumn } = existProject;
+    const serverList = new ServerList();
+    projectServers.forEach(({ server, ...restData }) => {
+      const { id, name, ip } = server;
+      serverList[restData.environment as Environment].push({
+        ...restData,
+        Server: { id, name, ip },
+      });
+    });
+    return {
+      ...restColumn,
+      serverList,
+    };
+  }
+
+  async update({ id, ...restParam }: CreateOrUpdateProjectDto) {
     const existProject = await this.projectRepository.findOne({
       where: { id },
     });
     if (!existProject) {
       throw new Error(`项目id:${id}不存在`);
     }
-    return existProject;
-  }
-
-  async update({ id, ...restParam }: CreateOrUpdateProjectDto) {
-    const existProject = await this.findOne(id);
     Object.assign(existProject, restParam);
     return await this.projectRepository.save(existProject);
   }

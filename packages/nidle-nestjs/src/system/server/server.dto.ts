@@ -1,14 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { OmitType, PartialType } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsNumberString } from 'class-validator';
 
-import { PageQuery, FormatResponse } from 'src/common/base.dto';
+import { Environment, FormatResponse, PageQuery } from 'src/common/base.dto';
 import { Server } from './server.entity';
-
-enum Environment {
-  development = 'development',
-  pre = 'pre',
-  production = 'production',
-}
 
 export class CreateServerDTO {
   /**
@@ -42,7 +36,6 @@ class ServerPicked {
   readonly ip?: string;
 }
 export class QueryServerListResponseDTO extends FormatResponse {
-  @ApiProperty({ type: [ServerPicked] })
   readonly data: ServerPicked[];
   readonly total: number;
 }
@@ -52,8 +45,9 @@ export class QueryServerDTO {
   @IsNotEmpty()
   readonly id: number;
 }
+class ServerData extends PartialType(OmitType(Server, ['projectServers'])) {}
 export class QueryServerResponseDTO extends FormatResponse {
-  readonly data: { dataValues: Server };
+  readonly data: { dataValues: ServerData };
 }
 
 export class UpdateServerDTO extends CreateServerDTO {

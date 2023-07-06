@@ -1,8 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { PartialType, OmitType } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsNumberString } from 'class-validator';
 
-import { FormatResponse, PageQuery } from 'src/common/base.dto';
-import { Project } from './project.entity';
+import { Environment, FormatResponse, PageQuery } from 'src/common/base.dto';
+import { Project, ProjectServer } from './project.entity';
 
 export class CreateProjectDto {
   @IsNotEmpty()
@@ -32,7 +32,6 @@ class ProjectPicked {
   readonly repositoryType: string;
 }
 export class QueryProjectListResponseDto extends FormatResponse {
-  @ApiProperty({ type: [ProjectPicked] })
   readonly data: ProjectPicked[];
   readonly total: number;
 }
@@ -42,8 +41,30 @@ export class QueryProjectDto {
   @IsNotEmpty()
   readonly id: number;
 }
+class PickedServerData {
+  readonly id: number;
+  readonly name?: string;
+  readonly ip: string;
+}
+class RelatedProjectServer extends PartialType(
+  OmitType(ProjectServer, ['project', 'server']),
+) {
+  readonly Server?: PickedServerData;
+}
+export class ServerList implements Record<Environment, unknown> {
+  development: RelatedProjectServer[] = [];
+  pre: RelatedProjectServer[] = [];
+  production: RelatedProjectServer[] = [];
+}
+export class ProjectData extends PartialType(
+  OmitType(Project, ['projectServers']),
+) {
+  readonly serverList: ServerList;
+  /** @todo */
+  // readonly memberList;
+}
 export class QueryProjectResponseDto extends FormatResponse {
-  readonly data: Project;
+  readonly data: ProjectData;
 }
 
 export class RemoveProjectDto {

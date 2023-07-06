@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber } from 'class-validator';
 
 import { PageQuery, FormatResponse } from 'src/common/base.dto';
@@ -25,7 +24,6 @@ class TemplatePicked {
   readonly description?: string;
 }
 export class QueryTemplateListResponseDTO extends FormatResponse {
-  @ApiProperty({ type: [TemplatePicked] })
   readonly data: TemplatePicked[];
   readonly total: number;
 }
