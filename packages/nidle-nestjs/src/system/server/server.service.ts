@@ -24,7 +24,14 @@ export class ServerService {
     return await this.serverRepository.save(newServer);
   }
 
-  async findAll({
+  async findAll() {
+    return await this.serverRepository.find({
+      select: ['id', 'name', 'ip'],
+      order: { createdTime: 'DESC' },
+    });
+  }
+
+  async findAllByPage({
     environment,
     name,
     ip,
@@ -37,7 +44,6 @@ export class ServerService {
       take: pageSize,
       order: { createdTime: 'DESC' },
       where: {
-        status: 1,
         ...buildEqualWhere<Server>({ environment }),
         ...buildLikeWhere<Server>({ name, ip }),
       },
@@ -46,7 +52,7 @@ export class ServerService {
   }
 
   async findOne(id: number) {
-    const existServer = await this.serverRepository.findOne({ where: { id } });
+    const existServer = await this.serverRepository.findOneBy({ id });
     if (!existServer) {
       throw new Error(`服务器id:${id}不存在`);
     }

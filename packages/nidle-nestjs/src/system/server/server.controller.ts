@@ -11,6 +11,7 @@ import {
 import { ServerService } from './server.service';
 import {
   CreateServerDTO,
+  GetAllServersResponseDTO,
   QeuryServerListDTO,
   QueryServerResponseDTO,
   QueryServerListResponseDTO,
@@ -29,14 +30,21 @@ export class ServerController {
     return { id };
   }
 
+  @ApiOperation({ summary: '查询所有服务器（下拉框）' })
+  @Post()
+  async getAllServers(): Promise<GetAllServersResponseDTO> {
+    const data = await this.serverService.findAll();
+    return { data };
+  }
+
   @ApiOperation({ summary: '查询服务器列表' })
   @Post('list')
-  async getServerList(
+  async queryServerList(
     @Body() queryParam: QeuryServerListDTO,
   ): Promise<QueryServerListResponseDTO> {
     const { current, pageSize: _pageSize } = queryParam;
     const { page, pageSize } = formatPageParams(current, _pageSize);
-    const { list, total } = await this.serverService.findAll({
+    const { list, total } = await this.serverService.findAllByPage({
       ...queryParam,
       current: page,
       pageSize,

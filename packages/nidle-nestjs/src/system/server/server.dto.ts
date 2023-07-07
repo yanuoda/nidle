@@ -32,6 +32,9 @@ class ServerPicked {
   readonly name?: string;
   readonly ip?: string;
 }
+export class GetAllServersResponseDTO extends FormatResponse {
+  readonly data: ServerPicked[];
+}
 export class QueryServerListResponseDTO extends FormatResponse {
   readonly data: ServerPicked[];
   readonly total: number;
