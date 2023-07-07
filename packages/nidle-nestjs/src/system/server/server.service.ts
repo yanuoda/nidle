@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { buildLikeWhere } from 'src/utils';
+import { buildEqualWhere, buildLikeWhere } from 'src/utils';
 import {
   CreateServerDTO,
   UpdateServerDTO,
@@ -36,7 +36,11 @@ export class ServerService {
       skip: (current - 1) * pageSize,
       take: pageSize,
       order: { createdTime: 'DESC' },
-      where: buildLikeWhere<Server>({ name, ip }, { environment, status: 1 }),
+      where: {
+        status: 1,
+        ...buildEqualWhere<Server>({ environment }),
+        ...buildLikeWhere<Server>({ name, ip }),
+      },
     });
     return { list, total };
   }

@@ -35,7 +35,10 @@ export class TemplateService {
       skip: (current - 1) * pageSize,
       take: pageSize,
       order: { createdTime: 'DESC' },
-      where: buildLikeWhere<Template>({ name, description }, { status: 1 }),
+      where: {
+        status: 1,
+        ...buildLikeWhere<Template>({ name, description }),
+      },
     });
     return { list, total };
   }
