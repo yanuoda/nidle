@@ -20,7 +20,6 @@ export class TemplateService {
   async create(createTemplateDto: CreateTemplateDto) {
     const newTemp = new Template();
     Object.assign(newTemp, createTemplateDto);
-    newTemp.status = 1;
     return await this.templateRepository.save(newTemp);
   }
 
@@ -35,10 +34,7 @@ export class TemplateService {
       skip: (current - 1) * pageSize,
       take: pageSize,
       order: { createdTime: 'DESC' },
-      where: {
-        status: 1,
-        ...buildLikeWhere<Template>({ name, description }),
-      },
+      where: buildLikeWhere<Template>({ name, description }),
     });
     return { list, total };
   }

@@ -14,7 +14,7 @@ export class Template {
   @Column({ type: 'longtext', nullable: true, comment: '模板内容' })
   config: string;
 
-  @Column({ type: 'int', nullable: true, comment: '模板状态' })
+  @Column({ type: 'int', nullable: true, default: 1, comment: '模板状态' })
   status: number;
 
   @Column({
