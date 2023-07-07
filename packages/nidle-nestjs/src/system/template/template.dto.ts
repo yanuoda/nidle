@@ -10,9 +10,6 @@ export class CreateTemplateDto {
   @IsNotEmpty()
   readonly config: string;
 }
-export class CreateTemplateResponseDTO extends FormatResponse {
-  readonly id: number;
-}
 
 export class QueryTemplateListDTO extends PageQuery {
   readonly name?: string;
@@ -28,22 +25,11 @@ export class QueryTemplateListResponseDTO extends FormatResponse {
   readonly total: number;
 }
 
-export class QueryTemplateDTO {
-  @IsNumber()
-  @IsNotEmpty()
-  readonly id: number;
-}
 export class QueryTemplateResponseDTO extends FormatResponse {
   readonly data: Template;
 }
 
 export class UpdateTemplateDto extends CreateTemplateDto {
-  @IsNumber()
-  @IsNotEmpty()
-  readonly id: number;
-}
-
-export class RemoveTemplateDTO {
   @IsNumber()
   @IsNotEmpty()
   readonly id: number;

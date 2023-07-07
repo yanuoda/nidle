@@ -1,5 +1,5 @@
 import { OmitType, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsNumberString } from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 import { Environment, FormatResponse, PageQuery } from 'src/common/base.dto';
 import { Server } from './server.entity';
@@ -16,9 +16,6 @@ export class CreateServerDTO {
   readonly ip: string;
   readonly username?: string;
   readonly password?: string;
-}
-export class CreateServerResponseDTO extends FormatResponse {
-  readonly id: number;
 }
 
 export class QeuryServerListDTO extends PageQuery {
@@ -40,23 +37,12 @@ export class QueryServerListResponseDTO extends FormatResponse {
   readonly total: number;
 }
 
-export class QueryServerDTO {
-  @IsNumberString()
-  @IsNotEmpty()
-  readonly id: number;
-}
 class ServerData extends PartialType(OmitType(Server, ['projectServers'])) {}
 export class QueryServerResponseDTO extends FormatResponse {
   readonly data: { dataValues: ServerData };
 }
 
 export class UpdateServerDTO extends CreateServerDTO {
-  @IsNumber()
-  @IsNotEmpty()
-  readonly id: number;
-}
-
-export class RemoveServerDTO {
   @IsNumber()
   @IsNotEmpty()
   readonly id: number;

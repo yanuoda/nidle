@@ -1,18 +1,20 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 
 import { formatPageParams } from 'src/utils';
-import { FormatResponse } from 'src/common/base.dto';
+import {
+  FormatResponse,
+  IdQueryRequestDto,
+  IdBodyRequestDto,
+  IdResponseDto,
+} from 'src/common/base.dto';
 import { ServerService } from './server.service';
 import {
   CreateServerDTO,
   QeuryServerListDTO,
-  RemoveServerDTO,
-  CreateServerResponseDTO,
   QueryServerResponseDTO,
   QueryServerListResponseDTO,
   UpdateServerDTO,
-  QueryServerDTO,
 } from './server.dto';
 
 @ApiTags('服务器相关接口')
@@ -22,9 +24,7 @@ export class ServerController {
 
   @ApiOperation({ summary: '添加服务器' })
   @Post('add')
-  async addServer(
-    @Body() param: CreateServerDTO,
-  ): Promise<CreateServerResponseDTO> {
+  async addServer(@Body() param: CreateServerDTO): Promise<IdResponseDto> {
     const { id } = await this.serverService.create(param);
     return { id };
   }
@@ -47,7 +47,7 @@ export class ServerController {
   @ApiOperation({ summary: '查询服务器' })
   @Get('query')
   async getServer(
-    @Query() { id }: QueryServerDTO,
+    @Query() { id }: IdQueryRequestDto,
   ): Promise<QueryServerResponseDTO> {
     const dataValues = await this.serverService.findOne(id);
     // 兼容原接口数据格式
@@ -63,7 +63,9 @@ export class ServerController {
 
   @ApiOperation({ summary: '删除服务器' })
   @Post('delete')
-  async deleteServer(@Body() { id }: RemoveServerDTO): Promise<FormatResponse> {
+  async deleteServer(
+    @Body() { id }: IdBodyRequestDto,
+  ): Promise<FormatResponse> {
     await this.serverService.remove(id);
     return {};
   }

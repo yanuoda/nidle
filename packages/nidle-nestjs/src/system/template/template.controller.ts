@@ -2,16 +2,17 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { formatPageParams } from 'src/utils';
-import { FormatResponse } from 'src/common/base.dto';
+import {
+  FormatResponse,
+  IdBodyRequestDto,
+  IdResponseDto,
+} from 'src/common/base.dto';
 import { TemplateService } from './template.service';
 import {
   CreateTemplateDto,
-  CreateTemplateResponseDTO,
-  QueryTemplateDTO,
   QueryTemplateListDTO,
   QueryTemplateListResponseDTO,
   QueryTemplateResponseDTO,
-  RemoveTemplateDTO,
   UpdateTemplateDto,
 } from './template.dto';
 
@@ -24,7 +25,7 @@ export class TemplateController {
   @Post('add')
   async create(
     @Body() createTemplateDto: CreateTemplateDto,
-  ): Promise<CreateTemplateResponseDTO> {
+  ): Promise<IdResponseDto> {
     const { id } = await this.templateService.create(createTemplateDto);
     return { id };
   }
@@ -47,7 +48,7 @@ export class TemplateController {
   @ApiOperation({ summary: '查询模板' })
   @Post()
   async findOne(
-    @Body() { id }: QueryTemplateDTO,
+    @Body() { id }: IdBodyRequestDto,
   ): Promise<QueryTemplateResponseDTO> {
     const data = await this.templateService.findOne(id);
     return { data };
@@ -64,7 +65,7 @@ export class TemplateController {
 
   @ApiOperation({ summary: '删除模板' })
   @Post('delete')
-  async remove(@Body() { id }: RemoveTemplateDTO): Promise<FormatResponse> {
+  async remove(@Body() { id }: IdBodyRequestDto): Promise<FormatResponse> {
     await this.templateService.remove(id);
     return {};
   }
