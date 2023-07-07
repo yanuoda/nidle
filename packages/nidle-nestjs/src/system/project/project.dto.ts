@@ -2,7 +2,8 @@ import { PartialType, OmitType } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber } from 'class-validator';
 
 import { Environment, FormatResponse, PageQuery } from 'src/common/base.dto';
-import { Project, ProjectServer } from './project.entity';
+import { Project } from './entities/project.entity';
+import { ProjectServer } from './entities/project_server.entity';
 
 export class CreateProjectDto {
   @IsNotEmpty()

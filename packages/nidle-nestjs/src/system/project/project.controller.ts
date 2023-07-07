@@ -92,4 +92,12 @@ export class ProjectController {
     await this.projectService.removeProjectServer(id);
     return {};
   }
+
+  /**
+   * @todo
+   * get - branches
+   * post - contacts/update
+   * post - server/fetch
+   * get - publish/list
+   */
 }

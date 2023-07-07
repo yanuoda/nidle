@@ -3,7 +3,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ProjectService } from './project.service';
 import { ProjectController } from './project.controller';
-import { Project, ProjectServer } from './project.entity';
+import { Project } from './entities/project.entity';
+import { ProjectServer } from './entities/project_server.entity';
 
 @Module({
   controllers: [ProjectController],

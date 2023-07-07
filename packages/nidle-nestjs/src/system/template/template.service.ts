@@ -40,9 +40,7 @@ export class TemplateService {
   }
 
   async findOne(id: number) {
-    const existTemplate = await this.templateRepository.findOne({
-      where: { id },
-    });
+    const existTemplate = await this.templateRepository.findOneBy({ id });
     if (!existTemplate) {
       throw new Error(`模板id:${id}不存在`);
     }

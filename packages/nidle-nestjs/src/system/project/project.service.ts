@@ -13,7 +13,8 @@ import {
   CreateProjectServerDto,
   UpdateProjectServerDto,
 } from './project.dto';
-import { Project, ProjectServer } from './project.entity';
+import { Project } from './entities/project.entity';
+import { ProjectServer } from './entities/project_server.entity';
 
 @Injectable()
 export class ProjectService {
@@ -75,9 +76,7 @@ export class ProjectService {
   }
 
   async update({ id, ...restParam }: CreateOrUpdateProjectDto) {
-    const existProject = await this.projectRepository.findOne({
-      where: { id },
-    });
+    const existProject = await this.projectRepository.findOneBy({ id });
     if (!existProject) {
       throw new Error(`项目id:${id}不存在`);
     }
@@ -96,8 +95,8 @@ export class ProjectService {
   }
 
   async updateProjectServer({ id, ...restParam }: UpdateProjectServerDto) {
-    const existProjectServer = await this.projectServerRepository.findOne({
-      where: { id },
+    const existProjectServer = await this.projectServerRepository.findOneBy({
+      id,
     });
     if (!existProjectServer) {
       throw new Error(`项目服务器配置id:${id}不存在`);

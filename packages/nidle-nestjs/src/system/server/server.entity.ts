@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
-import { ProjectServer } from '../project/project.entity';
+import { ProjectServer } from '../project/entities/project_server.entity';
 
 @Entity({ name: 'server' })
 export class Server {
