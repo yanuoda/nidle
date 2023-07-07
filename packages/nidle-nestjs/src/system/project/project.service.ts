@@ -10,14 +10,18 @@ import {
   QueryProjectListDto,
   ProjectData,
   ServerList,
+  CreateProjectServerDto,
+  UpdateProjectServerDto,
 } from './project.dto';
-import { Project } from './project.entity';
+import { Project, ProjectServer } from './project.entity';
 
 @Injectable()
 export class ProjectService {
   constructor(
     @InjectRepository(Project)
     private readonly projectRepository: Repository<Project>,
+    @InjectRepository(ProjectServer)
+    private readonly projectServerRepository: Repository<ProjectServer>,
   ) {}
 
   async create(createProjectDto: CreateProjectDto) {
@@ -83,5 +87,26 @@ export class ProjectService {
 
   async remove(id: number) {
     return await this.projectRepository.delete({ id });
+  }
+
+  async createProjectServer(param: CreateProjectServerDto) {
+    const newProjectServer = new ProjectServer();
+    Object.assign(newProjectServer, param);
+    return await this.projectServerRepository.save(newProjectServer);
+  }
+
+  async updateProjectServer({ id, ...restParam }: UpdateProjectServerDto) {
+    const existProjectServer = await this.projectServerRepository.findOne({
+      where: { id },
+    });
+    if (!existProjectServer) {
+      throw new Error(`项目服务器配置id:${id}不存在`);
+    }
+    Object.assign(existProjectServer, restParam);
+    return await this.projectServerRepository.save(existProjectServer);
+  }
+
+  async removeProjectServer(id: number) {
+    return await this.projectServerRepository.delete({ id });
   }
 }

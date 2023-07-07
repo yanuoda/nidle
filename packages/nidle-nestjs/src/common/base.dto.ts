@@ -1,6 +1,20 @@
+import { IsNotEmpty, IsNumber, IsNumberString } from 'class-validator';
+
 export class PageQuery {
   readonly current?: number;
   readonly pageSize?: number;
+}
+
+export class IdQueryRequestDto {
+  @IsNumberString()
+  @IsNotEmpty()
+  readonly id: number;
+}
+
+export class IdBodyRequestDto {
+  @IsNumber()
+  @IsNotEmpty()
+  readonly id: number;
 }
 
 export class FormatResponse {
@@ -14,6 +28,10 @@ export class FormatResponse {
    * @example 500
    */
   readonly statusCode?: number;
+}
+
+export class IdResponseDto extends FormatResponse {
+  readonly id: number;
 }
 
 export enum Environment {

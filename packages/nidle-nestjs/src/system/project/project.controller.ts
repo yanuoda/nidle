@@ -2,16 +2,20 @@ import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { formatPageParams } from 'src/utils';
-import { FormatResponse } from 'src/common/base.dto';
+import {
+  IdQueryRequestDto,
+  IdBodyRequestDto,
+  FormatResponse,
+  IdResponseDto,
+} from 'src/common/base.dto';
 import { ProjectService } from './project.service';
 import {
   CreateOrUpdateProjectDto,
-  CreateOrUpdateProjectResponseDto,
-  QueryProjectDto,
+  CreateProjectServerDto,
   QueryProjectListDto,
   QueryProjectListResponseDto,
   QueryProjectResponseDto,
-  RemoveProjectDto,
+  UpdateProjectServerDto,
 } from './project.dto';
 
 @ApiTags('项目相关接口')
@@ -23,7 +27,7 @@ export class ProjectController {
   @Post('sync')
   async create(
     @Body() param: CreateOrUpdateProjectDto,
-  ): Promise<CreateOrUpdateProjectResponseDto> {
+  ): Promise<IdResponseDto> {
     const { id: _id, ...restParam } = param;
     const { id } = _id
       ? await this.projectService.update(param)
@@ -49,7 +53,7 @@ export class ProjectController {
   @ApiOperation({ summary: '查询项目' })
   @Get('detail')
   async findOne(
-    @Query() { id }: QueryProjectDto,
+    @Query() { id }: IdQueryRequestDto,
   ): Promise<QueryProjectResponseDto> {
     const data = await this.projectService.findOne(id);
     return { data };
@@ -57,8 +61,35 @@ export class ProjectController {
 
   @ApiOperation({ summary: '删除项目（物理）' })
   @Post('delete')
-  async remove(@Body() { id }: RemoveProjectDto): Promise<FormatResponse> {
+  async remove(@Body() { id }: IdBodyRequestDto): Promise<FormatResponse> {
     await this.projectService.remove(id);
+    return {};
+  }
+
+  @ApiOperation({ summary: '添加项目服务器配置' })
+  @Post('server/add')
+  async addProjectServer(
+    @Body() param: CreateProjectServerDto,
+  ): Promise<IdResponseDto> {
+    const { id } = await this.projectService.createProjectServer(param);
+    return { id };
+  }
+
+  @ApiOperation({ summary: '编辑项目服务器配置' })
+  @Post('server/modify')
+  async modifyProjectServer(
+    @Body() param: UpdateProjectServerDto,
+  ): Promise<IdResponseDto> {
+    const { id } = await this.projectService.updateProjectServer(param);
+    return { id };
+  }
+
+  @ApiOperation({ summary: '删除项目服务器配置（物理）' })
+  @Post('server/delete')
+  async deleteProjectServer(
+    @Body() { id }: IdBodyRequestDto,
+  ): Promise<FormatResponse> {
+    await this.projectService.removeProjectServer(id);
     return {};
   }
 }
