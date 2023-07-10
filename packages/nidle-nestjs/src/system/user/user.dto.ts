@@ -1,18 +1,28 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class QueryUserDto {
-  name?: string;
-  password?: string;
-  gitlabUserId?: number;
-  githubUserId?: number;
+  readonly name?: string;
+  readonly password?: string;
+  readonly gitlabUserId?: number;
+  readonly githubUserId?: number;
+}
+
+class UserPicked {
+  readonly id: number;
+  readonly name?: string;
+  readonly gitlabUserId?: number;
+  readonly githubUserId?: number;
+}
+export class QueryUserResponseDto {
+  readonly data: UserPicked;
 }
 
 export class ModifyPasswordDto {
   @IsNumber()
   @IsNotEmpty()
-  id: number;
+  readonly id: number;
   @IsNotEmpty()
-  oldPassword: string;
+  readonly oldPassword: string;
   @IsNotEmpty()
-  newPassword: string;
+  readonly newPassword: string;
 }

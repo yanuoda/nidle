@@ -40,7 +40,7 @@ export enum Environment {
   production = 'production',
 }
 
-class SessionUser {
+export class SessionUser {
   id: number;
   name: string;
   gitlabUserId: number;
