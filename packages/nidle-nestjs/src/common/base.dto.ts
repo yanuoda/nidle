@@ -39,3 +39,13 @@ export enum Environment {
   pre = 'pre',
   production = 'production',
 }
+
+class SessionUser {
+  id: number;
+  name: string;
+  gitlabUserId: number;
+  githubUserId: number;
+}
+export class SessionDto {
+  user?: SessionUser;
+}

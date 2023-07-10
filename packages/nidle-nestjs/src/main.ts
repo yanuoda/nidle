@@ -1,3 +1,6 @@
+import { createClient } from 'redis';
+import RedisStore from 'connect-redis';
+import * as session from 'express-session';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -8,12 +11,33 @@ import { AllExceptionFilter } from './filter';
 // import CONST from './const';
 
 async function bootstrap() {
+  // Initialize client.
+  const redisClient = createClient();
+  redisClient.connect().catch(console.error);
+
+  // Initialize store.
+  const redisStore = new RedisStore({
+    client: redisClient,
+    prefix: 'nidle:',
+  });
+
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new AllExceptionFilter());
+
+  app.use(
+    session({
+      name: 'NIDLE_V2_SESSION',
+      store: redisStore,
+      resave: false, // required: force lightweight session keep alive (touch)
+      saveUninitialized: false, // recommended: only save session when data exists
+      secret: 'nidle-yanuoda',
+      cookie: { maxAge: 1000 * 60 * 60 * 24 * 7, httpOnly: true },
+    }),
+  );
 
   if (process.env.DEV === 'true') {
     const options = new DocumentBuilder()
