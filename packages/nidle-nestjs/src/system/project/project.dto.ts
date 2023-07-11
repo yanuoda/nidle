@@ -62,7 +62,7 @@ export class QueryProjectResponseDto extends FormatResponse {
 
 export class CreateProjectServerDto {
   @IsNotEmpty()
-  readonly environment: string;
+  readonly environment: Environment;
   @IsNotEmpty()
   readonly output: string;
   @IsNumber()
