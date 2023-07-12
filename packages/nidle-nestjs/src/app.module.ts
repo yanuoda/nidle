@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService, ConfigType } from '@nestjs/config';
 
+import { LibModule } from './lib/lib.module';
 import { SystemModule } from './system/system.module';
 import configuration, { dbConfig } from './configuration';
 
@@ -29,6 +30,7 @@ import configuration, { dbConfig } from './configuration';
       },
       inject: [ConfigService],
     }),
+    LibModule,
     SystemModule,
   ],
   controllers: [],
