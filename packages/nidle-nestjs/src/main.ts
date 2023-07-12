@@ -11,8 +11,12 @@ import { AllExceptionFilter } from './filter';
 // import CONST from './const';
 
 async function bootstrap() {
+  const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD, REDIS_DB_INDEX, DEV, PORT } =
+    process.env;
   // Initialize client.
-  const redisClient = createClient();
+  const redisClient = createClient({
+    url: `redis://:${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}/${REDIS_DB_INDEX}`,
+  });
   redisClient.connect().catch(console.error);
 
   // Initialize store.
@@ -39,7 +43,7 @@ async function bootstrap() {
     }),
   );
 
-  if (process.env.DEV === 'true') {
+  if (DEV === 'true') {
     const options = new DocumentBuilder()
       .setTitle('nidle-nestjs api 文档')
       .setVersion('1.0')
@@ -48,6 +52,6 @@ async function bootstrap() {
     SwaggerModule.setup('swagger', app, document);
   }
 
-  await app.listen(process.env.PORT);
+  await app.listen(PORT);
 }
 bootstrap();
