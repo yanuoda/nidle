@@ -55,7 +55,7 @@ export class ProjectController {
   async findOne(
     @Query() { id }: IdQueryRequestDto,
   ): Promise<QueryProjectResponseDto> {
-    const data = await this.projectService.findOne(id);
+    const data = await this.projectService.findProjectAndRelations(id);
     return { data };
   }
 

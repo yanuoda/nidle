@@ -73,7 +73,7 @@ export class CreateProjectServerDto {
   readonly server: number;
 }
 
-export class UpdateProjectServerDto extends CreateProjectServerDto {
+export class UpdateProjectServerDto extends PartialType(ProjectServer) {
   @IsNumber()
   @IsNotEmpty()
   readonly id: number;

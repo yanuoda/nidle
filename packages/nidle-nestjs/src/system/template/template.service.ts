@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 
 import { buildLikeWhere } from 'src/utils';
 import {
@@ -39,16 +39,16 @@ export class TemplateService {
     return { list, total };
   }
 
-  async findOne(id: number) {
-    const existTemplate = await this.templateRepository.findOneBy({ id });
+  async findOneBy(where: FindOptionsWhere<Template>) {
+    const existTemplate = await this.templateRepository.findOneBy(where);
     if (!existTemplate) {
-      throw new Error(`模板id:${id}不存在`);
+      throw new Error(`模板不存在 - where:${JSON.stringify(where)}`);
     }
     return existTemplate;
   }
 
   async update({ id, ...restParam }: UpdateTemplateDto) {
-    const existTemplate = await this.findOne(id);
+    const existTemplate = await this.findOneBy({ id });
     Object.assign(existTemplate, restParam);
     return await this.templateRepository.save(existTemplate);
   }

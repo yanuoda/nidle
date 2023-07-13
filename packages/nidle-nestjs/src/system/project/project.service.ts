@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 
 import { buildLikeWhere } from 'src/utils';
 import { Environment } from 'src/common/base.dto';
@@ -52,7 +52,15 @@ export class ProjectService {
     return { list, total };
   }
 
-  async findOne(id: number): Promise<ProjectData> {
+  async findOne(id: number) {
+    const existProject = await this.projectRepository.findOneBy({ id });
+    if (!existProject) {
+      throw new Error(`项目id:${id}不存在`);
+    }
+    return existProject;
+  }
+
+  async findProjectAndRelations(id: number): Promise<ProjectData> {
     const existProject = await this.projectRepository.findOne({
       where: { id },
       relations: { projectServers: { server: true } },
@@ -76,10 +84,7 @@ export class ProjectService {
   }
 
   async update({ id, ...restParam }: CreateOrUpdateProjectDto) {
-    const existProject = await this.projectRepository.findOneBy({ id });
-    if (!existProject) {
-      throw new Error(`项目id:${id}不存在`);
-    }
+    const existProject = await this.findOne(id);
     Object.assign(existProject, restParam);
     return await this.projectRepository.save(existProject);
   }
@@ -94,13 +99,20 @@ export class ProjectService {
     return await this.projectServerRepository.save(newProjectServer);
   }
 
+  async findProjectServerBy(_where: FindOptionsWhere<ProjectServer>) {
+    const existProjectServer = await this.projectServerRepository.findOneBy(
+      _where,
+    );
+    if (!existProjectServer) {
+      throw new Error(`项目服务器配置不存在 - where:${JSON.stringify(_where)}`);
+    }
+    return existProjectServer;
+  }
+
   async updateProjectServer({ id, ...restParam }: UpdateProjectServerDto) {
-    const existProjectServer = await this.projectServerRepository.findOneBy({
+    const existProjectServer = await this.findProjectServerBy({
       id,
     });
-    if (!existProjectServer) {
-      throw new Error(`项目服务器配置id:${id}不存在`);
-    }
     Object.assign(existProjectServer, restParam);
     return await this.projectServerRepository.save(existProjectServer);
   }

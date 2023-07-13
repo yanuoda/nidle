@@ -69,7 +69,7 @@ export class GitlabService {
     );
   }
 
-  getFile(id: string, branch: string, filePath: string) {
+  getFile(id: number, branch: string, filePath: string) {
     return this.get(
       `/projects/${id}/repository/files/${encodeURIComponent(
         filePath,
@@ -88,14 +88,14 @@ export class GitlabService {
   }
 
   // 获取项目分支信息
-  async getBranches(repositoryGitlabId: string) {
+  async getBranches(id: number) {
     return await this.get(
       // 现在将分页限制放开限制为100条；如果以后还超出此限制，需要做分页请求；参考https://docs.gitlab.com/ee/api/#pagination
-      `/projects/${repositoryGitlabId}/repository/branches?per_page=100`,
+      `/projects/${id}/repository/branches?per_page=100`,
     );
   }
 
-  async getBranch(id: string, branch: string) {
+  async getBranch(id: number, branch: string) {
     return await this.get(
       `/projects/${id}/repository/branches/${encodeURIComponent(branch)}`,
     );

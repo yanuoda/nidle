@@ -1,4 +1,6 @@
-import CONST from 'src/const';
+import fs from 'fs';
+
+import _const from 'src/const';
 import { FindOptionsWhere, Like } from 'typeorm';
 
 export function formatPageParams(page: unknown, pageSize: unknown) {
@@ -8,7 +10,7 @@ export function formatPageParams(page: unknown, pageSize: unknown) {
   }
 
   if (isNaN(_pageSize) || _pageSize < 1) {
-    _pageSize = CONST.defaultPageSize;
+    _pageSize = _const.defaultPageSize;
   }
   return { page: _page, pageSize: _pageSize };
 }

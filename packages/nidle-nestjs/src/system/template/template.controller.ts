@@ -50,7 +50,7 @@ export class TemplateController {
   async findOne(
     @Body() { id }: IdBodyRequestDto,
   ): Promise<QueryTemplateResponseDTO> {
-    const data = await this.templateService.findOne(id);
+    const data = await this.templateService.findOneBy({ id });
     return { data };
   }
 

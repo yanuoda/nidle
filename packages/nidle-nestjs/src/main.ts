@@ -22,7 +22,7 @@ async function bootstrap() {
   // Initialize store.
   const redisStore = new RedisStore({
     client: redisClient,
-    prefix: 'nidle:',
+    prefix: 'nidle-session:',
   });
 
   const app = await NestFactory.create(AppModule);
