@@ -9,5 +9,6 @@ import { Template } from './template.entity';
   controllers: [TemplateController],
   providers: [TemplateService],
   imports: [TypeOrmModule.forFeature([Template])],
+  exports: [TemplateService],
 })
 export class TemplateModule {}

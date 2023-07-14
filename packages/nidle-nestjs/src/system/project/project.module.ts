@@ -10,5 +10,6 @@ import { ProjectServer } from './entities/project_server.entity';
   controllers: [ProjectController],
   providers: [ProjectService],
   imports: [TypeOrmModule.forFeature([Project, ProjectServer])],
+  exports: [ProjectService],
 })
 export class ProjectModule {}

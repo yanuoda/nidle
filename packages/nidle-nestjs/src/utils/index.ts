@@ -38,3 +38,17 @@ export function buildLikeWhere<T extends object>(param: Partial<T>) {
   });
   return _where;
 }
+
+export function asyncWait(time = 0) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve, time);
+  });
+}
+
+export function readConfig(path: string) {
+  const configRaw = fs.readFileSync(path);
+  return JSON.parse(configRaw.toString());
+}
+export function writeConfig(path: string, data: Record<string, any>) {
+  fs.writeFileSync(path, JSON.stringify(data, undefined, 2));
+}

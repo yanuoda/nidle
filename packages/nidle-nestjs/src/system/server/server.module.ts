@@ -9,5 +9,6 @@ import { Server } from './server.entity';
   controllers: [ServerController],
   providers: [ServerService],
   imports: [TypeOrmModule.forFeature([Server])],
+  exports: [ServerService],
 })
 export class ServerModule {}

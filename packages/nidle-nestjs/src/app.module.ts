@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService, ConfigType } from '@nestjs/config';
+import { BullModule } from '@nestjs/bull';
 
 import { LibModule } from './lib/lib.module';
 import { SystemModule } from './system/system.module';
-import configuration, { dbConfig } from './configuration';
+import configuration, { dbConfig, redisConfig } from './configuration';
 
 @Module({
   imports: [
@@ -26,6 +27,23 @@ import configuration, { dbConfig } from './configuration';
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
           synchronize: process.env.DEV === 'true',
           autoLoadEntities: true,
+        };
+      },
+      inject: [ConfigService],
+    }),
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const _redisConfig: ConfigType<typeof redisConfig> =
+          configService.get('redisConfig');
+        return {
+          redis: {
+            host: _redisConfig.host,
+            port: Number(_redisConfig.port),
+            password: _redisConfig.pass,
+            db: Number(_redisConfig.dbIndex),
+          },
+          prefix: 'nidle-queues:',
         };
       },
       inject: [ConfigService],

@@ -52,10 +52,10 @@ export class ProjectService {
     return { list, total };
   }
 
-  async findOne(id: number) {
-    const existProject = await this.projectRepository.findOneBy({ id });
+  async findOne(_where: FindOptionsWhere<Project>) {
+    const existProject = await this.projectRepository.findOneBy(_where);
     if (!existProject) {
-      throw new Error(`项目id:${id}不存在`);
+      throw new Error(`项目不存在 - where:${JSON.stringify(_where)}`);
     }
     return existProject;
   }
@@ -84,7 +84,7 @@ export class ProjectService {
   }
 
   async update({ id, ...restParam }: CreateOrUpdateProjectDto) {
-    const existProject = await this.findOne(id);
+    const existProject = await this.findOne({ id });
     Object.assign(existProject, restParam);
     return await this.projectRepository.save(existProject);
   }
@@ -119,5 +119,12 @@ export class ProjectService {
 
   async removeProjectServer(id: number) {
     return await this.projectServerRepository.delete({ id });
+  }
+
+  async resetProjectServerOccupation(changelog: number) {
+    return await this.projectServerRepository.update(
+      { changelog },
+      { changelog: null },
+    );
   }
 }
