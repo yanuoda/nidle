@@ -5,6 +5,7 @@ import { ProjectModule } from './project/project.module';
 import { UserModule } from './user/user.module';
 import { ChangelogModule } from './changelog/changelog.module';
 import { ConfigModule } from './config/config.module';
+import { OauthModule } from './oauth/oauth.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ConfigModule } from './config/config.module';
     UserModule,
     ChangelogModule,
     ConfigModule,
+    OauthModule,
   ],
 })
 export class SystemModule {}

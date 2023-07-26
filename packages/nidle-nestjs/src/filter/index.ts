@@ -29,8 +29,10 @@ export class AllExceptionFilter implements ExceptionFilter {
 
     response.status(statusCode).json({
       statusCode,
-      message,
+      errorMessage: message,
       success: false,
+      /** @check */
+      showType: 2,
     });
   }
 }
