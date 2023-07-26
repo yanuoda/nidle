@@ -1,5 +1,10 @@
 import { IsNotEmpty, IsNumber } from 'class-validator';
 
+export class RegisterDto {
+  readonly name: string;
+  readonly gitlabUserId: number;
+}
+
 export class QueryUserDto {
   readonly name?: string;
   readonly password?: string;

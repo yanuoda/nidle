@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
+import crypto from 'crypto';
 
 import { Member } from './member.entity';
-import { ModifyPasswordDto, QueryUserDto } from './user.dto';
+import { ModifyPasswordDto, QueryUserDto, RegisterDto } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -39,6 +40,10 @@ export class UserService {
     return existUser;
   }
 
+  async findAllBy(_where: FindOptionsWhere<Member>) {
+    return await this.memberRepository.find({ where: _where });
+  }
+
   async modifyPassword({ id, oldPassword, newPassword }: ModifyPasswordDto) {
     const existUser = await this.memberRepository.findOneBy({ id });
     if (!existUser) {
@@ -49,5 +54,15 @@ export class UserService {
     }
     existUser.password = newPassword;
     return await this.memberRepository.save(existUser);
+  }
+
+  async register({ name, gitlabUserId }: RegisterDto) {
+    const newUser = new Member();
+    newUser.name = name;
+    newUser.gitlabUserId = gitlabUserId;
+    // 默认密码为 000000
+    newUser.password = crypto.createHash('md5').update('000000').digest('hex');
+    newUser.status = 0;
+    return await this.memberRepository.save(newUser);
   }
 }
