@@ -12,9 +12,13 @@ import { ProjectService } from './project.service';
 import {
   CreateOrUpdateProjectDto,
   CreateProjectServerDto,
+  FetchProjectServerDto,
+  FetchProjectServerResponseDto,
+  PublishListResponseDto,
   QueryProjectListDto,
   QueryProjectListResponseDto,
   QueryProjectResponseDto,
+  UpdateContactsDto,
   UpdateProjectServerDto,
 } from './project.dto';
 
@@ -66,6 +70,26 @@ export class ProjectController {
     return {};
   }
 
+  @ApiOperation({ summary: '查询项目分支（size=100）' })
+  @Get('branches')
+  async branches(
+    @Query() { id }: IdQueryRequestDto,
+  ): Promise<Record<string, any>> {
+    const data = await this.projectService.getBranches(id);
+    return { data };
+  }
+
+  @ApiOperation({ summary: '更新通知邮箱' })
+  @Post('contacts/update')
+  async updateContacts(
+    @Body() { id, postEmails }: UpdateContactsDto,
+  ): Promise<FormatResponse> {
+    await this.projectService.updateContacts(id, postEmails);
+    return {};
+  }
+
+  /** projectServer ↓ */
+
   @ApiOperation({ summary: '添加项目服务器配置' })
   @Post('server/add')
   async addProjectServer(
@@ -93,11 +117,23 @@ export class ProjectController {
     return {};
   }
 
-  /**
-   * @todo
-   * get - branches
-   * post - contacts/update
-   * post - server/fetch
-   * get - publish/list
-   */
+  @ApiOperation({ summary: '获取项目服务器配置' })
+  @Post('server/fetch')
+  async fetchProjectServer(
+    @Body() { id, mode }: FetchProjectServerDto,
+  ): Promise<FetchProjectServerResponseDto> {
+    const data = await this.projectService.fetchProjectServer(id, mode);
+    return { data };
+  }
+
+  /** changelog ↓ */
+
+  @ApiOperation({ summary: '获取项目发布列表' })
+  @Get('publish/list')
+  async getPublishList(
+    @Query() { id }: IdQueryRequestDto,
+  ): Promise<PublishListResponseDto> {
+    const data = await this.projectService.getPublishList(id);
+    return { data };
+  }
 }

@@ -1,7 +1,19 @@
 import { Changelog } from 'src/system/changelog/changelog.entity';
 import _const from 'src/const';
 
-export default function (changelog: Changelog | null, mode?: string) {
+type PickedChangelog = Pick<
+  Changelog,
+  | 'status'
+  | 'codeReviewStatus'
+  | 'environment'
+  | 'active'
+  | 'project'
+  | 'id'
+  | 'branch'
+  | 'type'
+>;
+
+export default function (changelog: PickedChangelog | null, mode?: string) {
   const { environments } = _const;
   if (!changelog) {
     return {

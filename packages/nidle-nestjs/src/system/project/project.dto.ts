@@ -2,6 +2,7 @@ import { PartialType, OmitType } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber } from 'class-validator';
 
 import { Environment, FormatResponse, PageQuery } from 'src/common/base.dto';
+import { Changelog } from '../changelog/changelog.entity';
 import { Project } from './entities/project.entity';
 import { ProjectServer } from './entities/project_server.entity';
 
@@ -38,6 +39,8 @@ class PickedServerData {
   readonly id: number;
   readonly name?: string;
   readonly ip: string;
+  readonly description?: string;
+  readonly status?: number;
 }
 class RelatedProjectServer extends PartialType(
   OmitType(ProjectServer, ['project', 'server']),
@@ -53,11 +56,17 @@ export class ProjectData extends PartialType(
   OmitType(Project, ['projectServers']),
 ) {
   readonly serverList: ServerList;
-  /** @todo */
-  // readonly memberList;
+  readonly memberList: Record<string, any>[];
 }
 export class QueryProjectResponseDto extends FormatResponse {
   readonly data: ProjectData;
+}
+
+export class UpdateContactsDto {
+  @IsNotEmpty()
+  readonly id: number;
+  @IsNotEmpty()
+  readonly postEmails: string;
 }
 
 export class CreateProjectServerDto {
@@ -77,4 +86,39 @@ export class UpdateProjectServerDto extends PartialType(ProjectServer) {
   @IsNumber()
   @IsNotEmpty()
   readonly id: number;
+}
+
+export class FetchProjectServerDto {
+  /**
+   * 项目id
+   */
+  @IsNumber()
+  @IsNotEmpty()
+  readonly id: number;
+  /**
+   * 所属环境environment
+   */
+  readonly mode?: string;
+}
+
+export class FetchProjectServerResponseDto extends FormatResponse {
+  data: ServerList | RelatedProjectServer[];
+}
+
+export class AssembleChangelog extends OmitType(Changelog, ['developer']) {
+  developer?: string;
+  commitUrl?: string;
+  isChild?: boolean;
+  children?: AssembleChangelog[];
+  nextPublish?: any;
+}
+
+export class PublishEnvListMap implements Record<Environment, unknown> {
+  development: AssembleChangelog[] = [];
+  pre: AssembleChangelog[] = [];
+  production: AssembleChangelog[] = [];
+}
+
+export class PublishListResponseDto extends FormatResponse {
+  data: PublishEnvListMap;
 }
