@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
+import { ConfigService, ConfigType } from '@nestjs/config';
+import { AxiosRequestConfig } from 'axios';
 
-const { OAUTH_GITLAB_BASEURL, GITLAB_PRIVATE_TOKEN } = process.env;
+import { oauthConfig } from 'src/configuration';
+
 const ACCESS_LEVEL_MAP = {
   10: 'Guest',
   20: 'Reporter',
@@ -12,14 +15,24 @@ const ACCESS_LEVEL_MAP = {
 
 @Injectable()
 export class GitlabService {
-  constructor(private readonly httpService: HttpService) {}
+  _gitlabConfig: ConfigType<typeof oauthConfig>['gitlab'];
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {
+    this._gitlabConfig = this.configService.get('oauthConfig').gitlab;
+  }
 
-  async request({ url, method }: { url: string; method: 'get' | 'post' }) {
-    const _url = `${OAUTH_GITLAB_BASEURL}/api/v4${url}`;
+  async request({
+    url,
+    headers = {},
+    ...restParam
+  }: AxiosRequestConfig<Record<string, any>>) {
+    const _url = this._gitlabConfig.baseUrl + url;
     const { data, status } = await this.httpService.axiosRef.request({
       url: _url,
-      method,
-      headers: { 'PRIVATE-TOKEN': GITLAB_PRIVATE_TOKEN },
+      headers: { ...headers, 'PRIVATE-TOKEN': this._gitlabConfig.privateToken },
+      ...restParam,
     });
     console.log(`GitlabService-request:${_url}`);
     console.log('response:');
@@ -31,14 +44,17 @@ export class GitlabService {
     return data;
   }
 
-  get(url: string) {
-    return this.request({ url, method: 'get' });
+  apiv4get(
+    url: string,
+    opt?: Omit<AxiosRequestConfig<Record<string, any>>, 'url' | 'method'>,
+  ) {
+    return this.request({ url: `/api/v4${url}`, method: 'get', ...opt });
   }
 
   // 获取应用成员
   async getMembers(repositoryUrl: string) {
     const repositoryPath = repositoryUrl.replace(
-      `${OAUTH_GITLAB_BASEURL}/`,
+      `${this._gitlabConfig.baseUrl}/`,
       '',
     );
     const pathArr = repositoryPath.split('/');
@@ -47,9 +63,9 @@ export class GitlabService {
 
     let groupMembers;
     if (group) {
-      groupMembers = await this.get(`/groups/${group}/members`);
+      groupMembers = await this.apiv4get(`/groups/${group}/members`);
     }
-    const projectMembers = await this.get(`/projects/${id}/members`);
+    const projectMembers = await this.apiv4get(`/projects/${id}/members`);
 
     const members = [...(projectMembers || []), ...(groupMembers || [])].map(
       (member) => ({
@@ -70,7 +86,7 @@ export class GitlabService {
   }
 
   getFile(id: number, branch: string, filePath: string) {
-    return this.get(
+    return this.apiv4get(
       `/projects/${id}/repository/files/${encodeURIComponent(
         filePath,
       )}/raw?ref=${branch}`,
@@ -80,23 +96,23 @@ export class GitlabService {
   // 获取某个项目的信息
   async getProjectDetail(repositoryUrl: string) {
     const repositoryPath = repositoryUrl.replace(
-      `${OAUTH_GITLAB_BASEURL}/`,
+      `${this._gitlabConfig.baseUrl}/`,
       '',
     );
     const id = encodeURIComponent(repositoryPath);
-    return await this.get(`/projects/${id}`);
+    return await this.apiv4get(`/projects/${id}`);
   }
 
   // 获取项目分支信息
   async getBranches(id: number) {
-    return await this.get(
+    return await this.apiv4get(
       // 现在将分页限制放开限制为100条；如果以后还超出此限制，需要做分页请求；参考https://docs.gitlab.com/ee/api/#pagination
       `/projects/${id}/repository/branches?per_page=100`,
     );
   }
 
   async getBranch(id: number, branch: string) {
-    return await this.get(
+    return await this.apiv4get(
       `/projects/${id}/repository/branches/${encodeURIComponent(branch)}`,
     );
   }
