@@ -18,6 +18,21 @@ export const redisConfig = registerAs('redisConfig', () => ({
   dbIndex: process.env.REDIS_DB_INDEX,
 }));
 
+export const oauthConfig = registerAs('oauthConfig', () => ({
+  gitlab: {
+    baseUrl: process.env.OAUTH_GITLAB_BASEURL,
+    redirectUri: process.env.OAUTH_GITLAB_REDIRECT_URI,
+    clientId: process.env.OAUTH_GITLAB_CLIENT_ID,
+    clientSecret: process.env.OAUTH_GITLAB_CLIENT_SECRET,
+    scope: process.env.OAUTH_GITLAB_SCOPE,
+    privateToken: process.env.GITLAB_PRIVATE_TOKEN,
+  },
+  redirectBack: {
+    success: process.env.FE_SUCCESS_CALLBACK,
+    failed: process.env.FE_FAILED_CALLBACK,
+  },
+}));
+
 export const nidleConfig = registerAs('nidleConfig', () => ({
   output: {
     backup: {
@@ -35,4 +50,4 @@ export const nidleConfig = registerAs('nidleConfig', () => ({
   afterManagerWaitSecs: process.env.AFTER_MANAGER_WAIT_SECS,
 }));
 
-export default [dbConfig, redisConfig, nidleConfig];
+export default [dbConfig, redisConfig, oauthConfig, nidleConfig];
