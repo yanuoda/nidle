@@ -83,4 +83,7 @@ export class Changelog {
 
   @Column({ length: 20, default: 'normal', comment: '发布类型' })
   type: string;
+
+  @Column({ length: 255, nullable: true, comment: '描述' })
+  description: string;
 }

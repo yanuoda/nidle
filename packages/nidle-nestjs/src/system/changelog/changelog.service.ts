@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService as NestConfigService, ConfigType } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import path from 'path';
@@ -61,6 +61,14 @@ export class ChangelogService {
     return changelog;
   }
 
+  async findAllBy(opts: FindManyOptions<Changelog>) {
+    return await this.changelogRepository.find(opts);
+  }
+
+  async findAllByPage(opts: FindManyOptions<Changelog>) {
+    return await this.changelogRepository.findAndCount(opts);
+  }
+
   async checkAndGetProjectInfo(projectId: number, user: SessionUser) {
     const {
       repositoryType,
@@ -98,7 +106,15 @@ export class ChangelogService {
   }
 
   async create(
-    { projectId, type, mode, branch, source = 'web', id }: CreateChangelogDto,
+    {
+      projectId,
+      type,
+      mode,
+      branch,
+      source = 'web',
+      description,
+      id,
+    }: CreateChangelogDto,
     user: SessionUser,
   ) {
     const { repositoryType, repositoryUrl, projectName, gitlabId } =
@@ -215,6 +231,7 @@ export class ChangelogService {
       logPath: createConfig ? config.log.all : null,
       active: 0,
       commitId,
+      description,
     });
     const newChangelog = await this.changelogRepository.save(
       newChangelogInstance,

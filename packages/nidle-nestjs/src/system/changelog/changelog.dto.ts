@@ -16,6 +16,8 @@ export class CreateChangelogDto {
   @IsNotEmpty()
   readonly mode: string;
   readonly source?: string;
+  /** 描述 */
+  readonly description?: string;
   /** 当前阶段id（创建下一阶段时判断状态） */
   readonly id?: number;
 }

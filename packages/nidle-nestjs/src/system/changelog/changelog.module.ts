@@ -22,5 +22,6 @@ import { Changelog } from './changelog.entity';
     ServerModule,
     ConfigModule,
   ],
+  exports: [ChangelogService],
 })
 export class ChangelogModule {}
