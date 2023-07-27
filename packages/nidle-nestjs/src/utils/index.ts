@@ -1,4 +1,4 @@
-import fs from 'fs';
+import * as fs from 'fs';
 
 import _const from 'src/const';
 import { FindOptionsWhere, Like } from 'typeorm';

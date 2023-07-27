@@ -5,7 +5,7 @@ import { FindManyOptions, Repository } from 'typeorm';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import * as path from 'path';
-import fs from 'fs';
+import * as fs from 'fs';
 import * as extend from 'extend';
 import { cloneDeep } from 'lodash';
 import * as Nidle from 'nidle';

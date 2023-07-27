@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsNumberString } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class PageQuery {
   readonly current?: number;
@@ -6,13 +6,11 @@ export class PageQuery {
 }
 
 export class IdQueryRequestDto {
-  @IsNumberString()
   @IsNotEmpty()
   readonly id: number;
 }
 
 export class IdBodyRequestDto {
-  @IsNumberString()
   @IsNotEmpty()
   readonly id: number;
 }

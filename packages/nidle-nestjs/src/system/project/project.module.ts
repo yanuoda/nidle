@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ChangelogModule } from '../changelog/changelog.module';
 import { UserModule } from '../user/user.module';
+import { ServerModule } from '../server/server.module';
 import { ProjectService } from './project.service';
 import { ProjectController } from './project.controller';
 import { Project } from './entities/project.entity';
@@ -15,6 +16,7 @@ import { ProjectServer } from './entities/project_server.entity';
     TypeOrmModule.forFeature([Project, ProjectServer]),
     forwardRef(() => ChangelogModule),
     UserModule,
+    ServerModule,
   ],
   exports: [ProjectService],
 })

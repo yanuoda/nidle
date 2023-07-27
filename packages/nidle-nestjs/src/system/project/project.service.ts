@@ -9,6 +9,7 @@ import { Environment } from 'src/common/base.dto';
 import { GitlabService } from 'src/lib/gitlab.service';
 import { ChangelogService } from '../changelog/changelog.service';
 import { UserService } from '../user/user.service';
+import { ServerService } from '../server/server.service';
 import {
   CreateProjectDto,
   CreateOrUpdateProjectDto,
@@ -34,6 +35,7 @@ export class ProjectService {
     @Inject(forwardRef(() => ChangelogService))
     private readonly changelogService: ChangelogService,
     private readonly userService: UserService,
+    private readonly serverService: ServerService,
   ) {}
 
   async create(createProjectDto: CreateProjectDto) {
@@ -48,12 +50,14 @@ export class ProjectService {
     repositoryType,
     current,
     pageSize,
+    order = {},
   }: QueryProjectListDto) {
     const [list, total] = await this.projectRepository.findAndCount({
       select: ['id', 'name', 'owner', 'repositoryType'],
       skip: (current - 1) * pageSize,
       take: pageSize,
-      order: { createdTime: 'DESC' },
+      // order: { createdTime: 'DESC' },
+      order,
       where: buildLikeWhere<Project>({
         name,
         owner,
@@ -82,10 +86,10 @@ export class ProjectService {
     const { projectServers, ...restColumn } = existProject;
     const serverList = new ServerList();
     projectServers.forEach(({ server, ...restData }) => {
-      const { id, name, ip } = server;
+      const { id, name, ip, environment } = server;
       serverList[restData.environment as Environment].push({
         ...restData,
-        Server: { id, name, ip },
+        Server: { id, name, ip, environment },
       });
     });
     let resList: Record<string, any>[];
@@ -140,7 +144,9 @@ export class ProjectService {
   async createProjectServer(param: CreateProjectServerDto) {
     const newProjectServer = new ProjectServer();
     Object.assign(newProjectServer, param);
-    return await this.projectServerRepository.save(newProjectServer);
+    const newObj = await this.projectServerRepository.save(newProjectServer);
+    const queryServer = await this.serverService.findOne(param.server);
+    return { Server: queryServer, ...newObj };
   }
 
   async findProjectServerBy(_where: FindOptionsWhere<ProjectServer>) {

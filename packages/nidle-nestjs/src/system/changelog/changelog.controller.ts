@@ -51,21 +51,21 @@ export class ChangelogController {
   @ApiOperation({ summary: '获取发布详情' })
   @Post('detail')
   async detail(@Body() { id }: IdBodyRequestDto) {
-    const data = this.changelogService.detail(id);
+    const data = await this.changelogService.detail(id);
     return { data };
   }
 
   @ApiOperation({ summary: '获取发布日志' })
   @Post('log')
   async log(@Body() body: GetLogDto) {
-    const data = this.changelogService.log(body);
+    const data = await this.changelogService.log(body);
     return { data };
   }
 
   @ApiOperation({ summary: 'mergeHook' })
   @Post('mergeHook')
   async mergeHook(@Body() body: MergeHookDto, @Session() session: SessionDto) {
-    const data = this.changelogService.mergeHook(body, session.user);
+    const data = await this.changelogService.mergeHook(body, session.user);
     return { data };
   }
 }

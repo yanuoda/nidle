@@ -26,7 +26,7 @@ export class ServerService {
 
   async findAll() {
     return await this.serverRepository.find({
-      select: ['id', 'name', 'ip'],
+      select: ['id', 'name', 'ip', 'environment'],
       order: { createdTime: 'DESC' },
     });
   }
@@ -39,7 +39,7 @@ export class ServerService {
     pageSize,
   }: QeuryServerListDTO) {
     const [list, total] = await this.serverRepository.findAndCount({
-      select: ['id', 'name', 'ip'],
+      select: ['id', 'name', 'ip', 'environment'],
       skip: (current - 1) * pageSize,
       take: pageSize,
       order: { createdTime: 'DESC' },

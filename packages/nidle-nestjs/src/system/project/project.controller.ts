@@ -12,6 +12,7 @@ import { ProjectService } from './project.service';
 import {
   CreateOrUpdateProjectDto,
   CreateProjectServerDto,
+  CreateProjectServerResponseDto,
   FetchProjectServerDto,
   FetchProjectServerResponseDto,
   PublishListResponseDto,
@@ -94,9 +95,9 @@ export class ProjectController {
   @Post('server/add')
   async addProjectServer(
     @Body() param: CreateProjectServerDto,
-  ): Promise<IdResponseDto> {
-    const { id } = await this.projectService.createProjectServer(param);
-    return { id };
+  ): Promise<CreateProjectServerResponseDto> {
+    const data = await this.projectService.createProjectServer(param);
+    return { data };
   }
 
   @ApiOperation({ summary: '编辑项目服务器配置' })

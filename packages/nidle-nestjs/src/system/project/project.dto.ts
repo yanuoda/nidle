@@ -1,5 +1,5 @@
 import { PartialType, OmitType } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumberString } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 import { Environment, FormatResponse, PageQuery } from 'src/common/base.dto';
 import { Changelog } from '../changelog/changelog.entity';
@@ -43,6 +43,7 @@ class PickedServerData {
   readonly ip: string;
   readonly description?: string;
   readonly status?: number;
+  readonly environment?: string;
 }
 class RelatedProjectServer extends PartialType(
   OmitType(ProjectServer, ['project', 'server']),
@@ -76,16 +77,16 @@ export class CreateProjectServerDto {
   readonly environment: Environment;
   @IsNotEmpty()
   readonly output: string;
-  @IsNumberString()
   @IsNotEmpty()
   readonly project: number;
-  @IsNumberString()
   @IsNotEmpty()
   readonly server: number;
 }
+export class CreateProjectServerResponseDto extends FormatResponse {
+  data: RelatedProjectServer;
+}
 
 export class UpdateProjectServerDto extends PartialType(ProjectServer) {
-  @IsNumberString()
   @IsNotEmpty()
   readonly id: number;
 }
@@ -94,7 +95,6 @@ export class FetchProjectServerDto {
   /**
    * 项目id
    */
-  @IsNumberString()
   @IsNotEmpty()
   readonly id: number;
   /**
