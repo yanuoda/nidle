@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { ConfigService as NestConfigService, ConfigType } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
@@ -39,6 +39,7 @@ export class ChangelogService {
   _nidleConfig: ConfigType<typeof nidleConfig>;
   constructor(
     private readonly gitlabService: GitlabService,
+    @Inject(forwardRef(() => ProjectService))
     private readonly projectService: ProjectService,
     private readonly serverService: ServerService,
     private readonly configService: ConfigService,

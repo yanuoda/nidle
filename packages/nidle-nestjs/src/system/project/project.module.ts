@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ChangelogModule } from '../changelog/changelog.module';
@@ -13,7 +13,7 @@ import { ProjectServer } from './entities/project_server.entity';
   providers: [ProjectService],
   imports: [
     TypeOrmModule.forFeature([Project, ProjectServer]),
-    ChangelogModule,
+    forwardRef(() => ChangelogModule),
     UserModule,
   ],
   exports: [ProjectService],

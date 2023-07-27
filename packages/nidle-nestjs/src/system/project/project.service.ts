@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository, In } from 'typeorm';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 
 import { buildLikeWhere } from 'src/utils';
 import nidleNext from 'src/utils/nidleNest';
@@ -31,6 +31,7 @@ export class ProjectService {
     @InjectRepository(ProjectServer)
     private readonly projectServerRepository: Repository<ProjectServer>,
     private readonly gitlabService: GitlabService,
+    @Inject(forwardRef(() => ChangelogService))
     private readonly changelogService: ChangelogService,
     private readonly userService: UserService,
   ) {}
