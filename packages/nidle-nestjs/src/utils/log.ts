@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import _ from 'lodash';
+import { findIndex } from 'lodash';
 
 // 计算持续时间
 export function getDuration(begin, end) {
@@ -9,7 +9,7 @@ export function getDuration(begin, end) {
 }
 
 function getSteps(logs, steps, from = 0, end) {
-  const stepStartIdx = _.findIndex(logs, { progress: 'STEP START' }, from);
+  const stepStartIdx = findIndex(logs, { progress: 'STEP START' }, from);
 
   if (stepStartIdx > -1) {
     const stepStart = logs[stepStartIdx];
@@ -19,7 +19,7 @@ function getSteps(logs, steps, from = 0, end) {
       startTime: stepStart.time,
     };
 
-    const stepEndIdx = _.findIndex(
+    const stepEndIdx = findIndex(
       logs,
       function (item: Record<string, any>) {
         return (
@@ -68,7 +68,7 @@ function getSteps(logs, steps, from = 0, end) {
 }
 
 export function transform(logs, stages, from = 0) {
-  const stageStartIdx = _.findIndex(logs, { progress: 'STAGE START' }, from);
+  const stageStartIdx = findIndex(logs, { progress: 'STAGE START' }, from);
 
   if (stageStartIdx > -1) {
     const stageStart = logs[stageStartIdx];
@@ -78,7 +78,7 @@ export function transform(logs, stages, from = 0) {
       steps: [],
     };
 
-    const stageEndIdx = _.findIndex(
+    const stageEndIdx = findIndex(
       logs,
       function (item: Record<string, any>) {
         return (

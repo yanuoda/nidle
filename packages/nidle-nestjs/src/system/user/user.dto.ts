@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumberString } from 'class-validator';
 
 export class RegisterDto {
   readonly name: string;
@@ -23,7 +23,7 @@ export class QueryUserResponseDto {
 }
 
 export class ModifyPasswordDto {
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   readonly id: number;
   @IsNotEmpty()

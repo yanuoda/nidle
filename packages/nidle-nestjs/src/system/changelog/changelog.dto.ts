@@ -1,9 +1,9 @@
 // import { PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumberString } from 'class-validator';
 
 export class CreateChangelogDto {
   /** 所属项目id */
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   readonly projectId: number;
   /** 发布类型 normal webhook */
@@ -23,7 +23,7 @@ export class CreateChangelogDto {
 }
 
 export class StartChangelogDto {
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   readonly id: number;
   @IsNotEmpty()
@@ -35,7 +35,7 @@ export class StartChangelogDto {
 }
 
 export class GetLogDto {
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   readonly id: number;
   readonly logPath?: string;

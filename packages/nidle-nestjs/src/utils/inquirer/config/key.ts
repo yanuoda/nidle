@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { remove } from 'lodash';
 
 export default {
   validate: {
@@ -10,7 +10,7 @@ export default {
   },
   choices: {
     parse(list) {
-      _.remove(list, function (item: any) {
+      remove(list, function (item: any) {
         return item.type && item.type === 'separator';
       });
 

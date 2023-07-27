@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumberString } from 'class-validator';
 
 import { PageQuery, FormatResponse } from 'src/common/base.dto';
 import { Template } from './template.entity';
@@ -30,7 +30,7 @@ export class QueryTemplateResponseDTO extends FormatResponse {
 }
 
 export class UpdateTemplateDto extends CreateTemplateDto {
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   readonly id: number;
 }

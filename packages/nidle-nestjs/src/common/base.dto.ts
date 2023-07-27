@@ -12,7 +12,7 @@ export class IdQueryRequestDto {
 }
 
 export class IdBodyRequestDto {
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   readonly id: number;
 }

@@ -1,10 +1,11 @@
 import { PartialType, OmitType } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumberString } from 'class-validator';
 
 import { Environment, FormatResponse, PageQuery } from 'src/common/base.dto';
 import { Changelog } from '../changelog/changelog.entity';
 import { Project } from './entities/project.entity';
 import { ProjectServer } from './entities/project_server.entity';
+import { FindOptionsOrder } from 'typeorm';
 
 export class CreateProjectDto {
   @IsNotEmpty()
@@ -23,6 +24,7 @@ export class QueryProjectListDto extends PageQuery {
   readonly name?: string;
   readonly owner?: string;
   readonly repositoryType?: string;
+  readonly order?: FindOptionsOrder<Project>;
 }
 class ProjectPicked {
   readonly id: number;
@@ -74,16 +76,16 @@ export class CreateProjectServerDto {
   readonly environment: Environment;
   @IsNotEmpty()
   readonly output: string;
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   readonly project: number;
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   readonly server: number;
 }
 
 export class UpdateProjectServerDto extends PartialType(ProjectServer) {
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   readonly id: number;
 }
@@ -92,7 +94,7 @@ export class FetchProjectServerDto {
   /**
    * 项目id
    */
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
   readonly id: number;
   /**

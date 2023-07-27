@@ -4,11 +4,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
-import path from 'path';
+import * as path from 'path';
 import fs from 'fs';
-import extend from 'extend';
-import _ from 'lodash';
-import Nidle from 'nidle';
+import * as extend from 'extend';
+import { cloneDeep } from 'lodash';
+import * as Nidle from 'nidle';
 
 import _const from 'src/const';
 import { SessionUser } from 'src/common/base.dto';
@@ -42,6 +42,7 @@ export class ChangelogService {
     @Inject(forwardRef(() => ProjectService))
     private readonly projectService: ProjectService,
     private readonly serverService: ServerService,
+    @Inject(forwardRef(() => ConfigService))
     private readonly configService: ConfigService,
     private readonly nestConfigService: NestConfigService,
     @InjectRepository(Changelog)
@@ -279,7 +280,7 @@ export class ChangelogService {
     const answers = inputs.length
       ? this.configService.setInput(inputAnswers, inputs, notTransform)
       : [];
-    const options = _.cloneDeep(answers);
+    const options = cloneDeep(answers);
 
     for (let i = 0, len = answers.length; i < len; i++) {
       const step = answers[i];

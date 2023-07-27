@@ -17,7 +17,7 @@ export class UserController {
   @ApiOperation({ summary: '获取用户信息' })
   @Get()
   async getUser(@Session() session: SessionDto) {
-    if (session.user) return session.user;
+    if (session.user) return { data: session.user };
     /** @todo customer error */
     throw new Error('请先登录');
   }

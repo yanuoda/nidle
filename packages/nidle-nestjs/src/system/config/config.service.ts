@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { ConfigService as NestConfigService, ConfigType } from '@nestjs/config';
-import path from 'path';
-import requireFromString from 'require-from-string';
-import extend from 'extend';
-import _ from 'lodash';
+import * as path from 'path';
+import * as requireFromString from 'require-from-string';
+import * as extend from 'extend';
+import { isEmpty, isFunction } from 'lodash';
 import NidleChain from 'nidle-chain';
 
 import { GitlabService } from 'src/lib/gitlab.service';
@@ -11,6 +11,7 @@ import { nidleConfig } from 'src/configuration';
 import * as inputParse from 'src/utils/inquirer';
 import { TemplateService } from '../template/template.service';
 import { AppPublishConfigParam, CommonParams } from './config.dto';
+import { ProjectService } from '../project/project.service';
 
 @Injectable()
 export class ConfigService {
@@ -19,18 +20,28 @@ export class ConfigService {
     private readonly gitlabService: GitlabService,
     private readonly templateService: TemplateService,
     private readonly nestConfigService: NestConfigService,
+    @Inject(forwardRef(() => ProjectService))
+    private readonly projectService: ProjectService,
   ) {
     this._nidleConfig = this.nestConfigService.get('nidleConfig');
   }
 
   async getAppConfig({
+    id,
     project,
     mode,
     type,
     branch = 'master',
     isNew,
   }: CommonParams) {
-    const { gitlabId, repositoryType, repositoryUrl } = project;
+    let _project = project;
+    if (!_project || Object.keys(_project).length === 0) {
+      if (!id) {
+        throw new Error('getAppConfig 缺少参数: [id/project]');
+      }
+      _project = await this.projectService.findOne({ id });
+    }
+    const { gitlabId, repositoryType, repositoryUrl } = _project;
     const fileName = `nidle.${mode}.config.js`;
     let configStr = '';
     if (repositoryType === 'gitlab') {
@@ -60,7 +71,7 @@ export class ConfigService {
       });
       if (template) {
         const templateConfig = JSON.parse(template.config);
-        if (!_.isEmpty(templateConfig)) {
+        if (!isEmpty(templateConfig)) {
           // 合并模板
           // TODO: 这个合并有点粗暴，没有考虑 stages 扩展的情况，只能在 chain 中扩展
           return extend(true, {}, templateConfig, config);
@@ -157,7 +168,7 @@ export class ConfigService {
     };
 
     // 有chain，处理chain
-    if (config.chain && _.isFunction(config.chain)) {
+    if (config.chain && isFunction(config.chain)) {
       const chainFun = config.chain;
       delete config.chain;
 

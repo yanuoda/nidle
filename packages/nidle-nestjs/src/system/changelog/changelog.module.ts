@@ -20,7 +20,7 @@ import { Changelog } from './changelog.entity';
     }),
     forwardRef(() => ProjectModule),
     ServerModule,
-    ConfigModule,
+    forwardRef(() => ConfigModule),
   ],
   exports: [ChangelogService],
 })
