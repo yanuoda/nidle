@@ -184,12 +184,12 @@ export class ChangelogService {
     const projectPublishFileKey = `${projectName}_${timestamp}`;
     // 整合任务配置
     const createConfig = await this.configService.getAppPublishConfig({
-      project: { gitlabId, repositoryType, repositoryUrl },
+      projectObj: { gitlabId, repositoryType, repositoryUrl },
       mode,
       branch,
       type,
       isNew: !id,
-      projectPublishFileKey,
+      fileName: projectPublishFileKey,
     });
     const config = {
       ...options,

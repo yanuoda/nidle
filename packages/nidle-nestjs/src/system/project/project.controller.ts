@@ -21,6 +21,7 @@ import {
   QueryProjectResponseDto,
   UpdateContactsDto,
   UpdateProjectServerDto,
+  UpdateProjectServerResponseDto,
 } from './project.dto';
 
 @ApiTags('项目相关接口')
@@ -104,9 +105,9 @@ export class ProjectController {
   @Post('server/modify')
   async modifyProjectServer(
     @Body() param: UpdateProjectServerDto,
-  ): Promise<IdResponseDto> {
-    const { id } = await this.projectService.updateProjectServer(param);
-    return { id };
+  ): Promise<UpdateProjectServerResponseDto> {
+    const data = await this.projectService.updateProjectServer(param);
+    return { data };
   }
 
   @ApiOperation({ summary: '删除项目服务器配置（物理）' })

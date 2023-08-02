@@ -2,7 +2,7 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { ConfigService } from './config.service';
-import { AppPublishConfigParam, CommonParams } from './config.dto';
+import { AppConfigParam, AppPublishConfigParam } from './config.dto';
 
 @ApiTags('配置相关')
 @Controller('config')
@@ -11,7 +11,7 @@ export class ConfigController {
 
   @ApiOperation({ summary: 'getByApp' })
   @Post('getByApp')
-  async getByApp(@Body() body: CommonParams) {
+  async getByApp(@Body() body: AppConfigParam) {
     const data = await this.configService.getAppConfig(body);
     return { data };
   }

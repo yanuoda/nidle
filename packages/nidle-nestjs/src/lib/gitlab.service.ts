@@ -34,9 +34,9 @@ export class GitlabService {
       headers: { ...headers, 'PRIVATE-TOKEN': this._gitlabConfig.privateToken },
       ...restParam,
     });
-    console.log(`GitlabService-request:${_url}`);
-    console.log('response:');
-    console.log(data);
+    // console.log(`GitlabService-request:\n${_url}`);
+    // console.log('response:');
+    // console.log(JSON.stringify(data));
 
     if (status !== 200) {
       throw new Error(data);

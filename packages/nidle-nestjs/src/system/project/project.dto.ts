@@ -1,4 +1,4 @@
-import { PartialType, OmitType } from '@nestjs/swagger';
+import { PartialType, OmitType, ApiHideProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
 import { Environment, FormatResponse, PageQuery } from 'src/common/base.dto';
@@ -81,14 +81,22 @@ export class CreateProjectServerDto {
   readonly project: number;
   @IsNotEmpty()
   readonly server: number;
+  readonly description?: string;
 }
 export class CreateProjectServerResponseDto extends FormatResponse {
   data: RelatedProjectServer;
 }
 
-export class UpdateProjectServerDto extends PartialType(ProjectServer) {
+export class UpdateProjectServerDto extends PartialType(
+  CreateProjectServerDto,
+) {
   @IsNotEmpty()
   readonly id: number;
+  @ApiHideProperty()
+  readonly changelog?: number;
+}
+export class UpdateProjectServerResponseDto extends FormatResponse {
+  data: RelatedProjectServer;
 }
 
 export class FetchProjectServerDto {

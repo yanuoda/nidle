@@ -10,7 +10,7 @@ import { GitlabService } from 'src/lib/gitlab.service';
 import { nidleConfig } from 'src/configuration';
 import * as inputParse from 'src/utils/inquirer';
 import { TemplateService } from '../template/template.service';
-import { AppPublishConfigParam, CommonParams } from './config.dto';
+import { AppConfigParam, AppPublishConfigParam } from './config.dto';
 import { ProjectService } from '../project/project.service';
 
 @Injectable()
@@ -27,19 +27,19 @@ export class ConfigService {
   }
 
   async getAppConfig({
-    id,
-    project,
+    id: projectId,
+    projectObj,
     mode,
     type,
     branch = 'master',
     isNew,
-  }: CommonParams) {
-    let _project = project;
+  }: AppConfigParam) {
+    let _project = projectObj;
     if (!_project || Object.keys(_project).length === 0) {
-      if (!id) {
-        throw new Error('getAppConfig 缺少参数: [id/project]');
+      if (!projectId) {
+        throw new Error('getAppConfig 缺少参数: [project(Id)/projectObj]');
       }
-      _project = await this.projectService.findOne({ id });
+      _project = await this.projectService.findOne({ id: projectId });
     }
     const { gitlabId, repositoryType, repositoryUrl } = _project;
     const fileName = `nidle.${mode}.config.js`;
@@ -82,15 +82,17 @@ export class ConfigService {
   }
 
   async getAppPublishConfig({
-    project,
+    project: projectId,
+    projectObj,
     mode,
     type,
     branch,
     isNew,
-    projectPublishFileKey,
+    fileName: projectPublishFileKey,
   }: AppPublishConfigParam) {
     const config = await this.getAppConfig({
-      project,
+      id: projectId,
+      projectObj,
       mode,
       type,
       branch,

@@ -164,7 +164,10 @@ export class ProjectService {
       id,
     });
     Object.assign(existProjectServer, restParam);
-    return await this.projectServerRepository.save(existProjectServer);
+    const newObj = await this.projectServerRepository.save(existProjectServer);
+    if (!restParam.server) return newObj;
+    const queryServer = await this.serverService.findOne(restParam.server);
+    return { Server: queryServer, ...newObj };
   }
 
   async removeProjectServer(id: number) {

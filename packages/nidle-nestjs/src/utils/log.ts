@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { findIndex } from 'lodash';
 
 // 计算持续时间
