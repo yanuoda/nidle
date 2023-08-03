@@ -9,7 +9,11 @@ import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
 
-import configuration, { dbConfig, redisConfig } from './configuration';
+import configuration, {
+  dbConfig,
+  redisConfig,
+  nidleConfig,
+} from './configuration';
 import { AllExceptionFilter } from './filter';
 import { ResponseInterceptor } from './interceptor';
 import { LibModule } from './lib/lib.module';
@@ -20,6 +24,7 @@ import { SystemModule } from './system/system.module';
     ConfigModule.forRoot({ isGlobal: true, load: configuration }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const _dbConfig: ConfigType<typeof dbConfig> =
           configService.get('dbConfig');
@@ -37,11 +42,11 @@ import { SystemModule } from './system/system.module';
           autoLoadEntities: true,
         };
       },
-      inject: [ConfigService],
     }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => {
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
         const _redisConfig: ConfigType<typeof redisConfig> =
           configService.get('redisConfig');
         return {
@@ -54,30 +59,37 @@ import { SystemModule } from './system/system.module';
           prefix: 'nidle-queues:',
         };
       },
-      inject: [ConfigService],
     }),
     BullBoardModule.forRoot({
       route: '/queues',
       adapter: ExpressAdapter,
     }),
-    WinstonModule.forRoot({
-      transports: [
-        new winston.transports.DailyRotateFile({
-          dirname: `logs`, // 日志保存的目录
-          filename: '%DATE%.log', // 日志名称，占位符 %DATE% 取值为 datePattern 值。
-          datePattern: 'YYYY-MM-DD', // 日志轮换的频率，此处表示每天。
-          zippedArchive: true, // 是否通过压缩的方式归档被轮换的日志文件。
-          maxSize: '20m', // 设置日志文件的最大大小，m 表示 mb 。
-          maxFiles: '14d', // 保留日志文件的最大天数，此处表示自动删除超过 14 天的日志文件。
-          // 记录时添加时间戳信息
-          format: winston.format.combine(
-            winston.format.timestamp({
-              format: 'YYYY-MM-DD HH:mm:ss',
+    WinstonModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        const _nidleConfig: ConfigType<typeof nidleConfig> =
+          configService.get('nidleConfig');
+        return {
+          transports: [
+            new winston.transports.DailyRotateFile({
+              dirname: `${_nidleConfig.log.path}app`, // 日志保存的目录
+              filename: '%DATE%.log', // 日志名称，占位符 %DATE% 取值为 datePattern 值。
+              datePattern: 'YYYY-MM-DD', // 日志轮换的频率，此处表示每天。
+              zippedArchive: true, // 是否通过压缩的方式归档被轮换的日志文件。
+              maxSize: '20m', // 设置日志文件的最大大小，m 表示 mb 。
+              maxFiles: '14d', // 保留日志文件的最大天数，此处表示自动删除超过 14 天的日志文件。
+              // 记录时添加时间戳信息
+              format: winston.format.combine(
+                winston.format.timestamp({
+                  format: 'YYYY-MM-DD HH:mm:ss',
+                }),
+                winston.format.json(),
+              ),
             }),
-            winston.format.json(),
-          ),
-        }),
-      ],
+          ],
+        };
+      },
     }),
     LibModule,
     SystemModule,
