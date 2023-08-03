@@ -340,12 +340,16 @@ export class ChangelogService {
       options: answers,
     });
 
-    this.changelogQueue.add('start', {
-      config,
-      options,
-      changelogId,
-      environment,
-    });
+    this.changelogQueue.add(
+      'start',
+      {
+        config,
+        options,
+        changelogId,
+        environment,
+      },
+      { attempts: 0 },
+    );
 
     await this.changelogRepository.update(
       { id: changelogId },

@@ -34,14 +34,14 @@ export function buildEqualWhere<T extends object>(param: FindOptionsWhere<T>) {
 export function buildLikeWhere<T extends object>(param: Partial<T>) {
   const _where: FindOptionsWhere<T> = {};
   Object.entries(param).forEach(([k, v]) => {
-    if (v) _where[k] = Like(`${v}%`);
+    if (v !== undefined && v !== '') _where[k] = Like(`${v}%`);
   });
   return _where;
 }
 
 export function asyncWait(time = 0) {
   return new Promise((resolve) => {
-    setTimeout(() => resolve, time);
+    setTimeout(resolve, time);
   });
 }
 

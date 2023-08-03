@@ -38,7 +38,7 @@ export class ChangelogProcessor {
     });
 
     const afterManagerStart = (): Promise<void> => {
-      return new Promise((resolve) => {
+      return new Promise((resolve, reject) => {
         manager.on('completed', async () => {
           if (
             environment ===
@@ -53,16 +53,16 @@ export class ChangelogProcessor {
             `changelogProcessor completed - changelogId:${changelogId} | environment:${environment}`,
           );
           await asyncWait(1000 * this.afterManagerWaitSecs);
+          await job.progress(100);
           resolve();
         });
 
         manager.on('error', async (e) => {
-          console.log(
-            `changelogProcessor error - changelogId:${changelogId} | environment:${environment}`,
-          );
-          console.log(JSON.stringify(e));
+          let info = `changelogProcessor error - changelogId:${changelogId} | environment:${environment}`;
+          info += '\n' + JSON.stringify(e);
+          console.log(info);
           await asyncWait(1000 * this.afterManagerWaitSecs);
-          resolve();
+          reject(new Error(info));
         });
       });
     };
