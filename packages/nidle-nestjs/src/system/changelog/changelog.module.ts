@@ -1,6 +1,8 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bull';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { BullAdapter } from '@bull-board/api/bullAdapter';
 
 import { ProjectModule } from '../project/project.module';
 import { ServerModule } from '../server/server.module';
@@ -17,6 +19,11 @@ import { Changelog } from './changelog.entity';
     TypeOrmModule.forFeature([Changelog]),
     BullModule.registerQueue({
       name: 'changelog',
+      limiter: { max: 1, duration: 1000 },
+    }),
+    BullBoardModule.forFeature({
+      name: 'changelog',
+      adapter: BullAdapter,
     }),
     forwardRef(() => ProjectModule),
     ServerModule,

@@ -28,13 +28,16 @@ export class ChangelogProcessor {
   @Process('start')
   async handleStart(job: Job) {
     const { config, options, changelogId, environment } = job.data;
+    console.log(
+      `changelogProcessor handleStart - changelogId:${changelogId} | environment:${environment}`,
+    );
     const manager = new Nidle({ ...config });
     await manager.init();
     await manager.mount(options, (_data) => {
       return this.changelogRepository.update({ id: changelogId }, _data);
     });
 
-    const afterManagerStart: () => Promise<void> = () => {
+    const afterManagerStart = (): Promise<void> => {
       return new Promise((resolve) => {
         manager.on('completed', async () => {
           if (
@@ -46,13 +49,18 @@ export class ChangelogProcessor {
             await this.projectService.resetProjectServerOccupation(changelogId);
             await manager.backup();
           }
-          console.log('completed');
+          console.log(
+            `changelogProcessor completed - changelogId:${changelogId} | environment:${environment}`,
+          );
           await asyncWait(1000 * this.afterManagerWaitSecs);
           resolve();
         });
 
-        manager.on('error', async () => {
-          console.log('end');
+        manager.on('error', async (e) => {
+          console.log(
+            `changelogProcessor error - changelogId:${changelogId} | environment:${environment}`,
+          );
+          console.log(JSON.stringify(e));
           await asyncWait(1000 * this.afterManagerWaitSecs);
           resolve();
         });

@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService, ConfigType } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
+import { BullBoardModule } from '@bull-board/nestjs';
+import { ExpressAdapter } from '@bull-board/express';
 
 import { LibModule } from './lib/lib.module';
 import { SystemModule } from './system/system.module';
@@ -47,6 +49,10 @@ import configuration, { dbConfig, redisConfig } from './configuration';
         };
       },
       inject: [ConfigService],
+    }),
+    BullBoardModule.forRoot({
+      route: '/queues',
+      adapter: ExpressAdapter,
     }),
     LibModule,
     SystemModule,
