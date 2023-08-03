@@ -8,8 +8,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
-import { ResponseInterceptor } from './interceptor';
-import { AllExceptionFilter } from './filter';
+// import { ResponseInterceptor } from './interceptor';
+// import { AllExceptionFilter } from './filter';
 // import CONST from './const';
 
 async function bootstrap() {
@@ -29,10 +29,11 @@ async function bootstrap() {
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // app.setGlobalPrefix('api'); // 在 system.module.ts 中注册接口前缀
+  // app.setGlobalPrefix('api'); // 在 system.module.ts 中注册接口前缀, 避免影响 /queues
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalInterceptors(new ResponseInterceptor());
-  app.useGlobalFilters(new AllExceptionFilter());
+  // 在 app.module.ts 中注册, 方便使用 winston logger
+  // app.useGlobalInterceptors(new ResponseInterceptor());
+  // app.useGlobalFilters(new AllExceptionFilter());
 
   // app.useStaticAssets(join(__dirname, '..', 'public'));
   app.setBaseViewsDir(join(__dirname, '..', 'views'));

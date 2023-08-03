@@ -43,6 +43,7 @@
     "hbs": "^4.2.0",
     "lodash": "^4.17.21",
     "mysql2": "^3.5.0",
+    "nest-winston": "^1.9.3",
     "nidle": "^0.1.8",
     "nidle-chain": "^0.1.8",
     "nidle-plugin-build": "^0.1.8",
@@ -62,7 +63,9 @@
     "rimraf": "^5.0.1",
     "rxjs": "^7.8.1",
     "swagger-ui-express": "^4.6.3",
-    "typeorm": "^0.3.17"
+    "typeorm": "^0.3.17",
+    "winston": "^3.10.0",
+    "winston-daily-rotate-file": "^4.7.1"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.5",

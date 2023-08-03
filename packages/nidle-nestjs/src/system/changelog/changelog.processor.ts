@@ -1,9 +1,12 @@
+import { Inject } from '@nestjs/common';
 import { ConfigType, ConfigService as NestConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import * as Nidle from 'nidle';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 import _const from 'src/const';
 import { asyncWait } from 'src/utils';
@@ -19,6 +22,8 @@ export class ChangelogProcessor {
     private readonly nestConfigService: NestConfigService,
     @InjectRepository(Changelog)
     private readonly changelogRepository: Repository<Changelog>,
+    @Inject(WINSTON_MODULE_PROVIDER)
+    private readonly logger: Logger,
   ) {
     const _nidleConfig: ConfigType<typeof nidleConfig> =
       this.nestConfigService.get('nidleConfig');
@@ -28,9 +33,6 @@ export class ChangelogProcessor {
   @Process('start')
   async handleStart(job: Job) {
     const { config, options, changelogId, environment } = job.data;
-    console.log(
-      `changelogProcessor handleStart - changelogId:${changelogId} | environment:${environment}`,
-    );
     const manager = new Nidle({ ...config });
     await manager.init();
     await manager.mount(options, (_data) => {
@@ -49,19 +51,21 @@ export class ChangelogProcessor {
             await this.projectService.resetProjectServerOccupation(changelogId);
             await manager.backup();
           }
-          console.log(
-            `changelogProcessor completed - changelogId:${changelogId} | environment:${environment}`,
-          );
-          await asyncWait(1000 * this.afterManagerWaitSecs);
-          await job.progress(100);
+          await Promise.all([
+            job.progress(100),
+            asyncWait(1000 * this.afterManagerWaitSecs),
+          ]);
           resolve();
         });
 
         manager.on('error', async (e) => {
-          let info = `changelogProcessor error - changelogId:${changelogId} | environment:${environment}`;
-          info += '\n' + JSON.stringify(e);
-          console.log(info);
-          await asyncWait(1000 * this.afterManagerWaitSecs);
+          const info = `changelogProcessor error - changelogId:${changelogId} | environment:${environment}`;
+          const error = JSON.stringify(e);
+          this.logger.error(info, { error });
+          await Promise.all([
+            job.log(error),
+            asyncWait(1000 * this.afterManagerWaitSecs),
+          ]);
           reject(new Error(info));
         });
       });
