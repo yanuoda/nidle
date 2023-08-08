@@ -24,12 +24,16 @@ export class OauthController {
   @Get()
   async index(@Query() { type }: IndexDto, @Res() response: Response) {
     if (type === 'gitlab') {
+      const paramStr = Object.entries({
+        client_id: this._oauthConfig.gitlab.clientId,
+        redirect_uri: this._oauthConfig.gitlab.redirectUri,
+        scope: this._oauthConfig.gitlab.scope,
+        response_type: 'code',
+      })
+        .map(([k, v]) => `${k}=${v}`)
+        .join('&');
       response.redirect(
-        `${this._oauthConfig.gitlab.baseUrl}/oauth/authorize
-          ?client_id=${this._oauthConfig.gitlab.clientId}
-          &redirect_uri=${this._oauthConfig.gitlab.redirectUri}
-          &response_type=code&scope=${this._oauthConfig.gitlab.scope}
-        `,
+        `${this._oauthConfig.gitlab.baseUrl}/oauth/authorize?${paramStr}`,
       );
     } else {
       /** @todo github */
@@ -44,7 +48,6 @@ export class OauthController {
   @Render('redirect')
   async redirect(@Session() session: SessionDto) {
     const type = session?.user ? 'success' : 'failed';
-    // registerHelper()
     let text = '';
     if (type === 'success') {
       text = '登录成功，跳转中...';
