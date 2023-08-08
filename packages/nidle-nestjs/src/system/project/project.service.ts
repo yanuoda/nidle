@@ -53,7 +53,7 @@ export class ProjectService {
     order = {},
   }: QueryProjectListDto) {
     const [list, total] = await this.projectRepository.findAndCount({
-      select: ['id', 'name', 'owner', 'repositoryType'],
+      select: ['id', 'name', 'owner', 'repositoryType', 'repositoryUrl'],
       skip: (current - 1) * pageSize,
       take: pageSize,
       // order: { createdTime: 'DESC' },
@@ -266,17 +266,20 @@ export class ProjectService {
     Object.values(periodMap).forEach((_list) => {
       const [parent, ...children] = _list;
       const env = parent.environment as Environment;
-      children.forEach((child) => {
-        // 标识 child
-        child.isChild = true;
-        delete child.branch;
-        delete child.description;
-      });
-      publishEnvMap[env].push({
+      const _obj: AssembleChangelog = {
         ...parent,
-        children,
         nextPublish: nidleNext(parent),
-      });
+      };
+      if (children.length > 0) {
+        children.forEach((child) => {
+          // 标识 child
+          child.isChild = true;
+          delete child.branch;
+          delete child.description;
+        });
+        _obj.children = children;
+      }
+      publishEnvMap[env].push(_obj);
     });
     // 按 更新时间（活跃） 降序
     Object.keys(publishEnvMap).forEach((env: Environment) => {

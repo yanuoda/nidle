@@ -13,8 +13,15 @@ import { AppModule } from './app.module';
 // import CONST from './const';
 
 async function bootstrap() {
-  const { REDIS_HOST, REDIS_PORT, REDIS_PASSWORD, REDIS_DB_INDEX, DEV, PORT, HOST } =
-    process.env;
+  const {
+    REDIS_HOST,
+    REDIS_PORT,
+    REDIS_PASSWORD,
+    REDIS_DB_INDEX,
+    DEV,
+    PORT,
+    HOST,
+  } = process.env;
   // Initialize client.
   const redisClient = createClient({
     url: `redis://:${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}/${REDIS_DB_INDEX}`,
