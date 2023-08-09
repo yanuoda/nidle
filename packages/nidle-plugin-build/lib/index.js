@@ -2,6 +2,8 @@ const fs = require('fs')
 const path = require('path')
 const execa = require('execa')
 
+const regKilled = /\.sh: line \d+: \d+ Killed/i
+
 function build(task, config = {}) {
   return new Promise((resolve, reject) => {
     const { source, output } = task
@@ -53,6 +55,16 @@ function build(task, config = {}) {
         return
       }
 
+      if (regKilled.test(str)) {
+        task.logger.error({
+          name: 'build',
+          detail: str
+        })
+        subprocess.cancel()
+
+        return
+      }
+
       task.logger.info({
         name: 'build',
         detail: str
@@ -62,7 +74,7 @@ function build(task, config = {}) {
     subprocess.stderr.on('data', data => {
       const str = data.toString()
 
-      if (str.indexOf('ERR!') > -1 || str.indexOf('ERROR') > -1 || str.indexOf('fatal:') > -1) {
+      if (str.indexOf('ERR!') > -1 || str.indexOf('ERROR') > -1 || str.indexOf('fatal:') > -1 || regKilled.test(str)) {
         task.logger.error({
           name: 'build',
           detail: str
