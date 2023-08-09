@@ -4,7 +4,7 @@ const execa = require('execa')
 
 function scp(task, config) {
   return new Promise((resolve, reject) => {
-    const { output } = task
+    const { output, mode } = task
     const { servers = [], decompress, authenticity } = config || {}
 
     if (!servers.length) {
@@ -36,7 +36,8 @@ function scp(task, config) {
         tarname,
         path.resolve(__dirname, '../shell/expect.sh'),
         decompress === false ? 0 : 1,
-        authenticity === false ? 0 : 1
+        authenticity === false ? 0 : 1,
+        mode === 'production' ? 1 : 0
       ])
 
       subprocess.stdout.on('data', data => {

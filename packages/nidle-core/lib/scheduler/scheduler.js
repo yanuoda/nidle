@@ -1,4 +1,4 @@
-import PQueue from '@okbeng03/p-queue'
+import PQueue from 'p-queue'
 import EventEmitter from 'eventemitter3'
 import StageQueue from './stage-queue.js'
 import { timeoutRun } from './util'
