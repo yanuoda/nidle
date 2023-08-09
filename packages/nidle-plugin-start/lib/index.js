@@ -36,6 +36,15 @@ function start(task, config) {
         }
 
         if (str.indexOf('ERROR') > -1) {
+          // pm2 初次启动 stop 报错不影响服务启动
+          if (str.match(/Process or Namespace .+ not found/i)) {
+            task.logger.info({
+              name: 'start',
+              detail: data.toString()
+            })
+            return
+          }
+
           task.logger.error({
             name: 'start',
             detail: data.toString()
