@@ -1,5 +1,5 @@
 // stage queue
-import PQueue from '@okbeng03/p-queue'
+import PQueue from 'p-queue'
 import StepQueue from './step-queue.js'
 import { retryRun, timeoutRun } from './util'
 

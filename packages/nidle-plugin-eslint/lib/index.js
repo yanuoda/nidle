@@ -32,26 +32,31 @@ function eslint(task) {
       })
     })
 
+    let isMissScript = false
+
     subprocess.stderr.on('data', data => {
       const str = data.toString()
 
-      if (str.indexOf('error:') > -1 || str.indexOf('ERR!') > -1) {
-        task.logger.error({
+      if (str.indexOf('missing script:') > -1 || str.indexOf('Browserslist') > -1) {
+        task.logger.warn({
           name: 'eslint',
           detail: str
         })
-        subprocess.cancel()
+        isMissScript = true
+
         return
       }
 
-      task.logger.warn({
+      task.logger.error({
         name: 'eslint',
         detail: str
       })
+
+      subprocess.cancel()
     })
 
     subprocess.on('close', code => {
-      if (code === 0) {
+      if (code === 0 || isMissScript) {
         resolve()
         return
       }
