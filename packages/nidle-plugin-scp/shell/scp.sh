@@ -6,6 +6,7 @@ tar_file=$4
 expectShell=$5
 decompress=$6
 authenticity=$7
+isProduction=$8
 
 printf "tar -zcpf %s %s\n" $tar_file $src_file
 cd $src_file
@@ -19,5 +20,5 @@ do
   dest_file=`echo $line | awk '{print $4}'`
   appname=`echo $line | awk '{print $5}'`
   printf "同步代码到服务器：%s:%s/%s\n" $host_ip $dest_file $appname
-  $expectShell $host_ip $username $password $dirname $tar_file $dest_file $appname $decompress $authenticity
+  $expectShell $host_ip $username $password $dirname $tar_file $dest_file $appname $decompress $authenticity $isProduction
 done 
