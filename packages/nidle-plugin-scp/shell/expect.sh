@@ -9,6 +9,7 @@ set dest_file [lindex $argv 5]
 set appname [lindex $argv 6]
 set decompress [lindex $argv 7]
 set authenticity [lindex $argv 8]
+set isProduction [lindex $argv 9]
 
 # scp
 spawn sh -c "scp -p $dirname/$src_file $username@$host:$dest_file"
@@ -54,6 +55,10 @@ if {$decompress==1} {
   # send "cd $dest_file && tar -zxpf ./$src_file -C ./$appname && rm -rf ./$src_file\n"
   send "cd $dest_file\n"
   expect "\]\[#$]"
+  if {$isProduction==0} {
+    send "rm -rf ./$appname/*\n"
+    expect "\]\[#$]"
+  }
   send "tar --no-same-owner -zxpf ./$src_file -C ./$appname\n"
   expect "\]\[#$]"
   send "rm -rf ./$src_file\n"
