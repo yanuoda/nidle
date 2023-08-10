@@ -4668,6 +4668,14 @@
   dependencies:
     "@octokit/openapi-types" "^12.11.0"
 
+"@okbeng03/p-queue@^7.1.0":
+  version "7.1.0"
+  resolved "https://registry.npmmirror.com/@okbeng03/p-queue/-/p-queue-7.1.0.tgz#2e093e67e39f42e3084cef15a08f8b1eb61fe866"
+  integrity sha512-MxviDvYnf9F4dpdwWN8c8dIngzbAeyp7sGiIDKJfnXqX/qkSxJHDr1hmWSLNThlIgOj7zKvtXCIg6uSA71sACA==
+  dependencies:
+    eventemitter3 "^4.0.7"
+    p-timeout "^5.0.0"
+
 "@one-ini/wasm@0.1.1":
   version "0.1.1"
   resolved "https://registry.npmmirror.com/@one-ini/wasm/-/wasm-0.1.1.tgz#6013659736c9dbfccc96e8a9c2b3de317df39323"
@@ -23807,7 +23815,7 @@ p-timeout@^4.1.0:
   resolved "https://registry.npmmirror.com/p-timeout/-/p-timeout-4.1.0.tgz#788253c0452ab0ffecf18a62dff94ff1bd09ca0a"
   integrity sha512-+/wmHtzJuWii1sXn3HCuH/FTwGhrp4tmJTxSKJbfS+vkipci6osxXM5mY0jUiRzWKMTgUT8l7HFbeSwZAynqHw==
 
-p-timeout@^5.0.2:
+p-timeout@^5.0.0, p-timeout@^5.0.2:
   version "5.1.0"
   resolved "https://registry.npmmirror.com/p-timeout/-/p-timeout-5.1.0.tgz#b3c691cf4415138ce2d9cfe071dba11f0fee085b"
   integrity sha512-auFDyzzzGZZZdHz3BtET9VEz0SE/uMEAx7uWfGPucfzEwwe/xH0iVeZibQmANYE/hp9T2+UUZT5m+BKyrDp3Ew==
@@ -32392,7 +32400,7 @@ webpack-merge@^5.8.0:
     clone-deep "^4.0.1"
     wildcard "^2.0.0"
 
-webpack-node-externals@3.0.0:
+webpack-node-externals@3.0.0, webpack-node-externals@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmmirror.com/webpack-node-externals/-/webpack-node-externals-3.0.0.tgz#1a3407c158d547a9feb4229a9e3385b7b60c9917"
   integrity sha512-LnL6Z3GGDPht/AigwRh2dvL9PQPFQ8skEpVrWZXLWBYmqcaojHNN0onvHzie6rq7EWKrrBfPYqNEzTJgiwEQDQ==
