@@ -1,6 +1,6 @@
 {
   "name": "nidle-web",
-  "version": "0.2.0-alpha.0",
+  "version": "0.2.1-alpha.0",
   "private": true,
   "description": "nidle web application",
   "repository": {
@@ -41,7 +41,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "mysql2": "^2.3.0",
-    "nidle": "0.2.0-alpha.0",
+    "nidle": "0.2.1-alpha.0",
     "nidle-chain": "0.2.0-alpha.0",
     "nidle-plugin-build": "0.2.0-alpha.0",
     "nidle-plugin-clone": "0.2.0-alpha.0",

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.1-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.0-alpha.0...v0.2.1-alpha.0) (2023-08-10)
+
+
+### Reverts
+
+* 改回@okbeng03/p-queue ([ed54b1b](https://github.com/yanuoda/nidle/commit/ed54b1bd9ca6a4543fe93ecd01b248b082822440))
+
+
+
+
+
 # [0.2.0-alpha.0](https://github.com/yanuoda/nidle/compare/v0.1.8...v0.2.0-alpha.0) (2023-08-10)
 
 **Note:** Version bump only for package nidle

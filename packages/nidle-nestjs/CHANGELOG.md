@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.1-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.0-alpha.0...v0.2.1-alpha.0) (2023-08-10)
+
+
+### Bug Fixes
+
+* remove locker ([4bf2df5](https://github.com/yanuoda/nidle/commit/4bf2df5926331a40ff343b265cee543f8fd5248a))
+
+
+
+
+
 # [0.2.0-alpha.0](https://github.com/yanuoda/nidle/compare/v0.1.8...v0.2.0-alpha.0) (2023-08-10)
 
 
