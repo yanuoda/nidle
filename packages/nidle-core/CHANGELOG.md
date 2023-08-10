@@ -1,3 +1,16 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# [0.2.0-alpha.0](https://github.com/yanuoda/nidle/compare/v0.1.8...v0.2.0-alpha.0) (2023-08-10)
+
+**Note:** Version bump only for package nidle
+
+
+
+
+
 ## [0.1.8](https://github.com/yanuoda/nidle/compare/v0.1.7...v0.1.8) (2022-03-02)
 
 
@@ -93,6 +106,3 @@
 * 调度器不再做input diff ([7f04ecb](https://github.com/yanuoda/nidle/commit/7f04ecbce015429c941221e5b4e65a455bfa9062))
 * 多余文件 ([72ba305](https://github.com/yanuoda/nidle/commit/72ba30503d94bc1b8ab69099d6808fac0bb9aebc))
 * 删错代码 ([fb692c7](https://github.com/yanuoda/nidle/commit/fb692c7ef64d7a8b8ce38ee99f929cdc737963e3))
-
-
-

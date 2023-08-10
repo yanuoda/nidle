@@ -1,3 +1,122 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# [0.2.0-alpha.0](https://github.com/yanuoda/nidle/compare/v0.1.8...v0.2.0-alpha.0) (2023-08-10)
+
+
+### Bug Fixes
+
+* 本地环境调试问题修复 ([f29252a](https://github.com/yanuoda/nidle/commit/f29252a742e6c6670c5f3ab6e259e8c391d79565))
+* 本地运行调试错误修复 ([767d7b8](https://github.com/yanuoda/nidle/commit/767d7b8f54e7ea47daa20edc1ad80291a10c6c8d))
+* 本地运行调试问题修复 ([454f848](https://github.com/yanuoda/nidle/commit/454f848c2993bf8d313dfb34ed8793589dfb1c48))
+* 发布生产备份 ([58e8eea](https://github.com/yanuoda/nidle/commit/58e8eeac088acc2d1896cfd4b167bc6d573f6962))
+* 非生产环境非覆盖式发布 ([5720ce1](https://github.com/yanuoda/nidle/commit/5720ce137efc048f3a68f1f4827852b237649990))
+* 分页查询参数有效判断；where对象组装判断 ([70adebf](https://github.com/yanuoda/nidle/commit/70adebf9da3f070225638f720ce7bc4740199604))
+* 服务器适配 ([e878011](https://github.com/yanuoda/nidle/commit/e878011fde2dad626cefc28ba30d7a9d916c7caf))
+* 开始刷新页面保证inputs初始化 ([e117c1e](https://github.com/yanuoda/nidle/commit/e117c1e6c966fe8f046f70a9f5ae89d43e246fcd))
+* 配置信息参数新增判断是否是新建发布 ([cd98a04](https://github.com/yanuoda/nidle/commit/cd98a0443215f0e15e6e7fe2f30c0a394fa90c6e))
+* 去掉文件拷贝步骤不必要的入参 ([6d6351f](https://github.com/yanuoda/nidle/commit/6d6351fbf6f1beefcc280fb773ce9aca928d83fe))
+* 权限不够异常处理 ([599cea3](https://github.com/yanuoda/nidle/commit/599cea3b511b39056352ea0959445448836418f1))
+* 权限不够异常处理 ([b71825c](https://github.com/yanuoda/nidle/commit/b71825c4f837c810dfca20c9a9e935c4d381ae03))
+* 删除不必要参数字段 ([c878b17](https://github.com/yanuoda/nidle/commit/c878b179919e9a77759f3c0a8ab8e88994ca24c5))
+* 使用 Array.some 方法时未返回值 ([1ef64a3](https://github.com/yanuoda/nidle/commit/1ef64a3de2a326d36d7c68c4b2d81c509ad3f04e))
+* 体验优化：新建发布记录成功提示后才刷新页面 ([2ff6417](https://github.com/yanuoda/nidle/commit/2ff6417b948f7e8f97a18df580474fa675c95985))
+* 退出发布清除缓存 ([c3af57e](https://github.com/yanuoda/nidle/commit/c3af57ecf5ef93f3af15a7304f6ba0f232e82840))
+* 退出发布设为禁用无法重新发布问题修复 ([16746df](https://github.com/yanuoda/nidle/commit/16746df14344aaefaba726678211c704a8ae8350))
+* 新建发布commitid ([0260b03](https://github.com/yanuoda/nidle/commit/0260b032e888bb3d64245b95bcb602d79defea10))
+* 修复 nidle-web 服务 IP 和端口配置不生效的问题 ([35a4c36](https://github.com/yanuoda/nidle/commit/35a4c36b2495ffd118f0b8d83fed90a88f5a54a5))
+* 修复安装 nidle 流前置步骤错误 ([e5ee1ce](https://github.com/yanuoda/nidle/commit/e5ee1ced4f04b5293d4dcb5f91ed7a7ba0ce0a53))
+* 修复更新时获取已安装版本不正确的问题 ([07b5114](https://github.com/yanuoda/nidle/commit/07b5114dd3d90a67fc53a04a9b981e9051959cf0))
+* 修复依赖 diff 时报错且未输出错误信息的问题 ([874be23](https://github.com/yanuoda/nidle/commit/874be2317cc51d538b014c0be6def903a270a040))
+* 修复依赖 diff 问题及代码优化 ([e443a98](https://github.com/yanuoda/nidle/commit/e443a98f5ae07a2e7bc82efa91a5f56460a30af6))
+* 修复应用查询时空字段导致无查询结果的问题 ([c4b0e98](https://github.com/yanuoda/nidle/commit/c4b0e98bde85cc3616d98ab0fd0a285f244b2cf2))
+* 一键安装 setup 命令未指定版本时默认安装最新版 ([b3f5fcc](https://github.com/yanuoda/nidle/commit/b3f5fcc8dd3a75110a995c20c5024794ba58a803))
+* 一键更新时对 nidle-spa 的 dev 依赖项也要做 diff ([e03dc95](https://github.com/yanuoda/nidle/commit/e03dc9579e54d61402050d911aa6e2951afc7b2b))
+* 应用名称校验 ([40c48e3](https://github.com/yanuoda/nidle/commit/40c48e352f292a5239bd0128c22009b0a82a3155))
+* 只返回20条分支；放开限制到100条；如果以后还超出这个限制，需做分页处理 ([dd33a3d](https://github.com/yanuoda/nidle/commit/dd33a3d27d47cdfe518b47890cb7430604e1ad54))
+* 重新发布保留类型 ([27fd4f3](https://github.com/yanuoda/nidle/commit/27fd4f3096995be52fc703e41d17c5769204aa49))
+* asyncWait util bug; queue reject error set ([84136bd](https://github.com/yanuoda/nidle/commit/84136bdd7aa1916d470e92d16a359e39e2bbd516))
+* circular dependency ([776404d](https://github.com/yanuoda/nidle/commit/776404d634305b790a0d6b1fd13494f5a6322a4b))
+* cp 命令添加 -f 选项 ([1bca602](https://github.com/yanuoda/nidle/commit/1bca6028339ba0bc726e27b9627c3392335fe8d4))
+* environment enum ([1f545c0](https://github.com/yanuoda/nidle/commit/1f545c0f66df702f1438aef1e098f8f93dd92d05))
+* eslint warnning日志处理错误，导致插件运行失败结束 ([1f2b8c5](https://github.com/yanuoda/nidle/commit/1f2b8c5f5cafae01ec266ac7c32d38895d37e550))
+* eslint报错过滤 ([f9ded8e](https://github.com/yanuoda/nidle/commit/f9ded8e3dad030d28c4a0dcb32d1d5593b1fe28f))
+* github关联跳转 ([d8cc01e](https://github.com/yanuoda/nidle/commit/d8cc01e8b3502eb8f1ba7caba68a8c1c799a117f))
+* gitlab授权链接 ([2b8e3bf](https://github.com/yanuoda/nidle/commit/2b8e3bfbd5702547d645deeeb677ff42b862f7ba))
+* ignore /api router ([d7c6dd2](https://github.com/yanuoda/nidle/commit/d7c6dd2dd66005d2f1eb4a84069795199a27117a))
+* merge request close 不触发 webhook自动化发布 ([6cc76b9](https://github.com/yanuoda/nidle/commit/6cc76b974663912727f5a2e6e36d1251bc3c0c11))
+* merge已存在不报错处理 ([0f98201](https://github.com/yanuoda/nidle/commit/0f9820118b08df702be45d6b451bc52fb0188414))
+* next type ([dcd9eaf](https://github.com/yanuoda/nidle/commit/dcd9eaf250ca6f37692574074e49ccb80c4894bd))
+* nidle-cli 对比依赖遗漏了新版新增依赖的情况 ([3edd85a](https://github.com/yanuoda/nidle/commit/3edd85a4e9904db70fc0bda9cad73f6f1ff3ea72))
+* nidle-cli 更新版本时，先对依赖进行 merge 再 diff ([17a3a11](https://github.com/yanuoda/nidle/commit/17a3a115c65df78090d450f8b7f9cbe678ad3ef7))
+* no lint & browserlist error 处理 ([656114d](https://github.com/yanuoda/nidle/commit/656114d30b086e295dc45da87d50a7ef8b20ab5d))
+* pm2 初次启动 stop 报错不影响服务启动 ([f96578b](https://github.com/yanuoda/nidle/commit/f96578b085a6047643fdadd5fb492f501a51a893))
+* pm2 初次启动 stop 报错不影响服务启动 ([c4a950e](https://github.com/yanuoda/nidle/commit/c4a950e820d9b871ec3b46b7da1364be1a8fa92f))
+* redis config ([ef58eca](https://github.com/yanuoda/nidle/commit/ef58eca1a101d1d527baf557add1e48d4c86c7e0))
+* redis host; publish list children set ([e78c98a](https://github.com/yanuoda/nidle/commit/e78c98a2f4b631ede8196f80423c4b7f41e3db84))
+* router 伪装图片兜底处理 ([e17fa91](https://github.com/yanuoda/nidle/commit/e17fa91aef51b1d0d8af9091d9aad0492f700bbe))
+* server表时间格式 ([a2abeab](https://github.com/yanuoda/nidle/commit/a2abeabe39817b479e2a2256567a851f33e093d2))
+* shell 脚本被killed报错并退出 ([12c2fd7](https://github.com/yanuoda/nidle/commit/12c2fd7da422d97f5b314fb23b947af54cc2cb31))
+* template status默认值设置 ([1f2fdae](https://github.com/yanuoda/nidle/commit/1f2fdae1ff37819a96535b4d41095a583d4a0e75))
+* user module swagger info ([c48c61b](https://github.com/yanuoda/nidle/commit/c48c61b854f6730fcb4da77f53438b28fbe91826))
+* webhook request newest commit id ([a3061bf](https://github.com/yanuoda/nidle/commit/a3061bf0697ee2978f3cf90aef4bd42b1282e6d5))
+* webhook判断 ([f761a7a](https://github.com/yanuoda/nidle/commit/f761a7aa41e73abc08c2d29b50ff9944f3bf82e4))
+
+
+### Features
+
+*  github support ([ac9cfa3](https://github.com/yanuoda/nidle/commit/ac9cfa38abb255d02e1dd610c0c49a4217c0914e))
+* 服务器模块CRUD ([e0a5fb0](https://github.com/yanuoda/nidle/commit/e0a5fb0053ae192ebeec0ce312e9cf4f0ec00cef))
+* 更新命令对 nidle-web 配置项做差异化问询 ([fbdb437](https://github.com/yanuoda/nidle/commit/fbdb437d9126295b4c36c2dc09f86f03b379d958))
+* 数据库链接配置 ([33a974d](https://github.com/yanuoda/nidle/commit/33a974d87ccb2bcc60ba308058c29ede5aa8d025))
+* 添加 BullBoard 插件；修改接口前缀注册 ([b93dcc9](https://github.com/yanuoda/nidle/commit/b93dcc9c5dfc2d3fcd17067beba1d8d3c22e1a7f))
+* 添加 nidle-cli 安装及更新详细信息选项 --showinfo ([b0a1f40](https://github.com/yanuoda/nidle/commit/b0a1f400ce0cc80d31b05c9b8e191385fb30aa6d))
+* 添加服务启动成功提示信息及安装命令添加指定版本 flag ([7185212](https://github.com/yanuoda/nidle/commit/7185212898a23ce9539f09c0ab1f07685ca38159))
+* 添加数据库服务端口配置项 ([a24d8fe](https://github.com/yanuoda/nidle/commit/a24d8fe6e3ff9efa49e3abe07f9d8b263f6f5dbd))
+* 完成 setup 命令断点续装功能 ([b94b998](https://github.com/yanuoda/nidle/commit/b94b998dcfd696bf468d25047d2c93e5f177aa6c))
+* 完成 update 命令断点续装功能 ([ed24bc8](https://github.com/yanuoda/nidle/commit/ed24bc8b05fd0afa353c510599b8bfd2d6ab0432))
+* 增加 host 配置 ([0f998cc](https://github.com/yanuoda/nidle/commit/0f998cce85d1275c95963543e1092d8818f77b6d))
+* 增加interceptor和filter统一处理response格式及错误捕获返回格式 ([a0e0eb6](https://github.com/yanuoda/nidle/commit/a0e0eb60935292efb0ad2162b70fa27f7a1e5d19))
+* 账号关联 ([8093a4d](https://github.com/yanuoda/nidle/commit/8093a4d3f93029fff9e48db3f2207880c23941ab))
+* 账号关联及应用权限判断 ([1b0ce56](https://github.com/yanuoda/nidle/commit/1b0ce5600c0ea8d9cac5dcdfb371b45698fd20b5))
+* add column publish type ([803d56f](https://github.com/yanuoda/nidle/commit/803d56fbed688cd256cbcec21bc00257ea5034cb))
+* auto validation pipe ([5daa47b](https://github.com/yanuoda/nidle/commit/5daa47b666ec1eb0efd6f02b2a4e65a0da0ee9e0))
+* changelog features ([40abeb4](https://github.com/yanuoda/nidle/commit/40abeb4c310ea5116e939e49fe3551879db364bb))
+* changelog、config module feature ([b975f69](https://github.com/yanuoda/nidle/commit/b975f69020087554f09076a12937b66c036643ab))
+* github merge request ([9eab73f](https://github.com/yanuoda/nidle/commit/9eab73f4df767980e3c872984390bd8a240091d6))
+* history api fallback ([d094f33](https://github.com/yanuoda/nidle/commit/d094f332befd9b83b65db144346bf72300432072))
+* lib module - gitlab service ([c38b435](https://github.com/yanuoda/nidle/commit/c38b4357cdf22d953bd85a0491a3bf44b155cd67))
+* nidle 一键部署 ([dff8337](https://github.com/yanuoda/nidle/commit/dff8337a34ad17e7235bf36294acc38729084dec))
+* nidle-cli 日志输出优化 ([17bdcba](https://github.com/yanuoda/nidle/commit/17bdcba9881ee3be7c19a7bc01990de448aaf35a))
+* nidle-web 添加对 nidle-cli 的依赖版本范围功能 ([6b7e10c](https://github.com/yanuoda/nidle/commit/6b7e10c5e6d369fd07ddce63882a4fae9d523ced))
+* oauth config & hbs engine ([af91ba9](https://github.com/yanuoda/nidle/commit/af91ba9f7bbe1b3ddadefa42c25bf16be0183ff3))
+* oauth module ([50e375f](https://github.com/yanuoda/nidle/commit/50e375fa4535bb904bf32b1efe105c7595484287))
+* project features ([c94dbd8](https://github.com/yanuoda/nidle/commit/c94dbd803d8a8fbc6b675d8161a4d3154222a9e1))
+* project module CRUD ([3a0c239](https://github.com/yanuoda/nidle/commit/3a0c23975520dab6cd066f35b4a777ba3aa78923))
+* project_server module ([19270b2](https://github.com/yanuoda/nidle/commit/19270b2907ca95fe37a6055ff2a7bf83f847e9c6))
+* project_server table and relations ([0bb2e3b](https://github.com/yanuoda/nidle/commit/0bb2e3b241ebe0e72d83759039f6f7691ad58d73))
+* server 获取所有服务器数据用于下拉框 ([5060882](https://github.com/yanuoda/nidle/commit/5060882977c1de4dfb2bbfee5366db96af1ad771))
+* template module CRUD ([72bd562](https://github.com/yanuoda/nidle/commit/72bd562df81c3ac28919dfd20f4027f85fcb1c79))
+* user register ([f74de3d](https://github.com/yanuoda/nidle/commit/f74de3d41b8b2d5c9ca14e0e987d49fa7b551513))
+* user模块；登录登出session ([34d2a8a](https://github.com/yanuoda/nidle/commit/34d2a8adb3086b7e7cc8d6ef302906e8b4acd856))
+* webhook publish ([e2132fc](https://github.com/yanuoda/nidle/commit/e2132fcd4c7e63e6abe451660a40d9d882c2d198))
+* webhook publish success 停留在当前发布环境，可以退出 ([c755a5e](https://github.com/yanuoda/nidle/commit/c755a5ec6499a98fc8da6d8055859b5e1c351954))
+* webhook支持多记录同时运行 ([781b0f9](https://github.com/yanuoda/nidle/commit/781b0f9f39e6e411119a0db268d72a9705b1d068))
+* winston logger ([8599e14](https://github.com/yanuoda/nidle/commit/8599e14cca33690505659a71594654bf20be860f))
+* winston logs output ([fb68ec2](https://github.com/yanuoda/nidle/commit/fb68ec2eb0a65da95ec2fa0be5174c99e41b7509))
+* wip-server 模块 ([a4e9b93](https://github.com/yanuoda/nidle/commit/a4e9b93e1efc8daaf281950254cbf2c8e4c2b7c4))
+
+
+### Reverts
+
+* 还原调试代码 ([cc49063](https://github.com/yanuoda/nidle/commit/cc4906345efe02b7e5ca5206ec56064e2e108390))
+
+
+
+
+
 ## [0.1.8](https://github.com/yanuoda/nidle/compare/v0.1.7...v0.1.8) (2022-03-02)
 
 
@@ -242,6 +361,3 @@
 * 调度器不再做input diff ([7f04ecb](https://github.com/yanuoda/nidle/commit/7f04ecbce015429c941221e5b4e65a455bfa9062))
 * 多余文件 ([72ba305](https://github.com/yanuoda/nidle/commit/72ba30503d94bc1b8ab69099d6808fac0bb9aebc))
 * 删错代码 ([fb692c7](https://github.com/yanuoda/nidle/commit/fb692c7ef64d7a8b8ce38ee99f929cdc737963e3))
-
-
-

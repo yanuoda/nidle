@@ -1,3 +1,16 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# [0.2.0-alpha.0](https://github.com/yanuoda/nidle/compare/v0.1.8...v0.2.0-alpha.0) (2023-08-10)
+
+**Note:** Version bump only for package nidle-plugin-manifest
+
+
+
+
+
 ## [0.1.8](https://github.com/yanuoda/nidle/compare/v0.1.7...v0.1.8) (2022-03-02)
 
 
@@ -43,6 +56,3 @@
 ### Features
 
 * manifest plugi ([6d53fd3](https://github.com/yanuoda/nidle/commit/6d53fd32b99c5af2c29d60fec6eef4faffed0016))
-
-
-

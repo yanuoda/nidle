@@ -1,3 +1,16 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# [0.2.0-alpha.0](https://github.com/yanuoda/nidle/compare/v0.1.8...v0.2.0-alpha.0) (2023-08-10)
+
+**Note:** Version bump only for package nidle-plugin-install
+
+
+
+
+
 ## [0.1.8](https://github.com/yanuoda/nidle/compare/v0.1.7...v0.1.8) (2022-03-02)
 
 
@@ -35,6 +48,3 @@
 * --production配置化 ([22da13f](https://github.com/yanuoda/nidle/commit/22da13f1d9b0ad835763c970af9c5bc97a0b9b95))
 * --production配置化 ([688682f](https://github.com/yanuoda/nidle/commit/688682f0b9cd35bd9ec8fb5c4a9bf5ac39cbc9a6))
 * 修复一些发布的问题 ([0bf8ef8](https://github.com/yanuoda/nidle/commit/0bf8ef8b15bfd7c8e2bbac7eaf1c8506356c74ab))
-
-
-

@@ -1,3 +1,19 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# [0.2.0-alpha.0](https://github.com/yanuoda/nidle/compare/v0.1.8...v0.2.0-alpha.0) (2023-08-10)
+
+
+### Bug Fixes
+
+* shell 脚本被killed报错并退出 ([12c2fd7](https://github.com/yanuoda/nidle/commit/12c2fd7da422d97f5b314fb23b947af54cc2cb31))
+
+
+
+
+
 ## [0.1.8](https://github.com/yanuoda/nidle/compare/v0.1.7...v0.1.8) (2022-03-02)
 
 
@@ -32,6 +48,3 @@
 ### Bug Fixes
 
 * 修复一些发布的问题 ([0bf8ef8](https://github.com/yanuoda/nidle/commit/0bf8ef8b15bfd7c8e2bbac7eaf1c8506356c74ab))
-
-
-

@@ -1,3 +1,56 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# [0.2.0-alpha.0](https://github.com/yanuoda/nidle/compare/v0.1.8...v0.2.0-alpha.0) (2023-08-10)
+
+
+### Bug Fixes
+
+* 发布生产备份 ([58e8eea](https://github.com/yanuoda/nidle/commit/58e8eeac088acc2d1896cfd4b167bc6d573f6962))
+* 服务器适配 ([e878011](https://github.com/yanuoda/nidle/commit/e878011fde2dad626cefc28ba30d7a9d916c7caf))
+* 配置信息参数新增判断是否是新建发布 ([cd98a04](https://github.com/yanuoda/nidle/commit/cd98a0443215f0e15e6e7fe2f30c0a394fa90c6e))
+* 删除不必要参数字段 ([c878b17](https://github.com/yanuoda/nidle/commit/c878b179919e9a77759f3c0a8ab8e88994ca24c5))
+* 退出发布清除缓存 ([c3af57e](https://github.com/yanuoda/nidle/commit/c3af57ecf5ef93f3af15a7304f6ba0f232e82840))
+* 退出发布设为禁用无法重新发布问题修复 ([16746df](https://github.com/yanuoda/nidle/commit/16746df14344aaefaba726678211c704a8ae8350))
+* 新建发布commitid ([0260b03](https://github.com/yanuoda/nidle/commit/0260b032e888bb3d64245b95bcb602d79defea10))
+* 修复 nidle-web 服务 IP 和端口配置不生效的问题 ([35a4c36](https://github.com/yanuoda/nidle/commit/35a4c36b2495ffd118f0b8d83fed90a88f5a54a5))
+* 修复应用查询时空字段导致无查询结果的问题 ([c4b0e98](https://github.com/yanuoda/nidle/commit/c4b0e98bde85cc3616d98ab0fd0a285f244b2cf2))
+* 只返回20条分支；放开限制到100条；如果以后还超出这个限制，需做分页处理 ([dd33a3d](https://github.com/yanuoda/nidle/commit/dd33a3d27d47cdfe518b47890cb7430604e1ad54))
+* github关联跳转 ([d8cc01e](https://github.com/yanuoda/nidle/commit/d8cc01e8b3502eb8f1ba7caba68a8c1c799a117f))
+* ignore /api router ([d7c6dd2](https://github.com/yanuoda/nidle/commit/d7c6dd2dd66005d2f1eb4a84069795199a27117a))
+* merge request close 不触发 webhook自动化发布 ([6cc76b9](https://github.com/yanuoda/nidle/commit/6cc76b974663912727f5a2e6e36d1251bc3c0c11))
+* next type ([dcd9eaf](https://github.com/yanuoda/nidle/commit/dcd9eaf250ca6f37692574074e49ccb80c4894bd))
+* router 伪装图片兜底处理 ([e17fa91](https://github.com/yanuoda/nidle/commit/e17fa91aef51b1d0d8af9091d9aad0492f700bbe))
+* webhook request newest commit id ([a3061bf](https://github.com/yanuoda/nidle/commit/a3061bf0697ee2978f3cf90aef4bd42b1282e6d5))
+* webhook判断 ([f761a7a](https://github.com/yanuoda/nidle/commit/f761a7aa41e73abc08c2d29b50ff9944f3bf82e4))
+
+
+### Features
+
+*  github support ([ac9cfa3](https://github.com/yanuoda/nidle/commit/ac9cfa38abb255d02e1dd610c0c49a4217c0914e))
+* 更新命令对 nidle-web 配置项做差异化问询 ([fbdb437](https://github.com/yanuoda/nidle/commit/fbdb437d9126295b4c36c2dc09f86f03b379d958))
+* 添加数据库服务端口配置项 ([a24d8fe](https://github.com/yanuoda/nidle/commit/a24d8fe6e3ff9efa49e3abe07f9d8b263f6f5dbd))
+* 账号关联 ([8093a4d](https://github.com/yanuoda/nidle/commit/8093a4d3f93029fff9e48db3f2207880c23941ab))
+* 账号关联及应用权限判断 ([1b0ce56](https://github.com/yanuoda/nidle/commit/1b0ce5600c0ea8d9cac5dcdfb371b45698fd20b5))
+* history api fallback ([d094f33](https://github.com/yanuoda/nidle/commit/d094f332befd9b83b65db144346bf72300432072))
+* nidle 一键部署 ([dff8337](https://github.com/yanuoda/nidle/commit/dff8337a34ad17e7235bf36294acc38729084dec))
+* nidle-cli 日志输出优化 ([17bdcba](https://github.com/yanuoda/nidle/commit/17bdcba9881ee3be7c19a7bc01990de448aaf35a))
+* nidle-web 添加对 nidle-cli 的依赖版本范围功能 ([6b7e10c](https://github.com/yanuoda/nidle/commit/6b7e10c5e6d369fd07ddce63882a4fae9d523ced))
+* webhook publish ([e2132fc](https://github.com/yanuoda/nidle/commit/e2132fcd4c7e63e6abe451660a40d9d882c2d198))
+* webhook publish success 停留在当前发布环境，可以退出 ([c755a5e](https://github.com/yanuoda/nidle/commit/c755a5ec6499a98fc8da6d8055859b5e1c351954))
+* webhook支持多记录同时运行 ([781b0f9](https://github.com/yanuoda/nidle/commit/781b0f9f39e6e411119a0db268d72a9705b1d068))
+
+
+### Reverts
+
+* 还原调试代码 ([cc49063](https://github.com/yanuoda/nidle/commit/cc4906345efe02b7e5ca5206ec56064e2e108390))
+
+
+
+
+
 ## [0.1.8](https://github.com/yanuoda/nidle/compare/v0.1.7...v0.1.8) (2022-03-02)
 
 
@@ -119,6 +172,3 @@
 * input to antd-pro form ([fb2f770](https://github.com/yanuoda/nidle/commit/fb2f7704c7dd166c47541762b840be4c262f1adf))
 * input值提交，并转换成nidle-core想要的值 ([d49cc27](https://github.com/yanuoda/nidle/commit/d49cc27e011fd378025dbd91d8d3409d59e44054))
 * merge request hook ([9825137](https://github.com/yanuoda/nidle/commit/9825137933b65320e0c784d9a6a33644ccbd4325))
-
-
-

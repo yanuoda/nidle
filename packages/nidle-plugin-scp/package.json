@@ -1,28 +1,28 @@
 {
   "name": "nidle-plugin-scp",
-  "version": "0.1.8",
+  "version": "0.2.0-alpha.0",
   "description": "nidle plugin of secure copy",
   "keywords": [
     "clone",
     "nidle",
     "plugin"
   ],
-  "author": "okbeng03 <okbeng03@live.com>",
   "homepage": "https://github.com/yanuoda/nidle#readme",
-  "license": "MIT",
-  "main": "./dist/index.js",
-  "module": "./index.js",
+  "bugs": {
+    "url": "https://github.com/yanuoda/nidle/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yanuoda/nidle.git"
   },
+  "license": "MIT",
+  "author": "okbeng03 <okbeng03@live.com>",
+  "main": "./dist/index.js",
+  "module": "./index.js",
   "scripts": {
     "build": "rm -rf ./dist && rollup -c",
-    "prerelease": "yarn build",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s --commit-path ."
-  },
-  "bugs": {
-    "url": "https://github.com/yanuoda/nidle/issues"
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s --commit-path .",
+    "prerelease": "yarn build"
   },
   "dependencies": {
     "execa": "5.1.1",

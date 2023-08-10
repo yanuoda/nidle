@@ -1,3 +1,21 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# [0.2.0-alpha.0](https://github.com/yanuoda/nidle/compare/v0.1.8...v0.2.0-alpha.0) (2023-08-10)
+
+
+### Bug Fixes
+
+* 非生产环境非覆盖式发布 ([5720ce1](https://github.com/yanuoda/nidle/commit/5720ce137efc048f3a68f1f4827852b237649990))
+* 权限不够异常处理 ([599cea3](https://github.com/yanuoda/nidle/commit/599cea3b511b39056352ea0959445448836418f1))
+* 权限不够异常处理 ([b71825c](https://github.com/yanuoda/nidle/commit/b71825c4f837c810dfca20c9a9e935c4d381ae03))
+
+
+
+
+
 ## [0.1.8](https://github.com/yanuoda/nidle/compare/v0.1.7...v0.1.8) (2022-03-02)
 
 
@@ -58,6 +76,3 @@
 ### Bug Fixes
 
 * 修复一些发布的问题 ([0bf8ef8](https://github.com/yanuoda/nidle/commit/0bf8ef8b15bfd7c8e2bbac7eaf1c8506356c74ab))
-
-
-

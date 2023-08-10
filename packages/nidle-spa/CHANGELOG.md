@@ -1,3 +1,32 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# [0.2.0-alpha.0](https://github.com/yanuoda/nidle/compare/v0.1.8...v0.2.0-alpha.0) (2023-08-10)
+
+
+### Bug Fixes
+
+* 开始刷新页面保证inputs初始化 ([e117c1e](https://github.com/yanuoda/nidle/commit/e117c1e6c966fe8f046f70a9f5ae89d43e246fcd))
+* 体验优化：新建发布记录成功提示后才刷新页面 ([2ff6417](https://github.com/yanuoda/nidle/commit/2ff6417b948f7e8f97a18df580474fa675c95985))
+* 应用名称校验 ([40c48e3](https://github.com/yanuoda/nidle/commit/40c48e352f292a5239bd0128c22009b0a82a3155))
+* 重新发布保留类型 ([27fd4f3](https://github.com/yanuoda/nidle/commit/27fd4f3096995be52fc703e41d17c5769204aa49))
+* github关联跳转 ([d8cc01e](https://github.com/yanuoda/nidle/commit/d8cc01e8b3502eb8f1ba7caba68a8c1c799a117f))
+
+
+### Features
+
+*  github support ([ac9cfa3](https://github.com/yanuoda/nidle/commit/ac9cfa38abb255d02e1dd610c0c49a4217c0914e))
+* 账号关联 ([8093a4d](https://github.com/yanuoda/nidle/commit/8093a4d3f93029fff9e48db3f2207880c23941ab))
+* 账号关联及应用权限判断 ([1b0ce56](https://github.com/yanuoda/nidle/commit/1b0ce5600c0ea8d9cac5dcdfb371b45698fd20b5))
+* add column publish type ([803d56f](https://github.com/yanuoda/nidle/commit/803d56fbed688cd256cbcec21bc00257ea5034cb))
+* nidle 一键部署 ([dff8337](https://github.com/yanuoda/nidle/commit/dff8337a34ad17e7235bf36294acc38729084dec))
+
+
+
+
+
 ## [0.1.8](https://github.com/yanuoda/nidle/compare/v0.1.7...v0.1.8) (2022-03-02)
 
 
@@ -100,6 +129,3 @@
 * input to antd-pro form ([ea3a360](https://github.com/yanuoda/nidle/commit/ea3a360890dc208f1623e9ef3f8553ffbdcab711))
 * input提交 ([12e05a5](https://github.com/yanuoda/nidle/commit/12e05a588e87cf0936061fc87c257a139e9ae2ab))
 * input值提交，并转换成nidle-core想要的值 ([d49cc27](https://github.com/yanuoda/nidle/commit/d49cc27e011fd378025dbd91d8d3409d59e44054))
-
-
-

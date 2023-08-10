@@ -1,24 +1,24 @@
 {
   "name": "nidle-cli",
-  "version": "0.1.8",
+  "version": "0.2.0-alpha.0",
   "description": "A cli tool to install and update nidle.",
-  "author": "hanrenguang <413526182@qq.com>",
   "homepage": "https://github.com/yanuoda/nidle#readme",
-  "license": "MIT",
-  "main": "src/index.js",
-  "bin": {
-    "nidle-cli": "./src/index.js"
+  "bugs": {
+    "url": "https://github.com/yanuoda/nidle/issues"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yanuoda/nidle.git"
   },
-  "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s --commit-path ."
+  "license": "MIT",
+  "author": "hanrenguang <413526182@qq.com>",
+  "main": "src/index.js",
+  "bin": {
+    "nidle-cli": "./src/index.js"
   },
-  "bugs": {
-    "url": "https://github.com/yanuoda/nidle/issues"
+  "scripts": {
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s --commit-path .",
+    "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "dependencies": {
     "@octokit/core": "^3.6.0",

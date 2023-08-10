@@ -1,11 +1,12 @@
 {
   "name": "nidle-spa",
-  "version": "0.1.8",
+  "version": "0.2.0-alpha.0",
   "private": true,
   "description": "Nidle web client application.",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "umi build",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s --commit-path .",
     "deploy": "npm run build && npm run gh-pages",
     "dev": "npm run start:dev",
     "gh-pages": "gh-pages -d dist",
@@ -26,8 +27,7 @@
     "start:no-ui": "cross-env UMI_UI=none UMI_ENV=dev umi dev",
     "start:pre": "cross-env REACT_APP_ENV=pre UMI_ENV=dev umi dev",
     "test": "umi test",
-    "test:component": "umi test ./src/components",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s --commit-path ."
+    "test:component": "umi test ./src/components"
   },
   "browserslist": [
     "> 1%",

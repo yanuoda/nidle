@@ -1,3 +1,20 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# [0.2.0-alpha.0](https://github.com/yanuoda/nidle/compare/v0.1.8...v0.2.0-alpha.0) (2023-08-10)
+
+
+### Bug Fixes
+
+* pm2 初次启动 stop 报错不影响服务启动 ([f96578b](https://github.com/yanuoda/nidle/commit/f96578b085a6047643fdadd5fb492f501a51a893))
+* pm2 初次启动 stop 报错不影响服务启动 ([c4a950e](https://github.com/yanuoda/nidle/commit/c4a950e820d9b871ec3b46b7da1364be1a8fa92f))
+
+
+
+
+
 ## [0.1.8](https://github.com/yanuoda/nidle/compare/v0.1.7...v0.1.8) (2022-03-02)
 
 
@@ -43,6 +60,3 @@
 ### Bug Fixes
 
 * 修复一些发布的问题 ([0bf8ef8](https://github.com/yanuoda/nidle/commit/0bf8ef8b15bfd7c8e2bbac7eaf1c8506356c74ab))
-
-
-

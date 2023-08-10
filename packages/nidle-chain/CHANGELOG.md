@@ -1,3 +1,16 @@
+# Change Log
+
+All notable changes to this project will be documented in this file.
+See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+# [0.2.0-alpha.0](https://github.com/yanuoda/nidle/compare/v0.1.8...v0.2.0-alpha.0) (2023-08-10)
+
+**Note:** Version bump only for package nidle-chain
+
+
+
+
+
 ## [0.1.8](https://github.com/yanuoda/nidle/compare/v0.1.7...v0.1.8) (2022-03-02)
 
 
@@ -43,6 +56,3 @@
 
 * 添加发布脚本 ([229e3fe](https://github.com/yanuoda/nidle/commit/229e3fec61a202d687648a374cf302a8937b18a1))
 * nidle-chain ([bd99ee8](https://github.com/yanuoda/nidle/commit/bd99ee8ea669a787dd9a7241519a431b40e443d5))
-
-
-
