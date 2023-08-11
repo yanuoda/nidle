@@ -16,6 +16,7 @@ import {
   QueryServerResponseDTO,
   QueryServerListResponseDTO,
   UpdateServerDTO,
+  GetAllServersDTO,
 } from './server.dto';
 
 @ApiTags('服务器相关接口')
@@ -32,8 +33,10 @@ export class ServerController {
 
   @ApiOperation({ summary: '查询所有服务器（下拉框）' })
   @Post()
-  async getAllServers(): Promise<GetAllServersResponseDTO> {
-    const data = await this.serverService.findAll();
+  async getAllServers(
+    @Body() body: GetAllServersDTO,
+  ): Promise<GetAllServersResponseDTO> {
+    const data = await this.serverService.findAll(body);
     return { data };
   }
 

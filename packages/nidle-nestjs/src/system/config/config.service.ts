@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as requireFromString from 'require-from-string';
 import * as extend from 'extend';
 import { isEmpty, isFunction } from 'lodash';
-import NidleChain from 'nidle-chain';
+import * as NidleChain from 'nidle-chain';
 
 import { GitlabService } from 'src/lib/gitlab.service';
 import { nidleConfig } from 'src/configuration';
@@ -41,7 +41,7 @@ export class ConfigService {
       }
       _project = await this.projectService.findOne({ id: projectId });
     }
-    const { gitlabId, repositoryType, repositoryUrl } = _project;
+    const { gitlabId, repositoryType /** repositoryUrl */ } = _project;
     const fileName = `nidle.${mode}.config.js`;
     let configStr = '';
     if (repositoryType === 'gitlab') {

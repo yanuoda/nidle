@@ -17,7 +17,9 @@ export class CreateServerDTO {
   readonly username?: string;
   readonly password?: string;
 }
-
+export class GetAllServersDTO {
+  readonly environment?: Environment;
+}
 export class QeuryServerListDTO extends PageQuery {
   /**
    * 服务器所属环境

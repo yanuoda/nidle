@@ -7,6 +7,7 @@ import {
   CreateServerDTO,
   UpdateServerDTO,
   QeuryServerListDTO,
+  GetAllServersDTO,
 } from './server.dto';
 import { Server } from './server.entity';
 
@@ -24,9 +25,10 @@ export class ServerService {
     return await this.serverRepository.save(newServer);
   }
 
-  async findAll() {
+  async findAll(param: GetAllServersDTO) {
     return await this.serverRepository.find({
-      select: ['id', 'name', 'ip', 'environment'],
+      where: buildEqualWhere(param),
+      select: ['id', 'name', 'ip', 'environment', 'description'],
       order: { createdTime: 'DESC' },
     });
   }
