@@ -28,7 +28,7 @@ export class ServerService {
   async findAll(param: GetAllServersDTO) {
     return await this.serverRepository.find({
       where: buildEqualWhere(param),
-      select: ['id', 'name', 'ip', 'environment', 'description'],
+      select: ['id', 'name', 'ip', 'environment', 'description', 'status'],
       order: { createdTime: 'DESC' },
     });
   }
