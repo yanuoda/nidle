@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService, ConfigType } from '@nestjs/config';
 import { AxiosRequestConfig } from 'axios';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 import { oauthConfig } from 'src/configuration';
 
@@ -19,36 +21,44 @@ export class GitlabService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
+    @Inject(WINSTON_MODULE_PROVIDER)
+    private readonly logger: Logger,
   ) {
     this._gitlabConfig = this.configService.get('oauthConfig').gitlab;
   }
 
-  async request({
+  async request<T = any>({
     url,
     headers = {},
     ...restParam
   }: AxiosRequestConfig<Record<string, any>>) {
     const _url = this._gitlabConfig.baseUrl + url;
-    const { data, status } = await this.httpService.axiosRef.request({
+    // console.log(`GitlabService-request:\n${_url}`);
+    // console.log(`GitlabService-param:\n${JSON.stringify(restParam)}`);
+    const { data, status } = await this.httpService.axiosRef.request<T>({
       url: _url,
       headers: { ...headers, 'PRIVATE-TOKEN': this._gitlabConfig.privateToken },
       ...restParam,
     });
-    // console.log(`GitlabService-request:\n${_url}`);
-    // console.log('response:');
+    // console.log('GitlabService-response:');
     // console.log(JSON.stringify(data));
 
     if (status !== 200) {
-      throw new Error(data);
+      const message = `gitlab request not ok, data:${JSON.stringify(data)}`;
+      this.logger.error(message, {
+        statusCode: status,
+        info: { url: _url, param: restParam, headers },
+      });
+      throw new Error(message);
     }
     return data;
   }
 
-  apiv4get(
+  apiv4get<T = any>(
     url: string,
     opt?: Omit<AxiosRequestConfig<Record<string, any>>, 'url' | 'method'>,
   ) {
-    return this.request({ url: `/api/v4${url}`, method: 'get', ...opt });
+    return this.request<T>({ url: `/api/v4${url}`, method: 'get', ...opt });
   }
 
   // 获取应用成员

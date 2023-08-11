@@ -31,9 +31,9 @@ export class OauthService {
     });
     // 获取 gitlab 用户信息
     const userInfo = await this.gitlabService.apiv4get('/user', {
-      headers: { Authorization: `Bearer ${tokenRes?.data?.access_token}` },
+      headers: { Authorization: `Bearer ${tokenRes?.access_token}` },
     });
-    const { id: gitlabUserId, username: name } = userInfo?.data || {};
+    const { id: gitlabUserId, username: name } = userInfo || {};
     /** @check 关联 github 账号 */
     let currentUser = await this.userService.find({ gitlabUserId });
     if (!currentUser) {
