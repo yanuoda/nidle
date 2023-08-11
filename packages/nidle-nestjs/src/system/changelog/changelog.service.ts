@@ -8,7 +8,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as extend from 'extend';
 import { cloneDeep } from 'lodash';
-import Nidle from 'nidle';
+import * as Nidle from 'nidle';
 
 import _const from 'src/const';
 import { SessionUser } from 'src/common/base.dto';

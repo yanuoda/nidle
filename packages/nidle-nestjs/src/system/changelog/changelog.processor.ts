@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
-import Nidle from 'nidle';
+import * as Nidle from 'nidle';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 
