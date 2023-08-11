@@ -2,7 +2,7 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "builder": "webpack",
+    "builder": "tsc",
     "plugins": [
       {
         "name": "@nestjs/swagger",
