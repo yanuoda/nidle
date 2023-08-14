@@ -44,7 +44,7 @@ export class AllExceptionFilter implements ExceptionFilter {
       statusCode,
       errorMessage: message,
       success: false,
-      /** @check */
+      /** @check showType = 2 */
       showType: 2,
     });
   }

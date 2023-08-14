@@ -414,6 +414,7 @@ export class ChangelogService {
     };
   }
 
+  /** @todo 根据 log 状态可以更新 queue 中的 job progress */
   // 日志
   async log({ logPath, id, type = 'all' }: GetLogDto) {
     const changelog = await this.changelogRepository.findOneBy({ id });
@@ -425,6 +426,7 @@ export class ChangelogService {
         const config = readConfig(changelog.configPath);
         logPath = config.log.error;
       } else {
+        /** @check changelog.log.all */
         // logPath = changelog.log.all; // changelog 没有 log 属性
       }
     }
