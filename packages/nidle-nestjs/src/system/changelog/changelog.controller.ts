@@ -21,8 +21,19 @@ export class ChangelogController {
     @Body() createChangelogDto: CreateChangelogDto,
     @Session() session: SessionDto,
   ) {
+    const { projectId, type, mode, id } = createChangelogDto;
+    const projectData = await this.changelogService.checkAndGetProjectInfo(
+      projectId,
+      session.user,
+    );
+    const changelog = await this.changelogService.checkChangelogNext(
+      type,
+      mode,
+      id,
+    );
     const data = await this.changelogService.create(
       createChangelogDto,
+      { ...projectData, changelog },
       session.user,
     );
     return { data };
@@ -64,8 +75,8 @@ export class ChangelogController {
 
   @ApiOperation({ summary: 'mergeHook' })
   @Post('mergeHook')
-  async mergeHook(@Body() body: MergeHookDto, @Session() session: SessionDto) {
-    const data = await this.changelogService.mergeHook(body, session.user);
+  async mergeHook(@Body() body: MergeHookDto) {
+    const data = await this.changelogService.mergeHook(body);
     return { data };
   }
 }

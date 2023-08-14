@@ -22,6 +22,7 @@ import { ProjectService } from '../project/project.service';
 import { ServerService } from '../server/server.service';
 import { ConfigService } from '../config/config.service';
 import {
+  CreateChangelogData,
   CreateChangelogDto,
   GetLogDto,
   MergeHookDto,
@@ -107,21 +108,7 @@ export class ChangelogService {
     };
   }
 
-  async create(
-    {
-      projectId,
-      type,
-      mode,
-      branch,
-      source = 'web',
-      description,
-      id,
-    }: CreateChangelogDto,
-    user: SessionUser,
-  ) {
-    const { repositoryType, repositoryUrl, projectName, gitlabId } =
-      await this.checkAndGetProjectInfo(projectId, user);
-
+  async checkChangelogNext(type: string, mode: string, id?: number) {
     const changelog = id ? await this.findOneBy(id) : null;
     // 检查是否能进入下一阶段
     if (type === 'normal') {
@@ -132,7 +119,28 @@ export class ChangelogService {
         );
       }
     }
+    return changelog;
+  }
 
+  async create(
+    {
+      projectId,
+      type,
+      mode,
+      branch,
+      source = 'web',
+      description,
+      id,
+    }: CreateChangelogDto,
+    {
+      repositoryType,
+      repositoryUrl,
+      projectName,
+      gitlabId,
+      changelog,
+    }: CreateChangelogData,
+    user?: SessionUser,
+  ) {
     let commitId: string;
     if (!id || mode === _const.environments[0].value || type === 'webhook') {
       // 从测试环境发布时，取分支的最新commitId，后续发布都基于此commitId
@@ -476,7 +484,7 @@ export class ChangelogService {
     }
   }
 
-  async mergeHook(params: MergeHookDto, user: SessionUser) {
+  async mergeHook(params: MergeHookDto) {
     const { project, object_attributes: detail } = params;
     if (detail.state === 'merged' || detail.state === 'closed') {
       const pj = await this.projectService.findOne({
@@ -488,17 +496,17 @@ export class ChangelogService {
       }
 
       // 先查找是不是codeReview的
-      const changelog = await this.changelogRepository.findOneBy({
+      const _changelog = await this.changelogRepository.findOneBy({
         project: pj.id,
         commitId: detail.last_commit.id,
         codeReviewStatus: CodeReviewStatus.PENDING,
         active: 0,
       });
 
-      if (changelog) {
+      if (_changelog) {
         // code review
         await this.changelogRepository.update(
-          { id: changelog.id },
+          { id: _changelog.id },
           {
             codeReviewStatus:
               detail.state === 'merged'
@@ -529,6 +537,13 @@ export class ChangelogService {
       for (const changelog of changelogs) {
         // webhook发布
         // 1. 新建发布记录
+        const {
+          repositoryType,
+          repositoryUrl,
+          name: projectName,
+          gitlabId,
+        } = await this.projectService.findOne({ id: changelog.project });
+
         const newChangelog = await this.create(
           {
             id: changelog.id,
@@ -537,7 +552,7 @@ export class ChangelogService {
             projectId: changelog.project,
             mode: changelog.environment,
           },
-          user,
+          { repositoryType, repositoryUrl, projectName, gitlabId, changelog },
         );
 
         // 2. 开始构建

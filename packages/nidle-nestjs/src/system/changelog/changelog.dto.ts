@@ -1,6 +1,8 @@
 // import { PartialType } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
+import { Changelog } from './changelog.entity';
+
 export class CreateChangelogDto {
   /** 所属项目id */
   @IsNotEmpty()
@@ -19,6 +21,13 @@ export class CreateChangelogDto {
   readonly description?: string;
   /** 当前阶段id（创建下一阶段时判断状态） */
   readonly id?: number;
+}
+export class CreateChangelogData {
+  readonly repositoryType: string;
+  readonly repositoryUrl: string;
+  readonly projectName: string;
+  readonly gitlabId: number;
+  readonly changelog: Changelog | null;
 }
 
 export class StartChangelogDto {
