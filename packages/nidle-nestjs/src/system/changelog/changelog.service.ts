@@ -290,18 +290,14 @@ export class ChangelogService {
       : [];
     const options = cloneDeep(answers);
 
-    for (let i = 0, len = answers.length; i < len; i++) {
+    for (let i = 0; i < answers.length; i++) {
       const step = answers[i];
 
       // 特殊标识，用来标识type=servers的字段，以在使用时添加私密信息
       if (step._serversKey) {
         const serverList = [];
 
-        for (
-          let j = 0, slen = step.options[step._serversKey].length;
-          j < slen;
-          j++
-        ) {
+        for (let j = 0; j < step.options[step._serversKey].length; j++) {
           const item = step.options[step._serversKey][j];
 
           if (typeof item.serverId === 'undefined') {
@@ -536,16 +532,10 @@ export class ChangelogService {
         throw new Error(`找不到相关记录: ${detail.last_commit.id}`);
       }
 
+      const { repositoryType, repositoryUrl, name: projectName, gitlabId } = pj;
       for (const changelog of changelogs) {
         // webhook发布
         // 1. 新建发布记录
-        const {
-          repositoryType,
-          repositoryUrl,
-          name: projectName,
-          gitlabId,
-        } = await this.projectService.findOne({ id: changelog.project });
-
         const newChangelog = await this.create(
           {
             id: changelog.id,
