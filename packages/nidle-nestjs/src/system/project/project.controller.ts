@@ -49,7 +49,7 @@ export class ProjectController {
   ): Promise<QueryProjectListResponseDto> {
     const { current, pageSize: _pageSize } = queryParam;
     const { page, pageSize } = formatPageParams(current, _pageSize);
-    const { list, total } = await this.projectService.findAll({
+    const { list, total } = await this.projectService.findAllByPage({
       ...queryParam,
       current: page,
       pageSize,

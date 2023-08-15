@@ -64,7 +64,7 @@ export class ProjectService {
     return await this.projectRepository.save(newProject);
   }
 
-  async findAll({
+  async findAllByPage({
     name,
     owner,
     repositoryType,
