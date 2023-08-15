@@ -86,10 +86,10 @@ export class ProjectService {
     const { projectServers, ...restColumn } = existProject;
     const serverList = new ServerList();
     projectServers.forEach(({ server, ...restData }) => {
-      const { id, name, ip, environment } = server;
+      const { id, name, ip, status } = server;
       serverList[restData.environment as Environment].push({
         ...restData,
-        Server: { id, name, ip, environment },
+        Server: { id, name, ip, status },
       });
     });
     let resList: Record<string, any>[];
