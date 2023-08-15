@@ -1,7 +1,7 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { ConfigService as NestConfigService, ConfigType } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, Repository } from 'typeorm';
+import { FindManyOptions, In, Repository } from 'typeorm';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import * as path from 'path';
@@ -9,6 +9,8 @@ import * as fs from 'fs';
 import * as extend from 'extend';
 import { cloneDeep } from 'lodash';
 import * as Nidle from 'nidle';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 import _const from 'src/const';
 import { SessionUser } from 'src/common/base.dto';
@@ -19,6 +21,7 @@ import nidleNext from 'src/utils/nidleNest';
 import { getDuration, transform } from 'src/utils/log';
 
 import { ProjectService } from '../project/project.service';
+import { Project } from '../project/entities/project.entity';
 import { ServerService } from '../server/server.service';
 import { ConfigService } from '../config/config.service';
 import {
@@ -50,6 +53,8 @@ export class ChangelogService {
     private readonly changelogRepository: Repository<Changelog>,
     @InjectQueue('changelog')
     private readonly changelogQueue: Queue,
+    @Inject(WINSTON_MODULE_PROVIDER)
+    private readonly logger: Logger,
   ) {
     this._nidleConfig = this.nestConfigService.get('nidleConfig');
   }
@@ -482,86 +487,138 @@ export class ChangelogService {
     }
   }
 
-  async mergeHook(params: MergeHookDto) {
-    const { project, object_attributes: detail } = params;
-    if (detail.state === 'merged' || detail.state === 'closed') {
-      const pj = await this.projectService.findOne({
-        name: project.name,
-      });
-
-      if (!pj) {
-        throw new Error(`未识别的应用: ${project.name}`);
+  async handleCodeReviewByMR(
+    projectIds: number[],
+    lastCommitId: string,
+    isMerged: boolean,
+  ): Promise<{ affectedId: number; dropIds: number[] }> {
+    const res = { affectedId: -1, dropIds: [] };
+    const changelogs = await this.changelogRepository.findBy({
+      project: In(projectIds),
+      commitId: lastCommitId,
+      codeReviewStatus: CodeReviewStatus.PENDING,
+      active: 0,
+    });
+    if (changelogs.length) {
+      // 默认取第一条进行 CR 状态更新
+      const { affected } = await this.changelogRepository.update(
+        { id: changelogs[0].id },
+        {
+          codeReviewStatus: isMerged
+            ? CodeReviewStatus.SUCCESS
+            : CodeReviewStatus.FAIL,
+        },
+      );
+      if (affected) res.affectedId = changelogs[0].id;
+      /**
+       * [A]:[同一个仓库(git repo)的同一个提交查出多条处于 CR pending 的记录]
+       * 属于错误的使用方式，说明配置了多个应用(Project)
+       * 这种情况下[A], 应该将其配置到一个应用中统一发布
+       */
+      if (changelogs.length > 1) {
+        res.dropIds = changelogs.slice(1).map(({ id }) => id);
+        this.logger.error('handleCodeReviewByMR error:', {
+          projectIds,
+          changelogIds: changelogs.map(({ id }) => id),
+          lastCommitId,
+          res,
+        });
       }
-
-      // 先查找是不是codeReview的
-      const _changelog = await this.changelogRepository.findOneBy({
-        project: pj.id,
-        commitId: detail.last_commit.id,
-        codeReviewStatus: CodeReviewStatus.PENDING,
-        active: 0,
-      });
-
-      if (_changelog) {
-        // code review
-        await this.changelogRepository.update(
-          { id: _changelog.id },
-          {
-            codeReviewStatus:
-              detail.state === 'merged'
-                ? CodeReviewStatus.SUCCESS
-                : CodeReviewStatus.FAIL,
-          },
-        );
-
-        return true;
-      }
-
-      if (detail.state === 'closed') {
-        return;
-      }
-
-      // 再查找是不是webhook的
-      const changelogs = await this.changelogRepository.findBy({
-        project: pj.id,
-        branch: detail.target_branch,
-        active: 0,
-        type: 'webhook',
-      });
-
-      if (!changelogs.length) {
-        throw new Error(`找不到相关记录: ${detail.last_commit.id}`);
-      }
-
-      const { repositoryType, repositoryUrl, name: projectName, gitlabId } = pj;
-      for (const changelog of changelogs) {
-        // webhook发布
-        // 1. 新建发布记录
-        const newChangelog = await this.create(
-          {
-            id: changelog.id,
-            branch: changelog.branch,
-            type: changelog.type,
-            projectId: changelog.project,
-            mode: changelog.environment,
-          },
-          { repositoryType, repositoryUrl, projectName, gitlabId, changelog },
-        );
-
-        // 2. 开始构建
-        const config = readConfig(changelog.configPath);
-        await this.start(
-          {
-            id: newChangelog.changelog.id,
-            configPath: newChangelog.changelog.configPath,
-            inputs: config.inputs,
-            options: config.options || [],
-            notTransform: true,
-          },
-          newChangelog.changelog.environment,
-        );
-      }
-
-      return true;
     }
+    return res;
+  }
+
+  async handleAutoDeployByMR(
+    projects: Project[],
+    targetBranch: string,
+  ): Promise<{ startedIds: number[]; errorIds: number[] }> {
+    const res = { startedIds: [], errorIds: [] };
+    const changelogs = await this.changelogRepository.findBy({
+      project: In(projects.map(({ id }) => id)),
+      branch: targetBranch,
+      active: 0,
+      type: 'webhook',
+    });
+    if (changelogs.length) {
+      for (const changelog of changelogs) {
+        const {
+          repositoryType,
+          repositoryUrl,
+          name: projectName,
+          gitlabId,
+        } = projects.find(({ id }) => id === changelog.project);
+        try {
+          // webhook发布
+          // 1. 新建发布记录
+          const newChangelog = await this.create(
+            {
+              id: changelog.id,
+              branch: changelog.branch,
+              type: changelog.type,
+              projectId: changelog.project,
+              mode: changelog.environment,
+            },
+            { repositoryType, repositoryUrl, projectName, gitlabId, changelog },
+          );
+
+          // 2. 开始构建
+          const config = readConfig(changelog.configPath);
+          await this.start(
+            {
+              id: newChangelog.changelog.id,
+              configPath: newChangelog.changelog.configPath,
+              inputs: config.inputs,
+              options: config.options || [],
+              notTransform: true,
+            },
+            newChangelog.changelog.environment,
+          );
+          res.startedIds.push(changelog.id);
+        } catch (error) {
+          // 某一条报错后不影响其他记录的发布
+          res.errorIds.push(changelog.id);
+          this.logger.error(
+            `handleAutoDeployByMR error: changelog id = ${changelog.id}`,
+            { error },
+          );
+        }
+      }
+    }
+    return res;
+  }
+
+  async mergeHook(params: MergeHookDto) {
+    const { project: mrProject, object_attributes: mrDetail } = params;
+    /**
+     * merged 表示 mr 通过
+     * closed 表示代码审查者决定代码不能合并，关闭了 mr
+     * 其他的 mr 状态直接跳过(return)
+     */
+    if (!['merged', 'closed'].includes(mrDetail.state)) {
+      return { skip: true };
+    }
+    const isMerged = mrDetail.state === 'merged';
+    // 一个仓库(git repo)可能配置多个应用(Project)
+    const projects = await this.projectService.findAllByWhere({
+      gitlabId: mrProject.id,
+    });
+    if (!projects.length) {
+      const { id, name, web_url } = mrProject;
+      throw new Error(`未识别的应用: ${JSON.stringify({ id, name, web_url })}`);
+    }
+
+    const crRes = await this.handleCodeReviewByMR(
+      projects.map(({ id }) => id),
+      mrDetail.last_commit.id,
+      isMerged,
+    );
+    // cr 流程有命中则直接 return
+    if (crRes.affectedId > -1 || !isMerged) return { crRes };
+    // merged 状态的 mr 才去检查 webhook
+    const adRes = await this.handleAutoDeployByMR(
+      projects,
+      mrDetail.target_branch,
+    );
+    return { crRes, adRes };
   }
 }

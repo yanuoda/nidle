@@ -87,6 +87,10 @@ export class ProjectService {
     return { list, total };
   }
 
+  async findAllByWhere(_where: FindOptionsWhere<Project>) {
+    return await this.projectRepository.findBy(_where);
+  }
+
   async findOne(_where: FindOptionsWhere<Project>) {
     const existProject = await this.projectRepository.findOneBy(_where);
     if (!existProject) {
