@@ -64,7 +64,7 @@ export class ChangelogService {
     return changelog;
   }
 
-  async findAllBy(opts: FindManyOptions<Changelog>) {
+  async findAllByOpts(opts: FindManyOptions<Changelog>) {
     return await this.changelogRepository.find(opts);
   }
 

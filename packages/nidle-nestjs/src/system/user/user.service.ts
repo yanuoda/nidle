@@ -40,7 +40,7 @@ export class UserService {
     return existUser;
   }
 
-  async findAllBy(_where: FindOptionsWhere<Member>) {
+  async findAllByWhere(_where: FindOptionsWhere<Member>) {
     return await this.memberRepository.find({ where: _where });
   }
 

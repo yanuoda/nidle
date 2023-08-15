@@ -244,11 +244,11 @@ export class ProjectService {
    * 需要使用 typeorm `QueryBuilder` 构建 sql
    */
   async getPublishList(projectId: number) {
-    const changelogList = await this.changelogService.findAllBy({
+    const changelogList = await this.changelogService.findAllByOpts({
       where: { project: projectId },
       order: { createdTime: 'DESC' },
     });
-    const members = await this.userService.findAllBy({
+    const members = await this.userService.findAllByWhere({
       id: In(
         Array.from(new Set(changelogList.map(({ developer }) => developer))),
       ),
