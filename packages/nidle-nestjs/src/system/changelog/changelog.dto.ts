@@ -51,4 +51,5 @@ export class GetLogDto {
 export class MergeHookDto {
   project: Record<string, any>;
   object_attributes: Record<string, any>;
+  user: Record<string, any>;
 }

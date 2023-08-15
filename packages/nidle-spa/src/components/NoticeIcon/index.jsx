@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { Tag, message } from 'antd'
-import { groupBy } from 'lodash'
+import { Tag } from 'antd'
+import { groupBy, remove, sum } from 'lodash'
 import moment from 'moment'
-import { useModel, useRequest } from 'umi'
-import { getNotices } from '@/services/ant-design-pro/api'
+import { useModel } from 'umi'
 import NoticeIcon from './NoticeIcon'
 import styles from './index.less'
+
+const storageKey = 'SSE_MESSAGE_LIST'
 
 const getNoticeData = notices => {
   if (!notices || notices.length === 0 || !Array.isArray(notices)) {
@@ -67,12 +68,55 @@ const NoticeIconView = () => {
   const { initialState } = useModel('@@initialState')
   const { currentUser } = initialState || {}
   const [notices, setNotices] = useState([])
-  const { data } = useRequest(getNotices)
+
   useEffect(() => {
-    setNotices(data || [])
-  }, [data])
+    const eventSource = new EventSource('/api/message/sse')
+    eventSource.onmessage = ({ data }) => {
+      // 接收消息，写入 ls
+      const notices = JSON.parse(localStorage.getItem(storageKey) || '[]')
+      const message = JSON.parse(data)
+
+      // 判断自己是否消息接收者
+      if (message.users && !message.users.includes(currentUser.name)) {
+        return
+      }
+
+      notices.unshift({
+        ...message,
+        datetime: message.timestamp,
+        id: message.timestamp,
+        read: false,
+        description: message.content
+      })
+      setNotices([...notices])
+
+      if (window.Notification && Notification.permission === 'granted') {
+        new Notification(message.title, {
+          body: message.content
+        })
+      }
+    }
+
+    eventSource.onerror = err => {
+      console.error('EventSource failed:', err)
+    }
+
+    setNotices(JSON.parse(localStorage.getItem(storageKey) || '[]'))
+
+    return () => {
+      eventSource.close()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (notices.length) {
+      localStorage.setItem(storageKey, JSON.stringify(notices))
+    }
+  }, [notices])
+
   const noticeData = getNoticeData(notices)
   const unreadMsg = getUnreadData(noticeData || {})
+  const unreadCount = sum(Object.values(unreadMsg))
 
   const changeReadState = id => {
     setNotices(
@@ -100,21 +144,25 @@ const NoticeIconView = () => {
         return notice
       })
     )
-    message.success(`${'清空了'} ${title}`)
+  }
+
+  const clearNotice = (title, key) => {
+    remove(notices, item => item.type === key)
+    setNotices([...notices])
   }
 
   return (
     <NoticeIcon
       className={styles.action}
-      count={currentUser && currentUser.unreadCount}
+      count={unreadCount || 0}
       onItemClick={item => {
         changeReadState(item.id)
       }}
       onClear={(title, key) => clearReadState(title, key)}
       loading={false}
-      clearText="清空"
-      viewMoreText="查看更多"
-      onViewMore={() => message.info('Click on view more')}
+      clearText="标记已读"
+      viewMoreText="清空"
+      onViewMore={(title, key) => clearNotice(title, key)}
       clearClose
     >
       <NoticeIcon.Tab

@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { ChangelogModule } from './changelog/changelog.module';
 import { ConfigModule } from './config/config.module';
 import { OauthModule } from './oauth/oauth.module';
+import { MessageModule } from './message/message.module';
 
 const modules = [
   ServerModule,
@@ -16,6 +17,7 @@ const modules = [
   ChangelogModule,
   ConfigModule,
   OauthModule,
+  MessageModule,
 ];
 
 @Module({

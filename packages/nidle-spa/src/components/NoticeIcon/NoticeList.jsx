@@ -1,4 +1,5 @@
 import { Avatar, List } from 'antd'
+import { Link } from 'umi'
 import classNames from 'classnames'
 import styles from './NoticeList.less'
 
@@ -52,10 +53,20 @@ const NoticeList = ({
                 className={styles.meta}
                 avatar={leftIcon}
                 title={
-                  <div className={styles.title}>
-                    {item.title}
-                    <div className={styles.extra}>{item.extra}</div>
-                  </div>
+                  item.body && item.body.id ? (
+                    <Link
+                      className={styles.title}
+                      to={`/project/${item.body.projectId}/changelog/detail?id=${item.body.id}`}
+                    >
+                      {item.title}
+                      <div className={styles.extra}>{item.extra}</div>
+                    </Link>
+                  ) : (
+                    <div className={styles.title}>
+                      {item.title}
+                      <div className={styles.extra}>{item.extra}</div>
+                    </div>
+                  )
                 }
                 description={
                   <div>
@@ -71,18 +82,12 @@ const NoticeList = ({
       <div className={styles.bottomBar}>
         {showClear ? (
           <div onClick={onClear}>
-            {clearText} {title}
+            {clearText}[{title}]
           </div>
         ) : null}
         {showViewMore ? (
-          <div
-            onClick={e => {
-              if (onViewMore) {
-                onViewMore(e)
-              }
-            }}
-          >
-            {viewMoreText}
+          <div onClick={onViewMore}>
+            {viewMoreText}[{title}]
           </div>
         ) : null}
       </div>

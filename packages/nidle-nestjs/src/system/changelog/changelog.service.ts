@@ -21,6 +21,8 @@ import { getDuration, transform } from 'src/utils/log';
 import { ProjectService } from '../project/project.service';
 import { ServerService } from '../server/server.service';
 import { ConfigService } from '../config/config.service';
+import { MessageService } from '../message/message.service';
+import { UserService } from '../user/user.service';
 import {
   CreateChangelogData,
   CreateChangelogDto,
@@ -50,6 +52,8 @@ export class ChangelogService {
     private readonly changelogRepository: Repository<Changelog>,
     @InjectQueue('changelog')
     private readonly changelogQueue: Queue,
+    private readonly messageService: MessageService,
+    private readonly userService: UserService,
   ) {
     this._nidleConfig = this.nestConfigService.get('nidleConfig');
   }
@@ -311,7 +315,8 @@ export class ChangelogService {
                 id: item.id,
               },
             );
-            item.serverId = projectServer.server;
+
+            item.serverId = projectServer.server.id;
           }
           // 更新服务器被占用
           await this.projectService.updateProjectServer({
@@ -320,6 +325,7 @@ export class ChangelogService {
           });
 
           const server = await this.serverService.findOne(item.serverId);
+
           serverList.push({
             id: item.id,
             output: item.output,
@@ -487,7 +493,7 @@ export class ChangelogService {
   }
 
   async mergeHook(params: MergeHookDto) {
-    const { project, object_attributes: detail } = params;
+    const { project, object_attributes: detail, user } = params;
     if (detail.state === 'merged' || detail.state === 'closed') {
       const pj = await this.projectService.findOne({
         name: project.name,
@@ -516,6 +522,23 @@ export class ChangelogService {
                 : CodeReviewStatus.FAIL,
           },
         );
+        // CR结果通知
+        const user = await this.userService.findOneBy(_changelog.developer);
+        this.messageService.send({
+          type: 'notification',
+          title: `CodeReview ${detail.state === 'merged' ? '通过' : '拒绝'}`,
+          content: `${project.name}/${_changelog.branch} CodeReview ${
+            detail.state === 'merged' ? '通过' : '拒绝'
+          }; 创建人: ${detail.last_commit.author.name}; 处理人: ${user.name}`,
+          body: {
+            id: _changelog.id,
+            projectId: _changelog.project,
+            type: 'codereview',
+            enviroment: _changelog.environment,
+          },
+          timestamp: new Date().getTime(),
+          users: [user.name || user.login],
+        });
 
         return true;
       }
