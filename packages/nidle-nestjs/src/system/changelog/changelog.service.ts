@@ -310,10 +310,10 @@ export class ChangelogService {
             item.serverId = projectServer.server;
           }
           // 更新服务器被占用
-          await this.projectService.updateProjectServer({
-            id: item.id,
-            changelog: changelogId,
-          });
+          await this.projectService.setProjectServerOccupation(
+            item.id,
+            changelogId,
+          );
 
           const server = await this.serverService.findOne(item.serverId);
           serverList.push({

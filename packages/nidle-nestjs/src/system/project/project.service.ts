@@ -174,6 +174,9 @@ export class ProjectService {
     return await this.projectServerRepository.delete({ id });
   }
 
+  async setProjectServerOccupation(id: number, changelog: number) {
+    return await this.projectServerRepository.update({ id }, { changelog });
+  }
   async resetProjectServerOccupation(changelog: number) {
     return await this.projectServerRepository.update(
       { changelog },
