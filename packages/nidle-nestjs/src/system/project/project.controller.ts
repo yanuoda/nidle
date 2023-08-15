@@ -44,7 +44,7 @@ export class ProjectController {
 
   @ApiOperation({ summary: '查询项目列表' })
   @Post('list')
-  async findAll(
+  async findAllByPage(
     @Body() queryParam: QueryProjectListDto,
   ): Promise<QueryProjectListResponseDto> {
     const { current, pageSize: _pageSize } = queryParam;

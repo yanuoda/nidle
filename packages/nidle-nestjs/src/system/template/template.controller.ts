@@ -30,12 +30,12 @@ export class TemplateController {
 
   @ApiOperation({ summary: '查询模板列表' })
   @Post('list')
-  async findAll(
+  async findAllByPage(
     @Body() queryParam: QueryTemplateListDTO,
   ): Promise<QueryTemplateListResponseDTO> {
     const { current, pageSize: _pageSize } = queryParam;
     const { page, pageSize } = formatPageParams(current, _pageSize);
-    const { list, total } = await this.templateService.findAll({
+    const { list, total } = await this.templateService.findAllByPage({
       ...queryParam,
       current: page,
       pageSize,

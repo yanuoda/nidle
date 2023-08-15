@@ -23,7 +23,7 @@ export class TemplateService {
     return await this.templateRepository.save(newTemp);
   }
 
-  async findAll({
+  async findAllByPage({
     name,
     description,
     current,
