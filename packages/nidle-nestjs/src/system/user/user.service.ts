@@ -40,6 +40,16 @@ export class UserService {
     return existUser;
   }
 
+  async findOneBy(id: number) {
+    const user = await this.memberRepository.findOneBy({
+      id,
+    });
+    if (!user) {
+      throw new Error(`用户:${id}不存在`);
+    }
+    return user;
+  }
+
   async findAllBy(_where: FindOptionsWhere<Member>) {
     return await this.memberRepository.find({ where: _where });
   }
