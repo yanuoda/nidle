@@ -2,7 +2,7 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { formatPageParams } from 'src/utils';
-import { FormatResponse, IdBodyRequestDto } from 'src/common/base.dto';
+import { AffectedResponseDto, IdBodyRequestDto } from 'src/common/base.dto';
 import { TemplateService } from './template.service';
 import {
   CreateTemplateDto,
@@ -11,6 +11,7 @@ import {
   QueryTemplateListResponseDTO,
   QueryTemplateResponseDTO,
   UpdateTemplateDto,
+  UpdateTemplateResponseDto,
 } from './template.dto';
 
 @ApiTags('模板相关接口')
@@ -55,15 +56,15 @@ export class TemplateController {
   @Post('modify')
   async update(
     @Body() updateTemplateDto: UpdateTemplateDto,
-  ): Promise<FormatResponse> {
-    await this.templateService.update(updateTemplateDto);
-    return {};
+  ): Promise<UpdateTemplateResponseDto> {
+    const { id, name } = await this.templateService.update(updateTemplateDto);
+    return { id, name };
   }
 
   @ApiOperation({ summary: '删除模板' })
   @Post('delete')
-  async remove(@Body() { id }: IdBodyRequestDto): Promise<FormatResponse> {
-    await this.templateService.remove(id);
-    return {};
+  async remove(@Body() { id }: IdBodyRequestDto): Promise<AffectedResponseDto> {
+    const { affected } = await this.templateService.remove(id);
+    return { affected };
   }
 }

@@ -3,10 +3,10 @@ import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 
 import { formatPageParams } from 'src/utils';
 import {
-  FormatResponse,
   IdQueryRequestDto,
   IdBodyRequestDto,
   IdResponseDto,
+  AffectedResponseDto,
 } from 'src/common/base.dto';
 import { ServerService } from './server.service';
 import {
@@ -67,17 +67,17 @@ export class ServerController {
 
   @ApiOperation({ summary: '编辑服务器' })
   @Post('modify')
-  async modifyServer(@Body() param: UpdateServerDTO): Promise<FormatResponse> {
-    await this.serverService.update(param);
-    return {};
+  async modifyServer(@Body() param: UpdateServerDTO): Promise<IdResponseDto> {
+    const { id } = await this.serverService.update(param);
+    return { id };
   }
 
   @ApiOperation({ summary: '删除服务器' })
   @Post('delete')
   async deleteServer(
     @Body() { id }: IdBodyRequestDto,
-  ): Promise<FormatResponse> {
-    await this.serverService.remove(id);
-    return {};
+  ): Promise<AffectedResponseDto> {
+    const { affected } = await this.serverService.remove(id);
+    return { affected };
   }
 }

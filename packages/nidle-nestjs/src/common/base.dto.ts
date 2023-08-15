@@ -31,6 +31,9 @@ export class FormatResponse {
 export class IdResponseDto extends FormatResponse {
   readonly id: number;
 }
+export class AffectedResponseDto extends FormatResponse {
+  readonly affected?: number | null;
+}
 
 export enum Environment {
   development = 'development',

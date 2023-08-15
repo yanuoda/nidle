@@ -37,3 +37,8 @@ export class UpdateTemplateDto extends CreateTemplateDto {
   @IsNotEmpty()
   readonly id: number;
 }
+
+export class UpdateTemplateResponseDto extends FormatResponse {
+  readonly id: number;
+  readonly name: string;
+}
