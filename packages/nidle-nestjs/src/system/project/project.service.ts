@@ -80,6 +80,7 @@ export class ProjectService {
       where: { id },
       relations: { projectServers: { server: true } },
     });
+
     if (!existProject) {
       throw new Error(`项目id:${id}不存在`);
     }
@@ -150,9 +151,10 @@ export class ProjectService {
   }
 
   async findProjectServerBy(_where: FindOptionsWhere<ProjectServer>) {
-    const existProjectServer = await this.projectServerRepository.findOneBy(
-      _where,
-    );
+    const existProjectServer = await this.projectServerRepository.findOne({
+      where: _where,
+      relations: { project: true, server: true },
+    });
     if (!existProjectServer) {
       throw new Error(`项目服务器配置不存在 - where:${JSON.stringify(_where)}`);
     }
