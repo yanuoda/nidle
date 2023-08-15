@@ -2,14 +2,11 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { formatPageParams } from 'src/utils';
-import {
-  FormatResponse,
-  IdBodyRequestDto,
-  IdResponseDto,
-} from 'src/common/base.dto';
+import { FormatResponse, IdBodyRequestDto } from 'src/common/base.dto';
 import { TemplateService } from './template.service';
 import {
   CreateTemplateDto,
+  CreateTemplateResponseDto,
   QueryTemplateListDTO,
   QueryTemplateListResponseDTO,
   QueryTemplateResponseDTO,
@@ -25,9 +22,9 @@ export class TemplateController {
   @Post('add')
   async create(
     @Body() createTemplateDto: CreateTemplateDto,
-  ): Promise<IdResponseDto> {
-    const { id } = await this.templateService.create(createTemplateDto);
-    return { id };
+  ): Promise<CreateTemplateResponseDto> {
+    const { id, name } = await this.templateService.create(createTemplateDto);
+    return { id, name };
   }
 
   @ApiOperation({ summary: '查询模板列表' })

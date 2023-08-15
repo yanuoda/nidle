@@ -10,6 +10,10 @@ export class CreateTemplateDto {
   @IsNotEmpty()
   readonly config: string;
 }
+export class CreateTemplateResponseDto extends FormatResponse {
+  readonly id: number;
+  readonly name: string;
+}
 
 export class QueryTemplateListDTO extends PageQuery {
   readonly name?: string;
