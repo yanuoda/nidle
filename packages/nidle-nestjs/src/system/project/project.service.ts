@@ -41,6 +41,26 @@ export class ProjectService {
   async create(createProjectDto: CreateProjectDto) {
     const newProject = new Project();
     Object.assign(newProject, createProjectDto);
+    const { repositoryType, repositoryUrl } = createProjectDto;
+    // 获取项目 owner / gitId
+    let owner = '';
+    let gitId: number;
+    if (repositoryType === 'gitlab') {
+      const projectMembers = await this.gitlabService.getMembers(repositoryUrl);
+      owner = projectMembers.find(
+        (member) => member.access_level === 50,
+      )?.username;
+      const { id } = await this.gitlabService.getProjectDetail(repositoryUrl);
+      gitId = id;
+    } else {
+      /** @check github getMembers */
+      // owner = projectMembers.filter(member => member.role_name === 'admin').map(item => item.login)[0]
+      // const { id } = await this.githubService.getProjectDetail(repositoryUrl);
+      // gitId = id; // github id 也赋值在 gitlabId 字段上
+    }
+    if (owner) newProject.owner = owner;
+    if (gitId) newProject.gitlabId = gitId;
+
     return await this.projectRepository.save(newProject);
   }
 

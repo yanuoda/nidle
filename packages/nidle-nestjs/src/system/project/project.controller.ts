@@ -5,12 +5,12 @@ import { formatPageParams } from 'src/utils';
 import {
   IdQueryRequestDto,
   IdBodyRequestDto,
-  FormatResponse,
-  IdResponseDto,
+  AffectedResponseDto,
 } from 'src/common/base.dto';
 import { ProjectService } from './project.service';
 import {
   CreateOrUpdateProjectDto,
+  CreateOrUpdateProjectResponseDto,
   CreateProjectServerDto,
   CreateProjectServerResponseDto,
   FetchProjectServerDto,
@@ -33,12 +33,13 @@ export class ProjectController {
   @Post('sync')
   async create(
     @Body() param: CreateOrUpdateProjectDto,
-  ): Promise<IdResponseDto> {
-    const { id: _id, ...restParam } = param;
-    const { id } = _id
-      ? await this.projectService.update(param)
-      : await this.projectService.create(restParam);
-    return { id };
+  ): Promise<CreateOrUpdateProjectResponseDto> {
+    const { id: _id, repositoryUrl: originRepoUrl, ...restParam } = param;
+    const repositoryUrl = originRepoUrl.replace('.git', '');
+    const data = _id
+      ? await this.projectService.update({ ...param, repositoryUrl })
+      : await this.projectService.create({ ...restParam, repositoryUrl });
+    return { data };
   }
 
   @ApiOperation({ summary: '查询项目列表' })
@@ -67,9 +68,9 @@ export class ProjectController {
 
   @ApiOperation({ summary: '删除项目（物理）' })
   @Post('delete')
-  async remove(@Body() { id }: IdBodyRequestDto): Promise<FormatResponse> {
-    await this.projectService.remove(id);
-    return {};
+  async remove(@Body() { id }: IdBodyRequestDto): Promise<AffectedResponseDto> {
+    const { affected } = await this.projectService.remove(id);
+    return { affected };
   }
 
   @ApiOperation({ summary: '查询项目分支（size=100）' })
@@ -85,9 +86,12 @@ export class ProjectController {
   @Post('contacts/update')
   async updateContacts(
     @Body() { id, postEmails }: UpdateContactsDto,
-  ): Promise<FormatResponse> {
-    await this.projectService.updateContacts(id, postEmails);
-    return {};
+  ): Promise<AffectedResponseDto> {
+    const { affected } = await this.projectService.updateContacts(
+      id,
+      postEmails,
+    );
+    return { affected };
   }
 
   /** projectServer ↓ */
@@ -114,9 +118,9 @@ export class ProjectController {
   @Post('server/delete')
   async deleteProjectServer(
     @Body() { id }: IdBodyRequestDto,
-  ): Promise<FormatResponse> {
-    await this.projectService.removeProjectServer(id);
-    return {};
+  ): Promise<AffectedResponseDto> {
+    const { affected } = await this.projectService.removeProjectServer(id);
+    return { affected };
   }
 
   @ApiOperation({ summary: '获取项目服务器配置' })

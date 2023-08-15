@@ -20,6 +20,10 @@ export class CreateOrUpdateProjectDto extends CreateProjectDto {
   readonly id?: number;
 }
 
+export class CreateOrUpdateProjectResponseDto extends FormatResponse {
+  readonly data: Project;
+}
+
 export class QueryProjectListDto extends PageQuery {
   readonly name?: string;
   readonly owner?: string;
