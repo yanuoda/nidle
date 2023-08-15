@@ -41,6 +41,7 @@ export class ConfigService {
       }
       _project = await this.projectService.findOne({ id: projectId });
     }
+
     const { gitlabId, repositoryType /** repositoryUrl */ } = _project;
     const fileName = `nidle.${mode}.config.js`;
     let configStr = '';
@@ -74,9 +75,19 @@ export class ConfigService {
         if (!isEmpty(templateConfig)) {
           // 合并模板
           // TODO: 这个合并有点粗暴，没有考虑 stages 扩展的情况，只能在 chain 中扩展
-          return extend(true, {}, templateConfig, config);
+          config = extend(true, {}, templateConfig, config);
         }
       }
+    }
+    // 有chain，处理chain
+    if (config.chain && isFunction(config.chain)) {
+      const chainFun = config.chain;
+      delete config.chain;
+
+      const newConfig = new NidleChain();
+      newConfig.merge(config);
+      chainFun(newConfig);
+      config = newConfig.toConfig();
     }
     return config;
   }
