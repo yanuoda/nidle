@@ -13,6 +13,8 @@ import { asyncWait } from 'src/utils';
 import { nidleConfig } from 'src/configuration';
 import { ProjectService } from '../project/project.service';
 import { Changelog } from './changelog.entity';
+import { ChangelogService } from './changelog.service';
+import { MessageService } from '../message/message.service';
 
 @Processor('changelog')
 export class ChangelogProcessor {
@@ -24,6 +26,8 @@ export class ChangelogProcessor {
     private readonly changelogRepository: Repository<Changelog>,
     @Inject(WINSTON_MODULE_PROVIDER)
     private readonly logger: Logger,
+    private readonly changelogService: ChangelogService,
+    private readonly messageService: MessageService,
   ) {
     const _nidleConfig: ConfigType<typeof nidleConfig> =
       this.nestConfigService.get('nidleConfig');
@@ -33,15 +37,47 @@ export class ChangelogProcessor {
   @Process('start')
   async handleStart(job: Job) {
     const { config, options, changelogId, environment } = job.data;
+    const _env = _const.environments.find((item) => item.value === environment);
     const manager = new Nidle({ ...config });
+    const changelog = await this.changelogService.findOneBy(changelogId);
     await manager.init();
     await manager.mount(options, (_data) => {
+      if (_data.codeReviewStatus === 'PENDING') {
+        // CR 发起通知
+        this.messageService.send({
+          type: 'event',
+          title: 'CodeReview 发起',
+          content: `${config.name}/${config.repository.branch} 需要 CodeReview; 发起人: ${config.repository.userName};`,
+          body: {
+            id: changelogId,
+            projectId: changelog.project,
+            type: 'codereview',
+            enviroment: environment,
+          },
+          timestamp: new Date().getTime(),
+        });
+      }
+
       return this.changelogRepository.update({ id: changelogId }, _data);
     });
 
     const afterManagerStart = (): Promise<void> => {
       return new Promise((resolve, reject) => {
         manager.on('completed', async () => {
+          console.log('ssssssssssssssuccess');
+          // 发布成功消息
+          this.messageService.send({
+            type: 'notification',
+            title: `[${_env.label}环境] 发布成功`,
+            content: `[${_env.label}环境] ${config.name}/${config.repository.branch} 发布成功; 创建人: ${config.repository.userName}`,
+            body: {
+              id: changelogId,
+              projectId: changelog.project,
+              type: 'publish',
+              enviroment: environment,
+            },
+            timestamp: new Date().getTime(),
+          });
           if (
             environment ===
             _const.environments[_const.environments.length - 1].value
@@ -59,6 +95,19 @@ export class ChangelogProcessor {
         });
 
         manager.on('error', async (e) => {
+          // 发布失败消息
+          this.messageService.send({
+            type: 'notification',
+            title: `[${_env.label}环境] 发布失败`,
+            content: `[${_env.label}环境] ${config.name}/${config.repository.branch} 发布失败; 创建人: ${config.repository.userName}`,
+            body: {
+              id: changelogId,
+              projectId: changelog.project,
+              type: 'publish',
+              enviroment: environment,
+            },
+            timestamp: new Date().getTime(),
+          });
           const info = `changelogProcessor error - changelogId:${changelogId} | environment:${environment}`;
           const error = JSON.stringify(e);
           this.logger.error(info, { error });
@@ -71,6 +120,20 @@ export class ChangelogProcessor {
       });
     };
 
+    // 发布开始消息
+    this.messageService.send({
+      type: 'notification',
+      title: `[${_env.label}环境] 发布开始`,
+      content: `[${_env.label}环境] ${config.name}/${config.repository.branch} 发布开始; 创建人: ${config.repository.userName}`,
+      body: {
+        id: changelogId,
+        projectId: changelog.project,
+        type: 'publish',
+        enviroment: environment,
+      },
+      timestamp: new Date().getTime(),
+      users: ['chb.wang'],
+    });
     await manager.start();
     await afterManagerStart();
   }

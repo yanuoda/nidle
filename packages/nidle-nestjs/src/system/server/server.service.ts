@@ -41,7 +41,7 @@ export class ServerService {
     pageSize,
   }: QeuryServerListDTO) {
     const [list, total] = await this.serverRepository.findAndCount({
-      select: ['id', 'name', 'ip', 'environment'],
+      // select: ['id', 'name', 'ip', 'environment'],
       skip: (current - 1) * pageSize,
       take: pageSize,
       order: { createdTime: 'DESC' },

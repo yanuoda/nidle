@@ -35,7 +35,7 @@ const NoticeIcon = props => {
             tabKey={tabKey}
             onClear={() => onClear && onClear(title, tabKey)}
             onClick={item => onItemClick && onItemClick(item, child.props)}
-            onViewMore={event => onViewMore && onViewMore(child.props, event)}
+            onViewMore={() => onViewMore && onViewMore(title, tabKey)}
             showClear={showClear}
             showViewMore={showViewMore}
             title={title}

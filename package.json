@@ -3,16 +3,46 @@
   "version": "0.1.8",
   "private": true,
   "repository": "git@github.com:yanuoda/nidle.git",
-  "author": "Renguang Han",
   "license": "MIT",
+  "author": "Renguang Han",
   "workspaces": {
     "packages": [
       "packages/*"
-    ],
-    "nohoist": [
-      "nidle-web/**",
-      "nidle-web/**/**"
     ]
+  },
+  "scripts": {
+    "auto-fix": "prettier --write . && eslint packages/**/{lib,src,app}/*.{js,jsx,mjs,ts,tsx}",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "clean": "lerna clean && rimraf node_modules",
+    "format": "prettier --write .",
+    "lint": "eslint packages/**/{lib,src,app}/*.{js,jsx,mjs,ts,tsx}",
+    "pre-commit": "lint-staged",
+    "prepare": "husky install",
+    "release": "node ./scripts/release.js --tag --publish"
+  },
+  "lint-staged": {
+    "*.{js,jsx,mjs,ts,tsx}": [
+      "prettier --write",
+      "eslint",
+      "git add"
+    ],
+    "*.{css,scss,less,json,html}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-customizable"
+    }
+  },
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "execa": "^5.1.1",
+    "inquirer": "^8.2.0",
+    "minimist": "^1.2.5",
+    "semver": "^7.3.5",
+    "walk-sync": "^3.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^13.1.0",
@@ -32,40 +62,6 @@
     "rimraf": "^3.0.2",
     "rollup": "^2.60.1",
     "rollup-plugin-node-resolve": "^5.2.0"
-  },
-  "dependencies": {
-    "chalk": "^4.1.2",
-    "execa": "^5.1.1",
-    "inquirer": "^8.2.0",
-    "minimist": "^1.2.5",
-    "semver": "^7.3.5",
-    "walk-sync": "^3.0.0"
-  },
-  "scripts": {
-    "clean": "lerna clean && rimraf node_modules",
-    "prepare": "husky install",
-    "pre-commit": "lint-staged",
-    "lint": "eslint packages/**/{lib,src,app}/*.{js,jsx,mjs,ts,tsx}",
-    "format": "prettier --write .",
-    "auto-fix": "prettier --write . && eslint packages/**/{lib,src,app}/*.{js,jsx,mjs,ts,tsx}",
-    "release": "node ./scripts/release.js --tag --publish",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s"
-  },
-  "config": {
-    "commitizen": {
-      "path": "node_modules/cz-customizable"
-    }
-  },
-  "lint-staged": {
-    "*.{js,jsx,mjs,ts,tsx}": [
-      "prettier --write",
-      "eslint",
-      "git add"
-    ],
-    "*.{css,scss,less,json,html}": [
-      "prettier --write",
-      "git add"
-    ]
   },
   "engines": {
     "node": ">= 14.0.0"

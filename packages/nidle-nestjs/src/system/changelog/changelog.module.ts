@@ -11,6 +11,8 @@ import { ChangelogController } from './changelog.controller';
 import { ChangelogProcessor } from './changelog.processor';
 import { ChangelogService } from './changelog.service';
 import { Changelog } from './changelog.entity';
+import { MessageModule } from '../message/message.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
   controllers: [ChangelogController],
@@ -28,6 +30,8 @@ import { Changelog } from './changelog.entity';
     forwardRef(() => ProjectModule),
     ServerModule,
     forwardRef(() => ConfigModule),
+    MessageModule,
+    UserModule,
   ],
   exports: [ChangelogService],
 })

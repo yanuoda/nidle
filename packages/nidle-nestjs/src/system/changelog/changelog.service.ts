@@ -24,6 +24,8 @@ import { ProjectService } from '../project/project.service';
 import { Project } from '../project/entities/project.entity';
 import { ServerService } from '../server/server.service';
 import { ConfigService } from '../config/config.service';
+import { MessageService } from '../message/message.service';
+import { UserService } from '../user/user.service';
 import {
   CreateChangelogData,
   CreateChangelogDto,
@@ -55,6 +57,8 @@ export class ChangelogService {
     private readonly changelogQueue: Queue,
     @Inject(WINSTON_MODULE_PROVIDER)
     private readonly logger: Logger,
+    private readonly messageService: MessageService,
+    private readonly userService: UserService,
   ) {
     this._nidleConfig = this.nestConfigService.get('nidleConfig');
   }
@@ -312,7 +316,8 @@ export class ChangelogService {
                 id: item.id,
               },
             );
-            item.serverId = projectServer.server;
+
+            item.serverId = projectServer.server.id;
           }
           // 更新服务器被占用
           await this.projectService.setProjectServerOccupation(
@@ -321,6 +326,7 @@ export class ChangelogService {
           );
 
           const server = await this.serverService.findOne(item.serverId);
+
           serverList.push({
             id: item.id,
             output: item.output,
