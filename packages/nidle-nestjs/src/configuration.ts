@@ -50,4 +50,11 @@ export const nidleConfig = registerAs('nidleConfig', () => ({
   afterManagerWaitSecs: process.env.AFTER_MANAGER_WAIT_SECS,
 }));
 
-export default [dbConfig, redisConfig, oauthConfig, nidleConfig];
+export const queueConfig = registerAs('queueConfig', () => ({
+  changelog: {
+    max: process.env.QUEUE_CHANGELOG_MAX,
+    duration: process.env.QUEUE_CHANGELOG_DURATION,
+  },
+}));
+
+export default [dbConfig, redisConfig, oauthConfig, nidleConfig, queueConfig];
