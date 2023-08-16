@@ -57,7 +57,11 @@ export class ChangelogProcessor {
           timestamp: new Date().getTime(),
         });
       }
-
+      job.log(
+        `manager.mount update changelog:${changelogId} with data:${JSON.stringify(
+          _data,
+        )}`,
+      );
       return this.changelogRepository.update({ id: changelogId }, _data);
     });
 
