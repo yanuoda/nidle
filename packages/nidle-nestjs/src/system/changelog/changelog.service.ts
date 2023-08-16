@@ -27,6 +27,7 @@ import { ConfigService } from '../config/config.service';
 import { MessageService } from '../message/message.service';
 import { UserService } from '../user/user.service';
 import {
+  CodeReviewDto,
   CreateChangelogData,
   CreateChangelogDto,
   GetLogDto,
@@ -493,29 +494,50 @@ export class ChangelogService {
     }
   }
 
-  async handleCodeReviewByMR(
-    projectIds: number[],
-    lastCommitId: string,
-    isMerged: boolean,
-  ): Promise<{ affectedId: number; dropIds: number[] }> {
+  async handleCodeReviewByMR({
+    projectIds,
+    mrProjectName,
+    mrUserName,
+    lastCommit,
+    isMerged,
+  }: CodeReviewDto): Promise<{ affectedId: number; dropIds: number[] }> {
     const res = { affectedId: -1, dropIds: [] };
     const changelogs = await this.changelogRepository.findBy({
       project: In(projectIds),
-      commitId: lastCommitId,
+      commitId: lastCommit.id,
       codeReviewStatus: CodeReviewStatus.PENDING,
       active: 0,
     });
     if (changelogs.length) {
       // 默认取第一条进行 CR 状态更新
+      const { id, developer, branch, project, environment } = changelogs[0];
       const { affected } = await this.changelogRepository.update(
-        { id: changelogs[0].id },
+        { id },
         {
           codeReviewStatus: isMerged
             ? CodeReviewStatus.SUCCESS
             : CodeReviewStatus.FAIL,
         },
       );
-      if (affected) res.affectedId = changelogs[0].id;
+      if (affected) {
+        res.affectedId = id;
+        // CR结果通知
+        const receiveUser = await this.userService.findOneBy(developer);
+        const title = `CodeReview ${isMerged ? '通过' : '拒绝'}`;
+        this.messageService.send({
+          type: 'notification',
+          title,
+          content: `${mrProjectName}/${branch} ${title}; 创建人: ${lastCommit?.author?.name}; 处理人: ${mrUserName}`,
+          body: {
+            id: id,
+            projectId: project,
+            type: 'codereview',
+            enviroment: environment,
+          },
+          timestamp: new Date().getTime(),
+          users: [receiveUser.name || receiveUser.login],
+        });
+      }
       /**
        * [A]:[同一个仓库(git repo)的同一个提交查出多条处于 CR pending 的记录]
        * 属于错误的使用方式，说明配置了多个应用(Project)
@@ -526,7 +548,7 @@ export class ChangelogService {
         this.logger.error('handleCodeReviewByMR error:', {
           projectIds,
           changelogIds: changelogs.map(({ id }) => id),
-          lastCommitId,
+          lastCommit,
           res,
         });
       }
@@ -594,7 +616,11 @@ export class ChangelogService {
   }
 
   async mergeHook(params: MergeHookDto) {
-    const { project: mrProject, object_attributes: mrDetail } = params;
+    const {
+      project: mrProject,
+      object_attributes: mrDetail,
+      user: mrUser,
+    } = params;
     /**
      * merged 表示 mr 通过
      * closed 表示代码审查者决定代码不能合并，关闭了 mr
@@ -613,11 +639,13 @@ export class ChangelogService {
       throw new Error(`未识别的应用: ${JSON.stringify({ id, name, web_url })}`);
     }
 
-    const crRes = await this.handleCodeReviewByMR(
-      projects.map(({ id }) => id),
-      mrDetail.last_commit.id,
+    const crRes = await this.handleCodeReviewByMR({
+      projectIds: projects.map(({ id }) => id),
+      mrProjectName: mrProject.name,
+      mrUserName: mrUser.name,
+      lastCommit: mrDetail.last_commit,
       isMerged,
-    );
+    });
     // cr 流程有命中则直接 return
     if (crRes.affectedId > -1 || !isMerged) return { crRes };
     // merged 状态的 mr 才去检查 webhook

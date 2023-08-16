@@ -49,7 +49,15 @@ export class GetLogDto {
 }
 
 export class MergeHookDto {
-  project: Record<string, any>;
-  object_attributes: Record<string, any>;
-  user: Record<string, any>;
+  readonly project: Record<string, any>;
+  readonly object_attributes: Record<string, any>;
+  readonly user: Record<string, any>;
+}
+
+export class CodeReviewDto {
+  readonly projectIds: number[];
+  readonly mrProjectName: string;
+  readonly mrUserName: string;
+  readonly lastCommit: Record<string, any>;
+  readonly isMerged: boolean;
 }
