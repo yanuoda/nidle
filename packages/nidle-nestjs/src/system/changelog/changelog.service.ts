@@ -16,7 +16,7 @@ import _const from 'src/const';
 import { SessionUser } from 'src/common/base.dto';
 import { GitlabService } from 'src/lib/gitlab.service';
 import { nidleConfig } from 'src/configuration';
-import { readConfig, writeConfig } from 'src/utils';
+import { checkValue, readConfig, writeConfig } from 'src/utils';
 import nidleNext from 'src/utils/nidleNest';
 import { getDuration, transform } from 'src/utils/log';
 
@@ -65,6 +65,7 @@ export class ChangelogService {
   }
 
   async findOneBy(id: number) {
+    checkValue(id, '发布记录id');
     const changelog = await this.changelogRepository.findOneBy({
       id,
     });
@@ -425,6 +426,7 @@ export class ChangelogService {
   /** @todo 根据 log 状态可以更新 queue 中的 job progress */
   // 日志
   async log({ logPath, id, type = 'all' }: GetLogDto) {
+    checkValue(id, '发布记录id');
     const changelog = await this.changelogRepository.findOneBy({ id });
     const next = nidleNext(changelog);
 

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { buildEqualWhere, buildLikeWhere } from 'src/utils';
+import { buildEqualWhere, buildLikeWhere, checkValue } from 'src/utils';
 import {
   CreateServerDTO,
   UpdateServerDTO,
@@ -54,6 +54,7 @@ export class ServerService {
   }
 
   async findOne(id: number) {
+    checkValue(id, '服务器id');
     const existServer = await this.serverRepository.findOneBy({ id });
     if (!existServer) {
       throw new Error(`服务器id:${id}不存在`);

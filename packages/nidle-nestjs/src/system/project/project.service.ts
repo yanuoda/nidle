@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository, In } from 'typeorm';
 import * as dayjs from 'dayjs';
 
-import { buildLikeWhere } from 'src/utils';
+import { buildEqualWhere, buildLikeWhere, checkValue } from 'src/utils';
 import nidleNext from 'src/utils/nidleNest';
 import { Environment } from 'src/common/base.dto';
 import { GitlabService } from 'src/lib/gitlab.service';
@@ -91,7 +91,11 @@ export class ProjectService {
     return await this.projectRepository.findBy(_where);
   }
 
-  async findOne(_where: FindOptionsWhere<Project>) {
+  async findOne(where: FindOptionsWhere<Project>) {
+    const _where = buildEqualWhere(where);
+    if (!Object.keys(_where).length) {
+      throw new Error('findOne 的条件(where)不能为空');
+    }
     const existProject = await this.projectRepository.findOneBy(_where);
     if (!existProject) {
       throw new Error(`项目不存在 - where:${JSON.stringify(_where)}`);
@@ -100,6 +104,7 @@ export class ProjectService {
   }
 
   async findProjectAndRelations(id: number): Promise<ProjectData> {
+    checkValue(id, '项目id');
     const existProject = await this.projectRepository.findOne({
       where: { id },
       relations: { projectServers: { server: true } },
@@ -174,7 +179,11 @@ export class ProjectService {
     return { Server: queryServer, ...newObj };
   }
 
-  async findProjectServerBy(_where: FindOptionsWhere<ProjectServer>) {
+  async findProjectServerBy(where: FindOptionsWhere<ProjectServer>) {
+    const _where = buildEqualWhere(where);
+    if (!Object.keys(_where).length) {
+      throw new Error('findProjectServerBy: findOne 的条件(where)不能为空');
+    }
     const existProjectServer = await this.projectServerRepository.findOne({
       where: _where,
       relations: { project: true, server: true },

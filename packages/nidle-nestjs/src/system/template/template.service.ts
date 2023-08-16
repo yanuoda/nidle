@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
 
-import { buildLikeWhere } from 'src/utils';
+import { buildEqualWhere, buildLikeWhere } from 'src/utils';
 import {
   CreateTemplateDto,
   QueryTemplateListDTO,
@@ -40,9 +40,13 @@ export class TemplateService {
   }
 
   async findOneBy(where: FindOptionsWhere<Template>) {
-    const existTemplate = await this.templateRepository.findOneBy(where);
+    const _where = buildEqualWhere(where);
+    if (!Object.keys(_where).length) {
+      throw new Error('findOne 的条件(where)不能为空');
+    }
+    const existTemplate = await this.templateRepository.findOneBy(_where);
     if (!existTemplate) {
-      throw new Error(`模板不存在 - where:${JSON.stringify(where)}`);
+      throw new Error(`模板不存在 - where:${JSON.stringify(_where)}`);
     }
     return existTemplate;
   }

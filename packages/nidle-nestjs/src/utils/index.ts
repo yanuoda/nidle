@@ -16,6 +16,19 @@ export function formatPageParams(page: unknown, pageSize: unknown) {
 }
 
 /**
+ * 检查某 value 是否为 undefined
+ * 应用: where 条件字段为 undefined 时，会默认去除该条件
+ * where 无条件时，会默认返回第一条数据
+ * @param val
+ * @param msg
+ */
+export function checkValue(val: unknown, msg?: string) {
+  if (val === undefined) {
+    throw new Error(msg + `:value should not be undefined`);
+  }
+}
+
+/**
  * 组装 where 条件
  *
  * 判断字段值是否有效 `(val !== undefined && val !== '')`

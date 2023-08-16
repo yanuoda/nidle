@@ -5,6 +5,7 @@ import crypto from 'crypto';
 
 import { Member } from './member.entity';
 import { ModifyPasswordDto, QueryUserDto, RegisterDto } from './user.dto';
+import { checkValue } from 'src/utils';
 
 @Injectable()
 export class UserService {
@@ -41,6 +42,7 @@ export class UserService {
   }
 
   async findOneBy(id: number) {
+    checkValue(id, '用户id');
     const user = await this.memberRepository.findOneBy({
       id,
     });
@@ -55,6 +57,7 @@ export class UserService {
   }
 
   async modifyPassword({ id, oldPassword, newPassword }: ModifyPasswordDto) {
+    checkValue(id, '用户id');
     const existUser = await this.memberRepository.findOneBy({ id });
     if (!existUser) {
       throw new Error(`用户id:${id}不存在`);
