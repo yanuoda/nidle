@@ -119,6 +119,7 @@ export class ProjectService {
       const { id, name, ip, status } = server;
       serverList[restData.environment as Environment].push({
         ...restData,
+        server: id,
         Server: { id, name, ip, status },
       });
     });
@@ -174,9 +175,10 @@ export class ProjectService {
   async createProjectServer(param: CreateProjectServerDto) {
     const newProjectServer = new ProjectServer();
     Object.assign(newProjectServer, param);
-    const newObj = await this.projectServerRepository.save(newProjectServer);
+    const newObj: Omit<ProjectServer, 'server'> =
+      await this.projectServerRepository.save(newProjectServer);
     const queryServer = await this.serverService.findOne(param.server);
-    return { Server: queryServer, ...newObj };
+    return { ...newObj, Server: queryServer, server: queryServer.id };
   }
 
   async findProjectServerBy(where: FindOptionsWhere<ProjectServer>) {
@@ -199,10 +201,11 @@ export class ProjectService {
       id,
     });
     Object.assign(existProjectServer, restParam);
-    const newObj = await this.projectServerRepository.save(existProjectServer);
+    const newObj: Omit<ProjectServer, 'server'> =
+      await this.projectServerRepository.save(existProjectServer);
     if (!restParam.server) return newObj;
     const queryServer = await this.serverService.findOne(restParam.server);
-    return { Server: queryServer, ...newObj };
+    return { ...newObj, Server: queryServer, server: queryServer.id };
   }
 
   async removeProjectServer(id: number) {
@@ -234,6 +237,7 @@ export class ProjectService {
       const { id, name, ip, description, status } = server;
       return {
         Server: { id, name, ip, description, status },
+        server: id,
         ...restData,
       };
     });

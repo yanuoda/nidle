@@ -53,6 +53,7 @@ class RelatedProjectServer extends PartialType(
   OmitType(ProjectServer, ['project', 'server']),
 ) {
   readonly Server?: PickedServerData;
+  readonly server?: number;
 }
 export class ServerList implements Record<Environment, unknown> {
   development: RelatedProjectServer[] = [];
