@@ -26,13 +26,13 @@ import { UserModule } from '../user/user.module';
   imports: [
     TypeOrmModule.forFeature([Changelog]),
     BullModule.registerQueueAsync({
+      name: 'changelog',
       imports: [NestConfigModule],
       inject: [NestConfigService],
       useFactory: (configService: NestConfigService) => {
         const _queueConfig: ConfigType<typeof queueConfig> =
           configService.get('queueConfig');
         return {
-          name: 'changelog',
           limiter: {
             max: Number(_queueConfig.changelog.max),
             duration: Number(_queueConfig.changelog.duration),
