@@ -109,9 +109,7 @@ const NoticeIconView = () => {
   }, [])
 
   useEffect(() => {
-    if (notices.length) {
-      localStorage.setItem(storageKey, JSON.stringify(notices))
-    }
+    localStorage.setItem(storageKey, JSON.stringify(notices || []))
   }, [notices])
 
   const noticeData = getNoticeData(notices)
