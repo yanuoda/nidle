@@ -1,10 +1,11 @@
 import { Injectable, MessageEvent as CommonMessageEvent } from '@nestjs/common';
 import { Observable, Subscriber } from 'rxjs';
 import { MessageEvent } from './message.interface';
+import * as EventEmitter from 'events';
 
 @Injectable()
 export class MessageService {
-  private sseSubscriber = null;
+  private readonly emitter = new EventEmitter();
 
   send(message: MessageEvent) {
     this.sendSse(message);
@@ -12,15 +13,13 @@ export class MessageService {
 
   createSse() {
     return new Observable((subscriber: Subscriber<CommonMessageEvent>) => {
-      this.sseSubscriber = subscriber;
+      this.emitter.on('send', (data: any) => {
+        subscriber.next({ data });
+      });
     });
   }
 
   sendSse(message: MessageEvent) {
-    if (this.sseSubscriber) {
-      this.sseSubscriber.next({
-        data: message,
-      });
-    }
+    this.emitter.emit('send', message);
   }
 }
