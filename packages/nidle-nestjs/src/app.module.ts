@@ -40,6 +40,7 @@ import { SystemModule } from './system/system.module';
           entities: [__dirname + '/**/*.entity{.ts,.js}'],
           synchronize: process.env.DEV === 'true',
           autoLoadEntities: true,
+          timezone: '+08:00',
         };
       },
     }),
