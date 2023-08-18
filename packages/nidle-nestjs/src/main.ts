@@ -18,7 +18,7 @@ async function bootstrap() {
     REDIS_PORT,
     REDIS_PASSWORD,
     REDIS_DB_INDEX,
-    DEV,
+    SWAGGER,
     PORT,
     HOST,
   } = process.env;
@@ -57,7 +57,7 @@ async function bootstrap() {
     }),
   );
 
-  if (DEV === 'true') {
+  if (SWAGGER === 'true') {
     const options = new DocumentBuilder()
       .setTitle('nidle-nestjs api 文档')
       .setVersion('1.0')

@@ -136,7 +136,6 @@ export class ChangelogProcessor {
         enviroment: environment,
       },
       timestamp: new Date().getTime(),
-      users: ['chb.wang'],
     });
     await manager.start();
     await afterManagerStart();
