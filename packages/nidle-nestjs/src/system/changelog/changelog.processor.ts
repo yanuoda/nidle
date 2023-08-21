@@ -62,6 +62,12 @@ export class ChangelogProcessor {
           _data,
         )}`,
       );
+      const stageIndex = config.stages.findIndex(
+        ({ name }) => name === _data.stage,
+      );
+      if (stageIndex > 0) {
+        job.progress(Math.ceil((stageIndex / config.stages.length) * 100));
+      }
       return this.changelogRepository.update({ id: changelogId }, _data);
     });
 
