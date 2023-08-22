@@ -1,11 +1,20 @@
-import { Response } from 'express';
-import { Controller, Get, Query, Res, Render, Session } from '@nestjs/common';
+import { Request, Response } from 'express';
+import {
+  Controller,
+  Get,
+  Query,
+  Req,
+  Res,
+  Render,
+  Session,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ConfigService, ConfigType } from '@nestjs/config';
 // import { registerHelper } from 'hbs';
 
 import { oauthConfig } from 'src/configuration';
 import { SessionDto } from 'src/common/base.dto';
+import { getHost } from 'src/utils';
 import { OauthService } from './oauth.service';
 import { CallbackQueryDto, IndexDto } from './oauth.dto';
 
@@ -22,11 +31,16 @@ export class OauthController {
 
   @ApiOperation({ summary: '跳转站点' })
   @Get()
-  async index(@Query() { type }: IndexDto, @Res() response: Response) {
+  async index(
+    @Query() { type }: IndexDto,
+    @Req() request: Request,
+    @Res() response: Response,
+  ) {
+    const host = getHost(request);
     if (type === 'gitlab') {
       const paramStr = Object.entries({
         client_id: this._oauthConfig.gitlab.clientId,
-        redirect_uri: this._oauthConfig.gitlab.redirectUri,
+        redirect_uri: host + this._oauthConfig.gitlab.redirectUri,
         scope: this._oauthConfig.gitlab.scope,
         response_type: 'code',
       })
