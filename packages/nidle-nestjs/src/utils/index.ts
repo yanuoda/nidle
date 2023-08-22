@@ -1,7 +1,7 @@
 import * as fs from 'fs';
+import { FindOptionsWhere, Like } from 'typeorm';
 
 import _const from 'src/const';
-import { FindOptionsWhere, Like } from 'typeorm';
 
 export function formatPageParams(page: unknown, pageSize: unknown) {
   let [_page, _pageSize] = [Number(page), Number(pageSize)];
