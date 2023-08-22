@@ -1,8 +1,7 @@
 import * as fs from 'fs';
-import { FindOptionsWhere, Like } from 'typeorm';
-import { Request } from 'express';
 
 import _const from 'src/const';
+import { FindOptionsWhere, Like } from 'typeorm';
 
 export function formatPageParams(page: unknown, pageSize: unknown) {
   let [_page, _pageSize] = [Number(page), Number(pageSize)];
@@ -65,11 +64,4 @@ export function readConfig(path: string) {
 }
 export function writeConfig(path: string, data: Record<string, any>) {
   fs.writeFileSync(path, JSON.stringify(data, undefined, 2));
-}
-
-export function getHost(req: Request) {
-  let hostname = req.get('Referer');
-  hostname = hostname.slice(hostname.indexOf('//') + 2);
-  hostname = hostname.slice(0, hostname.indexOf('/'));
-  return req.protocol + '://' + hostname;
 }
