@@ -79,4 +79,25 @@ export class ChangelogController {
     const data = await this.changelogService.mergeHook(body);
     return { data };
   }
+
+  @ApiOperation({ summary: 'find one' })
+  @Post('findone')
+  async findone(@Body() { id }: IdBodyRequestDto) {
+    const data = await this.changelogService.findOneBy(id);
+    return { data };
+  }
+
+  @ApiOperation({ summary: 'update one' })
+  @Post('updateone')
+  async updateone(@Body() { id, ...obj }: CreateChangelogDto) {
+    const data = await this.changelogService.updateOne(id, obj);
+    return { data };
+  }
+
+  @ApiOperation({ summary: 'delete one' })
+  @Post('deleteone')
+  async deleteone(@Body() { id }: IdBodyRequestDto) {
+    const { affected } = await this.changelogService.deleteOne(id);
+    return { affected };
+  }
 }

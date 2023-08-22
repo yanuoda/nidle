@@ -21,7 +21,7 @@ export enum CodeReviewStatus {
   FAIL = 'FAIL',
 }
 
-@Entity({ name: 'changelog' })
+@Entity({ name: 'changelog_v2' })
 export class Changelog {
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number;

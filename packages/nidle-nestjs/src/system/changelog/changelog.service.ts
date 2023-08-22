@@ -74,6 +74,22 @@ export class ChangelogService {
     }
     return changelog;
   }
+  async updateOne(id: number, updateObj: Partial<Changelog>) {
+    const changelog = await this.findOneBy(id);
+    this.logger.info(`update changelog:${id}`, {
+      original: changelog,
+      updateObj,
+    });
+    Object.assign(changelog, updateObj);
+    return await this.changelogRepository.save(changelog);
+  }
+  async deleteOne(id: number) {
+    const changelog = await this.findOneBy(id);
+    this.logger.info(`delete changelog:${id}`, {
+      original: changelog,
+    });
+    return await this.changelogRepository.delete({ id });
+  }
 
   async findAllByOpts(opts: FindManyOptions<Changelog>) {
     return await this.changelogRepository.find(opts);
@@ -423,11 +439,9 @@ export class ChangelogService {
     };
   }
 
-  /** @todo 根据 log 状态可以更新 queue 中的 job progress */
   // 日志
   async log({ logPath, id, type = 'all' }: GetLogDto) {
-    checkValue(id, '发布记录id');
-    const changelog = await this.changelogRepository.findOneBy({ id });
+    const changelog = await this.findOneBy(id);
     const next = nidleNext(changelog);
 
     if (!logPath) {
