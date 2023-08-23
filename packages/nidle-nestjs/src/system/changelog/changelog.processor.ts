@@ -34,7 +34,7 @@ export class ChangelogProcessor {
     this.afterManagerWaitSecs = Number(_nidleConfig.afterManagerWaitSecs);
   }
 
-  @Process('start')
+  @Process({ name: 'start', concurrency: _const.queueConcurrency })
   async handleStart(job: Job) {
     const { config, options, changelogId, environment } = job.data;
     const _env = _const.environments.find((item) => item.value === environment);

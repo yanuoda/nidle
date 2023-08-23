@@ -14,4 +14,5 @@ export default {
       label: '生产',
     },
   ],
+  queueConcurrency: Number(process.env.QUEUE_CHANGELOG_MAX),
 };
