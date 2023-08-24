@@ -1,4 +1,4 @@
-// import { PartialType } from '@nestjs/swagger';
+import { PartialType } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
 import { Changelog } from './changelog.entity';
@@ -60,4 +60,10 @@ export class CodeReviewDto {
   readonly mrUserName: string;
   readonly lastCommit: Record<string, any>;
   readonly isMerged: boolean;
+}
+
+export class UpdateOneDto extends PartialType(Changelog) {
+  /** 所属项目id */
+  @IsNotEmpty()
+  readonly id: number;
 }

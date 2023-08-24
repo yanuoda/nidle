@@ -8,6 +8,7 @@ import {
   GetLogDto,
   MergeHookDto,
   StartChangelogDto,
+  UpdateOneDto,
 } from './changelog.dto';
 
 @ApiTags('发布相关接口')
@@ -89,7 +90,7 @@ export class ChangelogController {
 
   @ApiOperation({ summary: 'update one' })
   @Post('updateone')
-  async updateone(@Body() { id, ...obj }: CreateChangelogDto) {
+  async updateone(@Body() { id, ...obj }: UpdateOneDto) {
     const data = await this.changelogService.updateOne(id, obj);
     return { data };
   }
