@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import { Tabs, Badge, Button } from 'antd'
 import { queryPublishData } from '@/services/publish'
-import { Link } from 'umi'
+import { Link, history } from 'umi'
 
 import PublishList from './components/PublishList'
+import CreateChangelog from './components/CreateChangelog'
 import { transformDuration } from '@/utils'
 import { status as statusList } from '@/dicts/changelog'
 import { mode as environmentList } from '@/dicts/app'
@@ -20,16 +21,12 @@ const Publish = props => {
       breadcrumbName: '应用列表'
     },
     {
-      path: '/project/publish',
+      breadcrumbName: name || id
+    },
+    {
       breadcrumbName: '发布记录'
     }
   ]
-  if (name) {
-    routes.splice(1, 0, {
-      path: '',
-      breadcrumbName: name
-    })
-  }
 
   // 处理数据
   const [publishDataList, setPublishDataList] = useState({})
@@ -172,30 +169,32 @@ const Publish = props => {
   return (
     <PageContainer
       header={{
-        title: null,
+        title: `应用：${name}`,
         breadcrumb: {
           routes,
           itemRender({ path, breadcrumbName }) {
-            return location.pathname === path || !path ? (
-              <span>{breadcrumbName}</span>
-            ) : (
-              <Link to={path}>{breadcrumbName}</Link>
-            )
+            if (path) return <Link to={path}>{breadcrumbName}</Link>
+            return <span>{breadcrumbName}</span>
           }
-        }
+        },
+        extra: [
+          <CreateChangelog projectId={id} projectName={name} />,
+          <Button
+            type="default"
+            onClick={() => {
+              history.push(`/project/settings?id=${id}&name=${name}`)
+            }}
+          >
+            应用设置
+          </Button>
+        ]
       }}
     >
       {environmentList.length > 0 && (
-        <Tabs defaultActiveKey={environmentList[0]?.value}>
-          {environmentList.map((env, idx) => (
+        <Tabs defaultActiveKey={environmentList[0]?.value} style={{ marginTop: -24 }}>
+          {environmentList.map(env => (
             <Tabs.TabPane tab={env.label} key={env.value}>
-              <PublishList
-                columns={columns}
-                data={publishDataList[env.value] || []}
-                projectName={name}
-                projectId={id}
-                showAddBtn={idx === 0}
-              />
+              <PublishList columns={columns} data={publishDataList[env.value] || []} />
             </Tabs.TabPane>
           ))}
         </Tabs>

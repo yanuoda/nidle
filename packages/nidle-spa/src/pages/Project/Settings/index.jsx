@@ -1,5 +1,6 @@
 import { PageContainer } from '@ant-design/pro-layout'
-import { Link } from 'umi'
+import { Button } from 'antd'
+import { Link, history } from 'umi'
 import { useState, useEffect } from 'react'
 
 import BasicInfo from './BasicInfo'
@@ -34,33 +35,36 @@ const ProjectSettings = props => {
       breadcrumbName: '应用列表'
     },
     {
-      path: '/project/settings',
+      breadcrumbName: projectName || id
+    },
+    {
       breadcrumbName: '应用配置'
     }
   ]
-  if (projectName) {
-    routes.splice(1, 0, {
-      path: '',
-      breadcrumbName: projectName
-    })
-  }
 
   return (
     <PageContainer
       loading={pageLoading}
       waterMarkProps={{}}
       header={{
-        title: null,
+        title: `应用：${projectName}`,
         breadcrumb: {
           routes,
-          itemRender({ path, breadcrumbName }) {
-            return location.pathname === path || !path ? (
-              <span>{breadcrumbName}</span>
-            ) : (
-              <Link to={path}>{breadcrumbName}</Link>
-            )
+          itemRender({ path, breadcrumbName, extraJump }) {
+            if (path) return <Link to={path}>{breadcrumbName}</Link>
+            return <span>{breadcrumbName}</span>
           }
-        }
+        },
+        extra: [
+          <Button
+            type="default"
+            onClick={() => {
+              history.push(`/project/publish?id=${id}&name=${projectName}`)
+            }}
+          >
+            应用发布记录
+          </Button>
+        ]
       }}
     >
       <BasicInfo projectData={projectData} />
