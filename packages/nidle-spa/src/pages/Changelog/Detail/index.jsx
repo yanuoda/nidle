@@ -1,9 +1,9 @@
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
-import { Tabs, Button, Space, Modal, message } from 'antd'
+import { Tabs, Button, Space, Modal, message, Input } from 'antd'
 import { useState, useEffect, useRef } from 'react'
 import { Link, history } from 'umi'
-import { create, start, quit, detail as fetchDetail, fetchLog } from '@/services/changelog'
+import { create, start, quit, detail as fetchDetail, fetchLog, updateChangelog } from '@/services/changelog'
 import Steps from './components/Steps'
 import Log from './components/Log'
 import Inputs from './components/Inputs'
@@ -30,6 +30,9 @@ const App = props => {
   const [tabActive, setTabActive] = useState('inputs') // Tab Active
   const [logs, setLogs] = useState({}) // 日志
   const [inputAnswers, setInputAnswers] = useState(null) // inputs answer
+  const [isEditDesc, setIsEditDesc] = useState(false)
+  const [isEditDescLoading, setIsEditDescLoading] = useState(false)
+  const [descInputVal, setDescInputVal] = useState()
   const { branch, type = 'normal', id, mode = modes[0].value, action } = props.location.query
   const { id: projectId } = props.match.params
 
@@ -71,6 +74,19 @@ const App = props => {
       setLoading(false)
       return false
     }
+  }
+
+  // 更新描述
+  const updateDesc = async () => {
+    setIsEditDescLoading(true)
+    const { data, success } = await updateChangelog({ id: changelog.id, description: descInputVal }).catch(() => ({ success: false }))
+    if (success === true) {
+      setChangelog((_obj) => ({ ..._obj, description: descInputVal }))
+    }
+    setIsEditDesc(false)
+    setTimeout(() => {
+      setIsEditDescLoading(false)
+    }, 1);
   }
 
   // 页面进入初始化请求
@@ -317,24 +333,29 @@ const App = props => {
     })
   }
 
+  const nextBtns = (size = 'middle') => next ? (
+    <Space>
+      <Button
+        type="primary"
+        onClick={handlerNildeAction}
+        loading={actionLoading}
+        disabled={!!next.disabled}
+        size={size}
+      >
+        {next.label}
+      </Button>
+      {next.quit ? (
+        <Button danger onClick={handlerNildeQuit} loading={actionLoading} size={size}>
+          退出发布
+        </Button>
+      ) : null}
+    </Space>
+  ): null
   const BaseInfo = (
     <ProCard
       title="基础信息"
       hoverable
-      extra={
-        next ? (
-          <Space>
-            <Button type="primary" onClick={handlerNildeAction} loading={actionLoading} disabled={!!next.disabled}>
-              {next.label}
-            </Button>
-            {next.quit ? (
-              <Button danger onClick={handlerNildeQuit} loading={actionLoading}>
-                退出发布
-              </Button>
-            ) : null}
-          </Space>
-        ) : null
-      }
+      extra={nextBtns()}
     >
       <table className="mod-baseinfo">
         <tbody>
@@ -361,6 +382,23 @@ const App = props => {
             <td>{statusMap[changelog.status + ''] || changelog.status}</td>
             <th>环境:</th>
             <td>{modeMap[changelog.environment] || changelog.environment}</td>
+          </tr>
+          <tr>
+            <th>描述:</th>
+            {isEditDesc ? (
+              <td>
+                <Input size="small" style={{ width: 260 }} value={descInputVal} onChange={(e) => setDescInputVal(e.target.value)} />
+                <Button type="primary" size="small" style={{ marginLeft: 15 }} loading={isEditDescLoading} onClick={updateDesc}>保存</Button>
+              </td>
+            ) : (
+              <td>
+                <span>{changelog.description}</span>
+                <Button type="primary" size="small" style={{ marginLeft: 15 }} onClick={() => {
+                  setIsEditDesc(true)
+                  setDescInputVal(changelog.description)
+                }}>修改</Button>
+              </td>
+            )}
           </tr>
         </tbody>
       </table>
@@ -431,6 +469,7 @@ const App = props => {
         onChange={handlerStepsChange}
       ></Steps>
       {TabContainer}
+      <ProCard style={{ marginTop: '20px' }}>发布动作：{ nextBtns('large') }</ProCard>
     </PageContainer>
   )
 }

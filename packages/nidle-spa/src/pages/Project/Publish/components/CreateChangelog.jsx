@@ -1,9 +1,10 @@
+import { useState } from 'react'
 import { useRequest, history } from 'umi'
 import { Button } from 'antd'
-import ProForm, { ModalForm, ProFormSelect } from '@ant-design/pro-form'
+import ProForm, { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form'
 import { PlusOutlined } from '@ant-design/icons'
 
-import { fetchBranches } from '@/services/changelog'
+import { fetchBranches, create } from '@/services/changelog'
 
 const publishTypes = [
   {
@@ -31,14 +32,21 @@ const modeOptions = [
 ]
 
 const CreateChangelog = props => {
+  const [isLoading, setIsLoading] = useState(false)
   const { data: options } = useRequest(() => {
     return fetchBranches(props.projectId)
   })
 
-  const onFinish = values => {
-    history.push(
-      `/project/${props.projectId}/changelog/detail?branch=${values.branch}&type=${values.type}&projectName=${props.projectName}&mode=${values.mode}`
-    )
+  const onFinish = async values => {
+    setIsLoading(true)
+    const { data, success, errorMessage } = await create({ ...values, projectId: props.projectId })
+    setIsLoading(false)
+    if (success === true) {
+      history.push(`/project/${props.projectId}/changelog/detail?id=${data.changelog.id}`)
+    }
+    // history.push(
+    //   `/project/${props.projectId}/changelog/detail?branch=${values.branch}&type=${values.type}&projectName=${props.projectName}&mode=${values.mode}`
+    // )
     return true
   }
 
@@ -48,7 +56,7 @@ const CreateChangelog = props => {
       width={500}
       layout="vertical"
       trigger={
-        <Button type="primary">
+        <Button type="primary" loading={isLoading}>
           <PlusOutlined />
           新建发布
         </Button>
@@ -71,8 +79,6 @@ const CreateChangelog = props => {
           label="发布类型"
           rules={[{ required: true, message: '请选择发布类型' }]}
         />
-      </ProForm.Group>
-      <ProForm.Group>
         <ProFormSelect
           options={options || []}
           width="300px"
@@ -80,14 +86,17 @@ const CreateChangelog = props => {
           label="分支"
           rules={[{ required: true, message: '请选择分支' }]}
         />
-      </ProForm.Group>
-      <ProForm.Group>
         <ProFormSelect
           options={modeOptions}
           width="300px"
           name="mode"
           label="发布环境环境"
           rules={[{ required: true, message: '请选择发布环境' }]}
+        />
+        <ProFormText
+          width="300px"
+          name="description"
+          label="描述"
         />
       </ProForm.Group>
     </ModalForm>

@@ -60,3 +60,11 @@ export async function fetchLog(params) {
     data: params
   })
 }
+
+// 日志
+export async function updateChangelog(params) {
+  return request('/api/changelog/updateone', {
+    method: 'POST',
+    data: params
+  })
+}
