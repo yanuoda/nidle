@@ -47,6 +47,11 @@ const ServerList = props => {
       key: 'output'
     },
     {
+      title: '描述',
+      dataIndex: 'description',
+      key: 'description'
+    },
+    {
       title: '操作',
       key: 'action',
       render: (text, record) => (

@@ -141,14 +141,15 @@ const ServerInfo = props => {
           <ModalForm
             title={`${currentEditServer ? '编辑' : '新增'}机器`}
             width={500}
-            layout="horizontal"
+            layout="vertical"
             visible={serverModalVisible}
             modalProps={{ destroyOnClose: true }}
             onVisibleChange={setServerModalVisible}
             onFinish={handleAddOrModifyServer}
             initialValues={{
               server: currentEditServer?.server ? `${currentEditServer.server}` : null,
-              output: currentEditServer?.output
+              output: currentEditServer?.output,
+              description: currentEditServer?.description
             }}
           >
             <ProFormSelect
@@ -165,6 +166,10 @@ const ServerInfo = props => {
               placeholder="请输入部署目录"
               required
               rules={[{ required: true, message: '请输入部署目录！' }]}
+            />
+            <ProFormText
+              name="description"
+              label="描述"
             />
           </ModalForm>
         </>

@@ -22,7 +22,11 @@ const ServerInput = props => {
     {
       title: '目录',
       dataIndex: 'output'
-    }
+    },
+    {
+      title: '描述',
+      dataIndex: 'description'
+    },
   ]
 
   useEffect(async () => {

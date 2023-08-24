@@ -9,7 +9,7 @@ const MemberInfo = props => {
   const { projectData } = props
   const { memberList } = projectData
   return (
-    <ProCard title="项目成员" headerBordered collapsible bordered type="inner">
+    <ProCard title="项目成员" headerBordered collapsible bordered type="inner" defaultCollapsed>
       <List
         itemLayout="horizontal"
         dataSource={memberList}

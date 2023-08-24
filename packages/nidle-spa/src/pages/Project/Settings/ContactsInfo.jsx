@@ -26,6 +26,8 @@ const ContactsInfo = props => {
         initialValues={{
           postEmails: projectData.postEmails
         }}
+        autoFocus={false}
+        autoFocusFirstInput={false}
       >
         <ProFormTextArea
           width="xl"

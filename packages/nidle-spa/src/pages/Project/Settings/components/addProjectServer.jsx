@@ -36,14 +36,15 @@ const AddProjectServer = props => {
 
   // 新增机器信息提交
   const handleAddServer = async values => {
-    const { server, output } = values
+    const { server, output, description } = values
 
     try {
       const { success, data, errorMessage } = await addProjectServer({
         project: projectId,
         environment: mode,
         server: parseInt(server),
-        output
+        output,
+        description,
       })
 
       if (success) {
@@ -68,7 +69,7 @@ const AddProjectServer = props => {
       <ModalForm
         title={`新增机器`}
         width={500}
-        layout="horizontal"
+        layout="vertical"
         visible={serverModalVisible}
         modalProps={{ destroyOnClose: true }}
         onVisibleChange={setServerModalVisible}
@@ -90,6 +91,10 @@ const AddProjectServer = props => {
           placeholder="请输入部署目录"
           required
           rules={[{ required: true, message: '请输入部署目录！' }]}
+        />
+        <ProFormText
+          name="description"
+          label="描述"
         />
       </ModalForm>
     </>

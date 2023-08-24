@@ -26,7 +26,7 @@ const ConfigInfo = props => {
   }, [])
 
   return (
-    <ProCard title="发布配置" headerBordered collapsible bordered type="inner">
+    <ProCard title="发布配置" headerBordered collapsible bordered type="inner" defaultCollapsed>
       {environmentList.length > 0 && (
         <Tabs defaultActiveKey={environmentList[0]?.value}>
           {environmentList.map(env => (
