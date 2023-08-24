@@ -82,6 +82,7 @@ const App = props => {
     const { data, success } = await updateChangelog({ id: changelog.id, description: descInputVal }).catch(() => ({ success: false }))
     if (success === true) {
       setChangelog((_obj) => ({ ..._obj, description: descInputVal }))
+      message.success('更新成功')
     }
     setIsEditDesc(false)
     setTimeout(() => {

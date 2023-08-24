@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useRequest, history } from 'umi'
-import { Button } from 'antd'
+import { Row, Col, Button } from 'antd'
 import ProForm, { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form'
 import { PlusOutlined } from '@ant-design/icons'
 
@@ -71,34 +71,34 @@ const CreateChangelog = props => {
       }}
       onFinish={onFinish}
     >
-      <ProForm.Group>
-        <ProFormSelect
-          options={publishTypes}
-          width="300px"
-          name="type"
-          label="发布类型"
-          rules={[{ required: true, message: '请选择发布类型' }]}
-        />
-        <ProFormSelect
-          options={options || []}
-          width="300px"
-          name="branch"
-          label="分支"
-          rules={[{ required: true, message: '请选择分支' }]}
-        />
-        <ProFormSelect
-          options={modeOptions}
-          width="300px"
-          name="mode"
-          label="发布环境环境"
-          rules={[{ required: true, message: '请选择发布环境' }]}
-        />
-        <ProFormText
-          width="300px"
-          name="description"
-          label="描述"
-        />
-      </ProForm.Group>
+      <Row gutter={30}>
+        <Col flex={1}>
+          <ProFormSelect
+            options={publishTypes}
+            name="type"
+            label="发布类型"
+            allowClear={false}
+            rules={[{ required: true, message: '请选择发布类型' }]}
+          />
+        </Col>
+        <Col flex={1}>
+          <ProFormSelect
+            options={modeOptions}
+            name="mode"
+            label="发布环境"
+            allowClear={false}
+            rules={[{ required: true, message: '请选择发布环境' }]}
+          />
+        </Col>
+      </Row>
+      <ProFormSelect
+        options={options || []}
+        name="branch"
+        label="分支"
+        allowClear={false}
+        rules={[{ required: true, message: '请选择分支' }]}
+      />
+      <ProFormText name="description" label="描述" />
     </ModalForm>
   )
 }
