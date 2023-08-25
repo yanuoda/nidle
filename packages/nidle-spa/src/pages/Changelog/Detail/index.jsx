@@ -42,34 +42,38 @@ const App = props => {
 
   // 获取详情
   const getDetail = async () => {
+    setLoading(true)
     const { data, success, errorMessage } = await fetchDetail({
       id
     })
     if (success === true) {
       setDetail(data)
-      setLoading(false)
     } else {
       message.error(errorMessage)
     }
+    setLoading(false)
   }
 
   // 创建发布记录
   const createChangelog = async params => {
+    setLoading(true)
     const { data, success, errorMessage } = await create(params)
 
     if (success === true) {
+      message.success('新建发布成功')
       setDetail(data)
+      setInputAnswers(null)
 
       // 创建完跳到详情页，避免用户刷新页面重复创建
       history.replace(`/project/${projectId}/changelog/detail?id=${data.changelog.id}`)
 
-      if (params.id) {
-        message.success('新建发布成功，即将刷新页面。', function () {
-          location.reload()
-        })
+      // if (params.id) {
+      //   message.success('新建发布成功，即将刷新页面。', function () {
+      //     location.reload()
+      //   })
 
-        return
-      }
+      //   return
+      // }
 
       setLoading(false)
       return true
@@ -295,9 +299,9 @@ const App = props => {
           mode: next.environment.value
         })
 
-        if (success === true) {
-          message.success(`创建${next.label}成功`)
-        }
+        // if (success === true) {
+        //   message.success(`创建${next.label}成功`)
+        // }
         setActionLoading(false)
       } else if (next.next === 'WAITING.CODEREVIEW') {
         window.open(`${config.repository.url}/merge_requests`)
@@ -331,9 +335,11 @@ const App = props => {
         })
 
         if (success === true) {
-          message.success('退出发布成功，即将刷新页面', function () {
-            location.reload()
-          })
+          // message.success('退出发布成功，即将刷新页面', function () {
+          //   location.reload()
+          // })
+          message.success('退出发布成功')
+          getDetail()
         }
         setActionLoading(false)
       }
