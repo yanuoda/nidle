@@ -1,7 +1,7 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { ConfigService as NestConfigService, ConfigType } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, In, Repository } from 'typeorm';
+import { FindManyOptions, In, Not, Repository } from 'typeorm';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import * as path from 'path';
@@ -584,6 +584,7 @@ export class ChangelogService {
       branch: targetBranch,
       active: 0,
       type: 'webhook',
+      status: Not(Status.NEW), // 过滤新建的发布记录，此时前端还没有提交保存 inputs，无法进行发布
     });
     if (changelogs.length) {
       for (const changelog of changelogs) {
