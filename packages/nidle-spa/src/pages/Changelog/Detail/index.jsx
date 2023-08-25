@@ -4,7 +4,7 @@ import { Tabs, Button, Space, Modal, message, Input } from 'antd'
 import { useState, useEffect, useRef } from 'react'
 import { Link, history } from 'umi'
 import { create, start, quit, detail as fetchDetail, fetchLog, updateChangelog } from '@/services/changelog'
-import Steps from './components/Steps'
+import Steps, { PROGRESS_TYPES } from './components/Steps'
 import Log from './components/Log'
 import Inputs from './components/Inputs'
 import Highlight from '@/components/Highlight'
@@ -29,7 +29,7 @@ const App = props => {
   const [next, setNext] = useState({}) // 下一步
 
   const [logs, setLogs] = useState({}) // 日志
-  const [current, setCurrent] = useState({ progress: 'start', stage: '' }) // 进度
+  const [current, setCurrent] = useState({ progress: PROGRESS_TYPES.start, stage: '' }) // 进度
   const [tabActive, setTabActive] = useState('inputs') // Tab Active
   const [inputAnswers, setInputAnswers] = useState(null) // inputs answer
 
@@ -138,13 +138,13 @@ const App = props => {
   // 进度条
   useEffect(() => {
     if (changelog) {
-      let progress = 'start'
+      let progress = PROGRESS_TYPES.start
 
       if (changelog.statusEnum === 2) {
-        progress = 'success'
+        progress = PROGRESS_TYPES.success
       } else if (changelog.statusEnum === 4) {
         // 退出发布的状态
-        progress = changelog.stage || (logs.duration ? 'success' : 'start')
+        progress = changelog.stage || (logs.duration ? PROGRESS_TYPES.success : PROGRESS_TYPES.start)
       } else if (changelog.statusEnum !== 0) {
         progress = changelog.stage
       }
@@ -200,6 +200,8 @@ const App = props => {
     if (success === true) {
       if (!data) {
         setLogs({})
+        // 说明此时任务在队列中等待
+        setCurrent(_obj => ({ ...obj, progress: PROGRESS_TYPES.waiting }))
         return
       }
 
@@ -276,14 +278,13 @@ const App = props => {
         })
 
         if (success === true) {
-          message.success('发布任务开始', function () {
-            setChangelog({
-              ...changelog,
-              status: 'PENDING',
-              statusEnum: 1
-            })
-            setActionLoading(false)
+          message.success('发布任务开始')
+          setChangelog({
+            ...changelog,
+            status: 'PENDING',
+            statusEnum: 1
           })
+          setActionLoading(false)
         } else {
           setActionLoading(false)
           message.error(errorMessage)
