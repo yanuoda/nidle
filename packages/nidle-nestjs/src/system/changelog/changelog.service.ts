@@ -184,6 +184,7 @@ export class ChangelogService {
     const timestamp = Date.now();
     // 发布周期
     let period = String(timestamp);
+    let _description = description;
     let options = {
       repository: {
         type: repositoryType,
@@ -200,6 +201,7 @@ export class ChangelogService {
     if (id) {
       // 现有发布记录上创建，复用period
       period = changelog.period;
+      _description = changelog.description;
       commitId = commitId || changelog.commitId;
       options.repository.commitId = commitId;
 
@@ -268,7 +270,7 @@ export class ChangelogService {
       logPath: createConfig ? config.log.all : null,
       active: 0,
       commitId,
-      description,
+      description: _description,
     });
     const newChangelog = await this.changelogRepository.save(
       newChangelogInstance,
