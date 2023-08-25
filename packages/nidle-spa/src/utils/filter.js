@@ -10,7 +10,7 @@ export const dictsToMap = function (dicts = []) {
   return map
 }
 
-export const duration = function (time) {
+export const getDuration = function (time) {
   if (!time) {
     return '-'
   }

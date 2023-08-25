@@ -10,7 +10,7 @@ import Inputs from './components/Inputs'
 import Highlight from '@/components/Highlight'
 import { status } from '@/dicts/changelog'
 import { mode as modes } from '@/dicts/app'
-import { dictsToMap, duration } from '@/utils/filter'
+import { dictsToMap, getDuration } from '@/utils/filter'
 import { ChangelogContext } from './context'
 import './index.less'
 
@@ -21,18 +21,22 @@ const intervalTime = 2000
 const App = props => {
   const [loading, setLoading] = useState(true)
   const [actionLoading, setActionLoading] = useState(false)
+
   const [detail, setDetail] = useState() // 详情
-  const [config, setConfig] = useState({}) // 配置
+  const [config, setConfig] = useState({}) // 配置 - may not need, just `detail.config`
   const [changelog, setChangelog] = useState({}) // 发布记录实例
+  const [inputs, setInputs] = useState() // 输入配置 - may not need, just `detail.inputs`
   const [next, setNext] = useState({}) // 下一步
-  const [inputs, setInputs] = useState() // 输入配置
+
+  const [logs, setLogs] = useState({}) // 日志
   const [current, setCurrent] = useState({ progress: 'start', stage: '' }) // 进度
   const [tabActive, setTabActive] = useState('inputs') // Tab Active
-  const [logs, setLogs] = useState({}) // 日志
   const [inputAnswers, setInputAnswers] = useState(null) // inputs answer
+
   const [isEditDesc, setIsEditDesc] = useState(false)
   const [isEditDescLoading, setIsEditDescLoading] = useState(false)
   const [descInputVal, setDescInputVal] = useState()
+
   const { branch, type = 'normal', id, mode = modes[0].value, action } = props.location.query
   const { id: projectId } = props.match.params
 
@@ -79,15 +83,17 @@ const App = props => {
   // 更新描述
   const updateDesc = async () => {
     setIsEditDescLoading(true)
-    const { data, success } = await updateChangelog({ id: changelog.id, description: descInputVal }).catch(() => ({ success: false }))
+    const { data, success } = await updateChangelog({ id: changelog.id, description: descInputVal }).catch(() => ({
+      success: false
+    }))
     if (success === true) {
-      setChangelog((_obj) => ({ ..._obj, description: descInputVal }))
+      setChangelog(_obj => ({ ..._obj, description: descInputVal }))
       message.success('更新成功')
     }
     setIsEditDesc(false)
     setTimeout(() => {
       setIsEditDescLoading(false)
-    }, 1);
+    }, 1)
   }
 
   // 页面进入初始化请求
@@ -334,30 +340,30 @@ const App = props => {
     })
   }
 
-  const nextBtns = (size = 'middle') => next ? (
-    <Space>
-      <Button
-        type="primary"
-        onClick={handlerNildeAction}
-        loading={actionLoading}
-        disabled={!!next.disabled}
-        size={size}
-      >
-        {next.label}
-      </Button>
-      {next.quit ? (
-        <Button danger onClick={handlerNildeQuit} loading={actionLoading} size={size}>
-          退出发布
+  const nextBtns = (size = 'middle') => {
+    if (!next) return null
+    return (
+      <Space>
+        <Button
+          type="primary"
+          onClick={handlerNildeAction}
+          loading={actionLoading}
+          disabled={!!next.disabled}
+          size={size}
+        >
+          {next.label}
         </Button>
-      ) : null}
-    </Space>
-  ): null
+        {next.quit ? (
+          <Button danger onClick={handlerNildeQuit} loading={actionLoading} size={size}>
+            退出发布
+          </Button>
+        ) : null}
+      </Space>
+    )
+  }
+
   const BaseInfo = (
-    <ProCard
-      title="基础信息"
-      hoverable
-      extra={nextBtns()}
-    >
+    <ProCard title="基础信息" hoverable extra={nextBtns()}>
       <table className="mod-baseinfo">
         <tbody>
           <tr>
@@ -378,7 +384,7 @@ const App = props => {
           </tr>
           <tr>
             <th>持续时间:</th>
-            <td>{duration(logs.duration)}</td>
+            <td>{getDuration(logs.duration)}</td>
             <th>状态:</th>
             <td>{statusMap[changelog.status + ''] || changelog.status}</td>
             <th>环境:</th>
@@ -388,16 +394,36 @@ const App = props => {
             <th>描述:</th>
             {isEditDesc ? (
               <td>
-                <Input size="small" style={{ width: 260 }} value={descInputVal} onChange={(e) => setDescInputVal(e.target.value)} />
-                <Button type="primary" size="small" style={{ marginLeft: 15 }} loading={isEditDescLoading} onClick={updateDesc}>保存</Button>
+                <Input
+                  size="small"
+                  style={{ width: 260 }}
+                  value={descInputVal}
+                  onChange={e => setDescInputVal(e.target.value)}
+                />
+                <Button
+                  type="primary"
+                  size="small"
+                  style={{ marginLeft: 15 }}
+                  loading={isEditDescLoading}
+                  onClick={updateDesc}
+                >
+                  保存
+                </Button>
               </td>
             ) : (
               <td>
                 <span>{changelog.description}</span>
-                <Button type="primary" size="small" style={{ marginLeft: 15 }} onClick={() => {
-                  setIsEditDesc(true)
-                  setDescInputVal(changelog.description)
-                }}>修改</Button>
+                <Button
+                  type="primary"
+                  size="small"
+                  style={{ marginLeft: 15 }}
+                  onClick={() => {
+                    setIsEditDesc(true)
+                    setDescInputVal(changelog.description)
+                  }}
+                >
+                  修改
+                </Button>
               </td>
             )}
           </tr>
@@ -405,10 +431,6 @@ const App = props => {
       </table>
     </ProCard>
   )
-
-  const handlerInput = values => {
-    setInputAnswers(values)
-  }
 
   const TabContainer = (
     <ProCard style={{ marginTop: '20px' }}>
@@ -428,7 +450,7 @@ const App = props => {
               <Inputs
                 readonly={changelog.active || changelog.statusEnum !== 0}
                 inputs={inputs}
-                onChange={handlerInput}
+                onChange={values => setInputAnswers(values)}
               ></Inputs>
             </ChangelogContext.Provider>
           ) : (
@@ -441,11 +463,6 @@ const App = props => {
       </Tabs>
     </ProCard>
   )
-
-  // 切换步骤
-  const handlerStepsChange = stage => {
-    setCurrent({ progress: current.progress, stage })
-  }
 
   return (
     <PageContainer
@@ -467,10 +484,10 @@ const App = props => {
         progress={current.progress}
         stage={current.stage}
         stages={config.stages}
-        onChange={handlerStepsChange}
+        onChange={stage => setCurrent({ progress: current.progress, stage })}
       ></Steps>
       {TabContainer}
-      <ProCard style={{ marginTop: '20px' }}>发布动作：{ nextBtns('large') }</ProCard>
+      <ProCard style={{ marginTop: '20px' }}>发布动作：{nextBtns('large')}</ProCard>
     </PageContainer>
   )
 }

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Collapse } from 'antd'
 import { CheckOutlined, CloseOutlined, Loading3QuartersOutlined } from '@ant-design/icons'
 import Highlight from '@/components/Highlight'
-import { duration } from '@/utils/filter'
+import { getDuration } from '@/utils/filter'
 
 const Log = props => {
   const [stageLog, setStage] = useState({})
@@ -28,7 +28,7 @@ const Log = props => {
   const genExtra = step => {
     return (
       <div className="log-panel-extra">
-        <span className="duration">{duration(step.duration)}</span>
+        <span className="duration">{getDuration(step.duration)}</span>
         <span className="status">
           {step.endTime ? (
             step.status === 'FAIL' ? (
@@ -56,7 +56,7 @@ const Log = props => {
     <div className="mod-log">
       <div className="cell-header">
         <h4>{stageLog.name}</h4>
-        <span className="duration">{duration(stageLog.duration)}</span>
+        <span className="duration">{getDuration(stageLog.duration)}</span>
       </div>
       <Collapse>{Panels}</Collapse>
     </div>
