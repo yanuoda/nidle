@@ -14,5 +14,5 @@ export default {
       label: '生产',
     },
   ],
-  queueConcurrency: Number(process.env.QUEUE_CHANGELOG_MAX),
+  queueConcurrency: 8, // 此处还取不到 process.env 的值
 };
