@@ -201,7 +201,7 @@ const App = props => {
       if (!data) {
         setLogs({})
         // 说明此时任务在队列中等待
-        setCurrent(_obj => ({ ...obj, progress: PROGRESS_TYPES.waiting }))
+        setCurrent(_obj => ({ ..._obj, progress: PROGRESS_TYPES.waiting }))
         return
       }
 
