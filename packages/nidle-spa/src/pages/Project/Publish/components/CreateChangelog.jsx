@@ -72,7 +72,7 @@ const CreateChangelog = props => {
       onFinish={onFinish}
     >
       <Row gutter={30}>
-        <Col flex={1}>
+        <Col flex="50%">
           <ProFormSelect
             options={publishTypes}
             name="type"
@@ -81,7 +81,7 @@ const CreateChangelog = props => {
             rules={[{ required: true, message: '请选择发布类型' }]}
           />
         </Col>
-        <Col flex={1}>
+        <Col flex="50%">
           <ProFormSelect
             options={modeOptions}
             name="mode"
@@ -92,6 +92,7 @@ const CreateChangelog = props => {
         </Col>
       </Row>
       <ProFormSelect
+        showSearch
         options={options || []}
         name="branch"
         label="分支"

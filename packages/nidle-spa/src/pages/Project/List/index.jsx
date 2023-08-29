@@ -20,6 +20,11 @@ const ProjectList = () => {
       }
     },
     {
+      title: '描述',
+      dataIndex: 'description',
+      align: 'center'
+    },
+    {
       title: '负责人',
       dataIndex: 'owner',
       align: 'center'
