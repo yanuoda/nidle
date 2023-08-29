@@ -260,18 +260,19 @@ export class ChangelogService {
       project: projectId,
       branch,
       type,
-      developer: user?.id,
       source,
       // 如果没配置，即该环境没有构建任务，直接通过
       status: createConfig ? 'NEW' : 'SUCCESS',
       codeReviewStatus: 'NEW',
       environment: mode,
       configPath,
-      logPath: createConfig ? config.log.all : null,
       active: 0,
       commitId,
       description: _description,
     });
+    if (user?.id) newChangelogInstance.developer = user?.id;
+    if (createConfig) newChangelogInstance.logPath = config.log.all;
+
     const newChangelog = await this.changelogRepository.save(
       newChangelogInstance,
     );

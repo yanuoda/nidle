@@ -73,7 +73,14 @@ export class ProjectService {
     order = {},
   }: QueryProjectListDto) {
     const [list, total] = await this.projectRepository.findAndCount({
-      select: ['id', 'name', 'owner', 'repositoryType', 'repositoryUrl'],
+      select: [
+        'id',
+        'name',
+        'description',
+        'owner',
+        'repositoryType',
+        'repositoryUrl',
+      ],
       skip: (current - 1) * pageSize,
       take: pageSize,
       // order: { createdTime: 'DESC' },
