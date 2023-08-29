@@ -34,36 +34,39 @@ const ProjectSettings = props => {
       path: '/project/list',
       breadcrumbName: '应用列表'
     },
-    {
-      breadcrumbName: projectName || id
-    },
+    undefined,
     {
       breadcrumbName: '应用配置'
     }
   ]
+  if (id) {
+    routes[1] = { breadcrumbName: projectName || id }
+  }
 
   return (
     <PageContainer
       loading={pageLoading}
       waterMarkProps={{}}
       header={{
-        title: `应用：${projectName}`,
+        title: id ? `应用：${projectName}` : '新增应用',
         breadcrumb: {
-          routes,
+          routes: routes.filter(Boolean),
           itemRender({ path, breadcrumbName, extraJump }) {
             if (path) return <Link to={path}>{breadcrumbName}</Link>
             return <span>{breadcrumbName}</span>
           }
         },
         extra: [
-          <Button
-            type="default"
-            onClick={() => {
-              history.push(`/project/publish?id=${id}&name=${projectName}`)
-            }}
-          >
-            应用发布记录
-          </Button>
+          id ? (
+            <Button
+              type="default"
+              onClick={() => {
+                history.push(`/project/publish?id=${id}&name=${projectName}`)
+              }}
+            >
+              应用发布记录
+            </Button>
+          ) : null
         ]
       }}
     >
