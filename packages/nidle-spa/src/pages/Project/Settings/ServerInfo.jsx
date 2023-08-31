@@ -90,13 +90,14 @@ const ServerInfo = props => {
   }
   // 新增/编辑机器信息提交
   const handleAddOrModifyServer = async values => {
-    const { server, output } = values
+    const { server, output, description } = values
     const handleMethod = currentEditServer ? modifyServer : addServer
     const params = {
       project: projectData.id,
       environment: serverTab,
       server: parseInt(server),
-      output
+      output,
+      description
     }
     // 编辑
     if (currentEditServer) {
