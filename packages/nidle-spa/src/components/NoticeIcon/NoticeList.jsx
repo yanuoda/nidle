@@ -44,7 +44,7 @@ const NoticeList = ({
           return (
             <List.Item
               className={itemCls}
-              key={item.key || i}
+              key={item.id || i}
               onClick={() => {
                 onClick?.(item)
               }}

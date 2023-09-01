@@ -550,7 +550,7 @@ export class ChangelogService {
           body: {
             id: id,
             projectId: project,
-            type: 'codereview',
+            type: `code-review-${isMerged ? 'success' : 'fail'}`,
             enviroment: environment,
           },
           timestamp: new Date().getTime(),

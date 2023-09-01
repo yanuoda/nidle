@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { Tag } from 'antd'
 import { groupBy, remove, sum } from 'lodash'
 import moment from 'moment'
@@ -6,7 +6,17 @@ import { useModel } from 'umi'
 import NoticeIcon from './NoticeIcon'
 import styles from './index.less'
 
-const storageKey = 'SSE_MESSAGE_LIST'
+const MSG_STORAGE_KEY = 'SSE_MESSAGE_LIST'
+const MSG_STORAGE_LIMIT = 50
+
+const NOTIFICATION_ICONS = {
+  'code-review-request': '/logo.png',
+  'code-review-success': '/svgs/success.svg',
+  'code-review-fail': '/svgs/attention.svg',
+  'publish-start': '/logo.png',
+  'publish-success': '/svgs/success.svg',
+  'publish-fail': '/svgs/attention.svg'
+}
 
 const getNoticeData = notices => {
   if (!notices || notices.length === 0 || !Array.isArray(notices)) {
@@ -15,15 +25,9 @@ const getNoticeData = notices => {
 
   const newNotices = notices.map(notice => {
     const newNotice = { ...notice }
-
     if (newNotice.datetime) {
       newNotice.datetime = moment(notice.datetime).fromNow()
     }
-
-    if (newNotice.id) {
-      newNotice.key = newNotice.id
-    }
-
     if (newNotice.extra && newNotice.status) {
       const color = {
         todo: '',
@@ -67,32 +71,39 @@ const getUnreadData = noticeData => {
 const NoticeIconView = () => {
   const { initialState } = useModel('@@initialState')
   const { currentUser } = initialState || {}
-  const [notices, setNotices] = useState([])
+
+  const [notices, setNotices] = useState(JSON.parse(localStorage.getItem(MSG_STORAGE_KEY) || '[]'))
 
   useEffect(() => {
     const eventSource = new EventSource('/api/message/sse')
     eventSource.onmessage = ({ data }) => {
-      // 接收消息，写入 ls
-      const notices = JSON.parse(localStorage.getItem(storageKey) || '[]')
       const message = JSON.parse(data)
-
       // 判断自己是否消息接收者
       if (message.users && !message.users.includes(currentUser.name)) {
         return
       }
 
-      notices.unshift({
-        ...message,
-        datetime: message.timestamp,
-        id: message.timestamp,
-        read: false,
-        description: message.content
-      })
-      setNotices([...notices])
+      setNotices(_arr => [
+        {
+          title: message.title,
+          body: message.body,
+          type: message.type,
+          description: message.content,
+          datetime: message.timestamp,
+          id: message.timestamp,
+          read: false
+          // avatar: '',
+          // extra: '',
+          // status: '',
+        },
+        ..._arr
+      ])
 
       if (window.Notification && Notification.permission === 'granted') {
         new Notification(message.title, {
-          body: message.content
+          body: message.content,
+          icon: NOTIFICATION_ICONS[message.body.type],
+          requireInteraction: message.body.type.includes('fail')
         })
       }
     }
@@ -101,19 +112,22 @@ const NoticeIconView = () => {
       console.error('EventSource failed:', err)
     }
 
-    setNotices(JSON.parse(localStorage.getItem(storageKey) || '[]'))
-
     return () => {
       eventSource.close()
     }
   }, [])
 
   useEffect(() => {
-    localStorage.setItem(storageKey, JSON.stringify(notices || []))
+    let _notices = [...notices]
+    if (_notices.length > MSG_STORAGE_LIMIT) {
+      _notices = _notices.slice(0, MSG_STORAGE_LIMIT)
+    }
+    // 限制 storage 保存上限 = MSG_STORAGE_LIMIT
+    localStorage.setItem(MSG_STORAGE_KEY, JSON.stringify(_notices || []))
   }, [notices])
 
-  const noticeData = getNoticeData(notices)
-  const unreadMsg = getUnreadData(noticeData || {})
+  const noticeData = useMemo(() => getNoticeData(notices), [notices])
+  const unreadMsg = useMemo(() => getUnreadData(noticeData || {}), [noticeData])
   const unreadCount = sum(Object.values(unreadMsg))
 
   const changeReadState = id => {

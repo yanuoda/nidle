@@ -53,7 +53,7 @@ export class ChangelogProcessor {
           body: {
             id: changelogId,
             projectId: changelog.project,
-            type: 'codereview',
+            type: 'code-review-request',
             enviroment: environment,
           },
           timestamp: new Date().getTime(),
@@ -84,7 +84,7 @@ export class ChangelogProcessor {
             body: {
               id: changelogId,
               projectId: changelog.project,
-              type: 'publish',
+              type: 'publish-success',
               enviroment: environment,
             },
             timestamp: new Date().getTime(),
@@ -113,7 +113,7 @@ export class ChangelogProcessor {
             body: {
               id: changelogId,
               projectId: changelog.project,
-              type: 'publish',
+              type: 'publish-fail',
               enviroment: environment,
             },
             timestamp: new Date().getTime(),
@@ -136,7 +136,7 @@ export class ChangelogProcessor {
       body: {
         id: changelogId,
         projectId: changelog.project,
-        type: 'publish',
+        type: 'publish-start',
         enviroment: environment,
       },
       timestamp: new Date().getTime(),
