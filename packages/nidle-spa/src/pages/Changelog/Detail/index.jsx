@@ -120,7 +120,7 @@ const App = props => {
     } else {
       await getDetail()
     }
-  }, [])
+  }, [id])
 
   // 详情改变相关state
   useEffect(() => {
