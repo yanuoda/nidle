@@ -104,7 +104,7 @@ export class ChangelogProcessor {
           resolve();
         });
 
-        manager.on('error', async (e) => {
+        manager.on('error', async (e: Error) => {
           // 发布失败消息
           this.messageService.send({
             type: 'notification',
@@ -119,11 +119,13 @@ export class ChangelogProcessor {
             timestamp: new Date().getTime(),
           });
           const info = `changelogProcessor error - changelogId:${changelogId} | environment:${environment}`;
-          const error = JSON.stringify(e);
+          // const error = JSON.stringify(e); // Error 对象的 stack/message 为不可枚举的属性，此代码运行结果为 '{}'
+          const error = JSON.stringify(e, Object.getOwnPropertyNames(e), 2);
           this.logger.error(info, { error });
+          job.log(info);
           job.log(error);
           await asyncWait(1000 * this.afterManagerWaitSecs);
-          reject(new Error(info));
+          reject(e);
         });
       });
     };
