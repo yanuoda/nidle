@@ -10,6 +10,7 @@ import Inputs from './components/Inputs'
 import Highlight from '@/components/Highlight'
 import { status } from '@/dicts/changelog'
 import { mode as modes } from '@/dicts/app'
+import { getFormatDate } from '@/utils'
 import { dictsToMap, getDuration } from '@/utils/filter'
 import { ChangelogContext } from './context'
 import './index.less'
@@ -398,6 +399,10 @@ const App = props => {
             <td>{modeMap[changelog.environment] || changelog.environment}</td>
           </tr>
           <tr>
+            <th>创建时间:</th>
+            <td>{getFormatDate(changelog.createdTime)}</td>
+            <th>修改时间:</th>
+            <td>{getFormatDate(changelog.updatedTime)}</td>
             <th>描述:</th>
             {isEditDesc ? (
               <td>

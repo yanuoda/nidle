@@ -42,3 +42,7 @@ export function transformDuration(duration) {
   })
   return res
 }
+
+export function getFormatDate(date) {
+  return moment(date).format('YYYY-MM-DD HH:mm:ss')
+}

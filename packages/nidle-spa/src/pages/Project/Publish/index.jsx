@@ -63,7 +63,7 @@ const Publish = props => {
       align: 'center'
     },
     {
-      title: '开始时间',
+      title: '创建时间',
       dataIndex: 'createdTime',
       valueType: 'dateTime',
       align: 'center'
