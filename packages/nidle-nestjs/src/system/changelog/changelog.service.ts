@@ -213,9 +213,6 @@ export class ChangelogService {
         source: config.source,
         output: config.output,
       };
-
-      // 解除环境占用
-      await this.projectService.resetProjectServerOccupation(id);
     }
 
     const projectPublishFileKey = `${projectName}_${timestamp}`;
@@ -230,7 +227,7 @@ export class ChangelogService {
     });
     const config = {
       ...options,
-      ...createConfig,
+      ...(createConfig || {}),
     };
     let initConfig: Record<string, any> = {};
     if (createConfig) {
@@ -290,6 +287,8 @@ export class ChangelogService {
     if (id) {
       // 将原记录设为已禁用
       await this.changelogRepository.update({ id }, { active: 1 });
+      // 解除环境占用
+      await this.projectService.resetProjectServerOccupation(id);
     }
 
     return {

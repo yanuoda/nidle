@@ -49,8 +49,8 @@ export class ConfigService {
       configStr = await this.gitlabService
         .getFile(gitlabId, branch, fileName)
         .catch((err) => {
-          if (JSON.stringify(err).includes('Not Found')) {
-            // 如果是文件没找到，说明该应用在此环境没有发布机器，特殊处理，不抛出错误
+          if (err.message.includes('Not Found')) {
+            // 如果是文件没找到，说明该应用没有在此环境的发布配置，特殊处理，不抛出错误
             return '';
           } else {
             throw err;
@@ -60,7 +60,8 @@ export class ConfigService {
       /** @todo github */
       // configStr = await this.githubService.getFile(repositoryUrl, branch, fileName);
     }
-    if (!configStr) return;
+    if (!configStr) return '';
+
     let config = requireFromString(configStr);
     if (typeof config === 'function') {
       config = config({ type, isNew });
@@ -110,7 +111,7 @@ export class ConfigService {
       isNew,
     });
     if (!config) {
-      // 没有配置，说明该应用在此环境没有发布机器
+      // 没有配置，说明该应用没有在此环境的发布配置
       return '';
     }
 
