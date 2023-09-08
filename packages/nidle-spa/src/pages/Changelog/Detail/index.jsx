@@ -87,7 +87,7 @@ const App = props => {
   // 更新描述
   const updateDesc = async () => {
     setIsEditDescLoading(true)
-    const { data, success } = await updateChangelog({ id: changelog.id, description: descInputVal }).catch(() => ({
+    const { success } = await updateChangelog({ id: changelog.id, description: descInputVal }).catch(() => ({
       success: false
     }))
     if (success === true) {
@@ -300,9 +300,9 @@ const App = props => {
           mode: next.environment.value
         })
 
-        // if (success === true) {
-        //   message.success(`创建${next.label}成功`)
-        // }
+        if (success === true) {
+          // message.success(`创建${next.label}成功`)
+        }
         setActionLoading(false)
       } else if (next.next === 'WAITING.CODEREVIEW') {
         window.open(`${config.repository.url}/merge_requests`)

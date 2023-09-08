@@ -178,8 +178,9 @@ const Publish = props => {
           }
         },
         extra: [
-          <CreateChangelog projectId={id} projectName={name} />,
+          <CreateChangelog projectId={id} projectName={name} key="CreateChangelog" />,
           <Button
+            key="projectSettings"
             type="default"
             onClick={() => {
               history.push(`/project/settings?id=${id}&name=${name}`)

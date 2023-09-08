@@ -103,7 +103,7 @@ const ProjectList = () => {
           pageSize: 10
         }}
         toolBarRender={() => [
-          <div>常用：{renderTags()}</div>,
+          <div key="offenUse">常用：{renderTags()}</div>,
           <Link key="newProject" to={`/project/settings`}>
             <Button key="button" icon={<PlusOutlined />} type="primary">
               新建
