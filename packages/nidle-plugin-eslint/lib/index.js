@@ -37,7 +37,7 @@ function eslint(task) {
     subprocess.stderr.on('data', data => {
       const str = data.toString()
 
-      if (str.indexOf('missing script:') > -1 || str.indexOf('Browserslist') > -1) {
+      if (str.indexOf('missing script:') > -1) {
         task.logger.warn({
           name: 'eslint',
           detail: str
@@ -52,7 +52,7 @@ function eslint(task) {
         detail: str
       })
 
-      subprocess.cancel()
+      // subprocess.cancel()
     })
 
     subprocess.on('close', code => {
