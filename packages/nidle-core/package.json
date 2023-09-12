@@ -28,7 +28,7 @@
     "p-queue": "^7.3.4",
     "p-retry": "^4.6.1",
     "p-timeout": "^4.1.0",
-    "pino": "7.0.0-rc.3"
+    "pino": "8.15.1"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",

@@ -5,16 +5,18 @@ export default options => {
     // 错误日志
     {
       level: 'error',
-      target: '#pino/file',
+      target: 'pino/file',
       options: {
-        destination: options.destination.error
+        destination: options.destination.error,
+        sync: false
       }
     },
     // 所有日志
     {
-      target: '#pino/file',
+      target: 'pino/file',
       options: {
-        destination: options.destination.all
+        destination: options.destination.all,
+        sync: false
       }
     }
   ]
