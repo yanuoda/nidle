@@ -1,3 +1,7 @@
+## [0.2.2-aplpha.0](https://github.com/yanuoda/nidle/compare/v0.2.1-beta.0...v0.2.2-aplpha.0) (2023-09-13)
+
+
+
 ## [0.2.1-beta.0](https://github.com/yanuoda/nidle/compare/v0.2.1-alpha.0...v0.2.1-beta.0) (2023-09-13)
 
 
