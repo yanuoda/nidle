@@ -8,7 +8,7 @@ export class Template {
   @Column({ length: 30, nullable: true, comment: '模板名称' })
   name: string;
 
-  @Column({ length: 30, nullable: true, comment: '模板描述' })
+  @Column({ length: 255, nullable: true, comment: '模板描述' })
   description: string;
 
   @Column({ type: 'longtext', nullable: true, comment: '模板内容' })

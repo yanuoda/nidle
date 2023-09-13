@@ -40,7 +40,7 @@ export class ProjectServer {
   })
   changelog: number;
 
-  @Column({ length: 30, nullable: true, comment: '服务器配置描述' })
+  @Column({ length: 255, nullable: true, comment: '服务器配置描述' })
   description: string;
 
   @ManyToOne(() => Project, (project) => project.projectServers, {
