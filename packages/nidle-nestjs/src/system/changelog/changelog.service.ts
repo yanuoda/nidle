@@ -378,10 +378,10 @@ export class ChangelogService {
     this.changelogQueue.add(
       'start',
       {
-        config,
-        options,
         changelogId,
         environment,
+        config,
+        options,
       },
       { attempts: 0 },
     );
@@ -597,7 +597,7 @@ export class ChangelogService {
         try {
           // webhook发布
           // 1. 新建发布记录
-          const newChangelog = await this.create(
+          const { changelog: newChangelog } = await this.create(
             {
               id: changelog.id,
               branch: changelog.branch,
@@ -612,13 +612,13 @@ export class ChangelogService {
           const config = readConfig(changelog.configPath);
           await this.start(
             {
-              id: newChangelog.changelog.id,
-              configPath: newChangelog.changelog.configPath,
+              id: newChangelog.id,
+              configPath: newChangelog.configPath,
               inputs: config.inputs,
               options: config.options || [],
               notTransform: true,
             },
-            newChangelog.changelog.environment,
+            newChangelog.environment,
           );
           res.startedIds.push(changelog.id);
         } catch (error) {
