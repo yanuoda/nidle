@@ -1,3 +1,12 @@
+## [0.2.1-beta.0](https://github.com/yanuoda/nidle/compare/v0.2.1-alpha.0...v0.2.1-beta.0) (2023-09-13)
+
+
+### Bug Fixes
+
+* pino 日志量太大，导致日志截断问题；升级最新版本 ([e9bf03d](https://github.com/yanuoda/nidle/commit/e9bf03db3392e517b000fcdfe9725e00bc18fc2d))
+
+
+
 # Change Log
 
 All notable changes to this project will be documented in this file.

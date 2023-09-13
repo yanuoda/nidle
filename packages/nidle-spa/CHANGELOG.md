@@ -1,3 +1,31 @@
+## [0.2.1-beta.0](https://github.com/yanuoda/nidle/compare/v0.2.1-alpha.0...v0.2.1-beta.0) (2023-09-13)
+
+
+### Bug Fixes
+
+* 清空没有清除ls ([6179ba2](https://github.com/yanuoda/nidle/commit/6179ba212a0f670c6282c03ce211b7bb86526316))
+* 文件大小写 ([8603f1c](https://github.com/yanuoda/nidle/commit/8603f1cd0b4e670381fb5e9990f5b5eb4cb8e59d))
+* 消息通知 ([13c49f9](https://github.com/yanuoda/nidle/commit/13c49f9b487d309fdea20b51c76db2732e59b73f))
+* spa - 发布详情页初始化 useEffect 依赖 id ([08c2cc2](https://github.com/yanuoda/nidle/commit/08c2cc2d143f563beb0220baef24bff12dcc7de7))
+* spa - 新建发布记录表单优化 ([0a095b6](https://github.com/yanuoda/nidle/commit/0a095b6e51668f386ec282afb6274dc2a5e07ea2))
+* spa - 新增应用时的界面展示 ([c7a4095](https://github.com/yanuoda/nidle/commit/c7a4095a5bdf2c36476a79eda9e3dbce9688829d))
+* spa - 样式优化；项目列表增加 description字段展示 ([5aa1e0f](https://github.com/yanuoda/nidle/commit/5aa1e0f1815786ec16b0ef240398291c914f216d))
+* spa - 应用发布服务器列表 - 增加、编辑 description 字段 ([49aec2f](https://github.com/yanuoda/nidle/commit/49aec2f871385ebad39e4644c55d8a1e009c5902))
+* spa - value miss ([3f6713d](https://github.com/yanuoda/nidle/commit/3f6713d3334607072a37695ba88297b509b93d8b))
+
+
+### Features
+
+* 通知功能升级 ([4d7de0d](https://github.com/yanuoda/nidle/commit/4d7de0dab66a5fb99f186a764c89e5c883f9f2e9))
+* 优化应用设置、应用发布记录跳转优化 ([3bc6e3b](https://github.com/yanuoda/nidle/commit/3bc6e3bf2f9ff3c93d7c79cfaa43ac7288189cb9))
+* spa - 发布记录增加 描述 字段；发布动作按钮易用性 ([6f55c8e](https://github.com/yanuoda/nidle/commit/6f55c8e8ef323e6e4b67feddd0760c6251f124b7))
+* spa - 应用列表增加常用tag ([f58f280](https://github.com/yanuoda/nidle/commit/f58f2803fb233c20fb0547a015988257dcbaf754))
+* spa - changelog detail - 增加 wating状态展示 ([a1d52f5](https://github.com/yanuoda/nidle/commit/a1d52f5b7e1a1e7d0fe9276442ac84fd9be1d5f1))
+* spa - projectServer 增加描述字段；发布详情易用性优化 ([fc317fd](https://github.com/yanuoda/nidle/commit/fc317fd7d3f5e0fab38db0790ccafe96d75d5fb0))
+* spa-发布详情展示创建时间和修改时间 ([f8afa33](https://github.com/yanuoda/nidle/commit/f8afa33f9cd85db3f5f9048d40c66055cfaed7fd))
+
+
+
 # Change Log
 
 All notable changes to this project will be documented in this file.

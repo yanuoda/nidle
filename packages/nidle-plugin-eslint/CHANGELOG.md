@@ -1,3 +1,12 @@
+## [0.2.1-beta.0](https://github.com/yanuoda/nidle/compare/v0.2.1-alpha.0...v0.2.1-beta.0) (2023-09-13)
+
+
+### Bug Fixes
+
+* nidle-plugin-eslint 调整 err data subprocess.cancel() 逻辑 ([5bf499d](https://github.com/yanuoda/nidle/commit/5bf499d6f4f102058566fef901b7dacceeeb8d82))
+
+
+
 # Change Log
 
 All notable changes to this project will be documented in this file.
