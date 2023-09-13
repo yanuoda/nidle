@@ -29,7 +29,7 @@ const semverReleaseType = ['patch', 'minor', 'major', 'prepatch', 'preminor', 'p
 const pkgInfoList = getWorkspaces()
 
 // increase current version
-const inc = (version, releaseType) => semver.inc(version, releaseType, 'aplpha')
+const inc = (version, releaseType) => semver.inc(version, releaseType, 'alpha')
 
 /**
  * @param {string} bin
