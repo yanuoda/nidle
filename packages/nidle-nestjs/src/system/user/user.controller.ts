@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Session } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { FormatResponse, SessionDto } from 'src/common/base.dto';
+import { getSessionUser } from 'src/utils';
 import { UserService } from './user.service';
 import {
   QueryUserDto,
@@ -17,9 +18,7 @@ export class UserController {
   @ApiOperation({ summary: '获取用户信息' })
   @Get()
   async getUser(@Session() session: SessionDto) {
-    if (session.user) return { data: session.user };
-    /** @todo customer error */
-    throw new Error('请先登录');
+    return { data: getSessionUser(session) };
   }
 
   @Post('login')

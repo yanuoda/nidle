@@ -2,6 +2,13 @@ import * as fs from 'fs';
 import { FindOptionsWhere, Like } from 'typeorm';
 
 import _const from 'src/const';
+import { SessionDto } from 'src/common/base.dto';
+
+export function getSessionUser(session: SessionDto) {
+  if (session.user) return session.user;
+  /** @todo customer error */
+  throw new Error('请先登录');
+}
 
 export function formatPageParams(page: unknown, pageSize: unknown) {
   let [_page, _pageSize] = [Number(page), Number(pageSize)];
