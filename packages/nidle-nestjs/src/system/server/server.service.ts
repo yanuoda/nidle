@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 import { buildEqualWhere, buildLikeWhere, checkValue } from 'src/utils';
 import {
@@ -16,6 +18,8 @@ export class ServerService {
   constructor(
     @InjectRepository(Server)
     private readonly serverRepository: Repository<Server>,
+    @Inject(WINSTON_MODULE_PROVIDER)
+    private readonly logger: Logger,
   ) {}
 
   async create(param: CreateServerDTO) {
@@ -69,6 +73,10 @@ export class ServerService {
   }
 
   async remove(id: number) {
+    const server = await this.findOne(id);
+    this.logger.info(`delete server:${id}`, {
+      original: server,
+    });
     return await this.serverRepository.delete({ id });
   }
 }
