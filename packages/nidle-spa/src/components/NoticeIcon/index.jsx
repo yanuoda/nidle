@@ -5,6 +5,7 @@ import moment from 'moment'
 import { useModel } from 'umi'
 
 import { getFormatDate } from '@/utils'
+import { NOTIFICATION_SETTING_KEY, OFFEN_USE_PROJECTS_KEY } from '@/config'
 import NoticeIcon from './NoticeIcon'
 import styles from './index.less'
 
@@ -80,6 +81,17 @@ const NoticeIconView = () => {
     const eventSource = new EventSource('/api/message/sse')
     eventSource.onmessage = ({ data }) => {
       const message = JSON.parse(data)
+
+      const notificationSetting = JSON.parse(localStorage.getItem(NOTIFICATION_SETTING_KEY) || '{}')
+      // 屏蔽所有
+      if (notificationSetting.mode === 'block') return
+      // 只接收"常用"的应用
+      if (notificationSetting.mode === 'offenUse') {
+        const offenUseProjects = JSON.parse(localStorage.getItem(OFFEN_USE_PROJECTS_KEY) || '[]')
+        if (!offenUseProjects.find(({ id }) => id === message.body.projectId)) {
+          return
+        }
+      }
       // 判断自己是否消息接收者
       if (message.users && !message.users.includes(currentUser.name)) {
         return

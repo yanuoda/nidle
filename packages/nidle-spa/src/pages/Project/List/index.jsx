@@ -6,8 +6,7 @@ import { PlusOutlined } from '@ant-design/icons'
 import { Link } from 'umi'
 
 import { queryProjectList } from '@/services/project'
-
-const OFFEN_USE_PROJECTS_KEY = 'OFFEN_USE_PROJECTS_KEY'
+import { OFFEN_USE_PROJECTS_KEY } from '@/config'
 
 const ProjectList = () => {
   const [offenUseProjects, setoffenUseProjects] = useState(
