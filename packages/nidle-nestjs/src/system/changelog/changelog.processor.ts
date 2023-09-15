@@ -39,8 +39,8 @@ export class ChangelogProcessor {
     const project = await this.projectService.findOne({
       id: changelog.project,
     });
-    const msgTitle = `应用:${project.name} [${_env.label}环境] `;
-    const msgContent = `git项目: ${config.name} / 分支: ${config.repository.branch} / 创建人: ${config.repository.userName}`;
+    const msgTitle = `应用: ${project.name} [${_env.label}环境] `;
+    const msgContent = `git项目: ${config.name} | 分支: ${config.repository.branch} | 创建人: ${config.repository.userName}`;
 
     await manager.init();
     await manager.mount(options, (_data) => {
@@ -52,11 +52,10 @@ export class ChangelogProcessor {
           content: msgContent,
           body: {
             id: changelogId,
-            projectId: changelog.project,
             type: 'code-review-request',
             enviroment: environment,
+            projectId: changelog.project,
           },
-          timestamp: new Date().getTime(),
         });
       }
       const stageIndex = config.stages.findIndex(
@@ -83,11 +82,10 @@ export class ChangelogProcessor {
             content: msgContent,
             body: {
               id: changelogId,
-              projectId: changelog.project,
               type: 'publish-success',
               enviroment: environment,
+              projectId: changelog.project,
             },
-            timestamp: new Date().getTime(),
           });
           if (
             environment ===
@@ -112,11 +110,10 @@ export class ChangelogProcessor {
             content: msgContent,
             body: {
               id: changelogId,
-              projectId: changelog.project,
               type: 'publish-fail',
               enviroment: environment,
+              projectId: changelog.project,
             },
-            timestamp: new Date().getTime(),
           });
           const info = `changelogProcessor error - changelogId:${changelogId} | environment:${environment}`;
           // const error = JSON.stringify(e); // Error 对象的 stack/message 为不可枚举的属性，此代码运行结果为 '{}'
@@ -137,11 +134,10 @@ export class ChangelogProcessor {
       content: msgContent,
       body: {
         id: changelogId,
-        projectId: changelog.project,
         type: 'publish-start',
         enviroment: environment,
+        projectId: changelog.project,
       },
-      timestamp: new Date().getTime(),
     });
     await manager.start();
     await afterManagerStart();

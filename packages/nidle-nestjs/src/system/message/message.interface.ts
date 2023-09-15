@@ -1,16 +1,24 @@
-export interface MessageEvent {
-  type: 'notification' | 'message' | 'event'; // 消息类型: 通知 | 消息 | 待办事件
-  title: string; // 消息标题
-  content: string; // 消息内容
+export interface MessageData {
+  /** 消息类型: 通知 | 消息 | 待办事件 */
+  type: 'notification' | 'message' | 'event';
+  /** 消息标题 */
+  title: string;
+  /** 消息内容 */
+  content: string;
+  /** 消息时间 */
+  timestamp?: number;
+  /** 消息主体信息 */
   body?: {
-    // 消息主体信息
-    type: string; // 类型
     id: number;
-    projectId?: number;
+    /** 业务动作类型 */
+    type: string;
     enviroment: string;
-    sponsor?: string; // 事件发起人
-    operator?: string; // 事件处理人
+    projectId?: number;
+    /** 事件发起人 */
+    sponsor?: string;
+    /** 事件处理人 */
+    operator?: string;
   };
-  users?: Array<string>; // 消息接收用户；无则所有人都能接收
-  timestamp: number; // 消息时间
+  /** 消息接收用户；无则所有人都能接收 */
+  users?: Array<string>;
 }

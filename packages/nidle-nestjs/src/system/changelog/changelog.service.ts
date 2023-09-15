@@ -562,11 +562,10 @@ export class ChangelogService {
           content: `${mrProjectName}/${branch} ${title}; 创建人: ${lastCommit?.author?.name}; 处理人: ${mrUserName}`,
           body: {
             id: id,
-            projectId: project,
             type: `code-review-${isMerged ? 'success' : 'fail'}`,
             enviroment: environment,
+            projectId: project,
           },
-          timestamp: new Date().getTime(),
           users: [receiveUser.name || receiveUser.login],
         });
       }
