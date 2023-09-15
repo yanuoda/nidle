@@ -72,3 +72,7 @@ export function readConfig(path: string) {
 export function writeConfig(path: string, data: Record<string, any>) {
   fs.writeFileSync(path, JSON.stringify(data, undefined, 2));
 }
+
+export function renameFileToBak(path: string) {
+  fs.renameSync(path, path + '.bak');
+}

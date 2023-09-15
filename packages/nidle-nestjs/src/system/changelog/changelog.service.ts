@@ -16,7 +16,12 @@ import _const from 'src/const';
 import { SessionUser } from 'src/common/base.dto';
 import { GitlabService } from 'src/lib/gitlab.service';
 import { nidleConfig } from 'src/configuration';
-import { checkValue, readConfig, writeConfig } from 'src/utils';
+import {
+  checkValue,
+  readConfig,
+  writeConfig,
+  renameFileToBak,
+} from 'src/utils';
 import nidleNext from 'src/utils/nidleNest';
 import { getDuration, transform } from 'src/utils/log';
 
@@ -83,12 +88,21 @@ export class ChangelogService {
     Object.assign(changelog, updateObj);
     return await this.changelogRepository.save(changelog);
   }
-  async deleteOne(id: number) {
-    const changelog = await this.findOneBy(id);
-    this.logger.info(`delete changelog:${id}`, {
-      original: changelog,
-    });
-    return await this.changelogRepository.delete({ id });
+  async deleteByIds(ids: number[]) {
+    let affecteds = 0;
+    for (const id of ids) {
+      const changelog = await this.findOneBy(id);
+      const { affected = 0 } = await this.changelogRepository.delete({ id });
+      this.logger.info(`delete changelog:${id}`, {
+        original: changelog,
+        affected,
+      });
+      affecteds += affected;
+      // 重命名相关文件（增加 '.bak' 后缀，可方便清理或恢复）
+      renameFileToBak(changelog.configPath);
+      renameFileToBak(changelog.logPath);
+    }
+    return affecteds;
   }
 
   async findAllByOpts(opts: FindManyOptions<Changelog>) {

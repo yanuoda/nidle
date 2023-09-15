@@ -6,6 +6,7 @@ import { getSessionUser } from 'src/utils';
 import { ChangelogService } from './changelog.service';
 import {
   CreateChangelogDto,
+  DeleteByIdsDto,
   GetLogDto,
   MergeHookDto,
   StartChangelogDto,
@@ -99,10 +100,10 @@ export class ChangelogController {
     return { data };
   }
 
-  @ApiOperation({ summary: 'delete one' })
-  @Post('deleteone')
-  async deleteone(@Body() { id }: IdBodyRequestDto) {
-    const { affected } = await this.changelogService.deleteOne(id);
-    return { affected };
+  @ApiOperation({ summary: 'delete by ids' })
+  @Post('delete')
+  async deleteByIds(@Body() { ids }: DeleteByIdsDto) {
+    const affecteds = await this.changelogService.deleteByIds(ids);
+    return { affecteds, idCount: ids.length };
   }
 }
