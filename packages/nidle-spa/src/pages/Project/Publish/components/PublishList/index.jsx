@@ -11,7 +11,7 @@ const PublishList = props => {
         rowKey="id"
         bordered
         pagination={{ pageSize: 10 }}
-        scroll={{ x: 1200 }}
+        scroll={{ x: 1500 }}
         search={false}
       />
     </>
