@@ -37,6 +37,7 @@ import { UserModule } from '../user/user.module';
             max: Number(_queueConfig.changelog.max),
             duration: Number(_queueConfig.changelog.duration),
           },
+          settings: { stalledInterval: 0 },
         };
       },
     }),
