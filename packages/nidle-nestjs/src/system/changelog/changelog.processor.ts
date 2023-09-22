@@ -99,9 +99,23 @@ export class ChangelogProcessor {
             await this.projectService.resetProjectServerOccupation(changelogId);
             await manager.backup();
           }
-          job.progress(98);
-          await asyncWait(1000 * this.afterManagerWaitSecs);
           await job.progress(100);
+          /**
+           * 默认情况下 resolve() 以后会自动移动到 Completed
+           * 但构建任务时间长，容易被 bull 标记成 stalled, 同时因为我们的 settings: { stalledInterval: 0 }
+           * 不会去检查 stalled 的 job （检查到了会自动重新运行，我们的构建任务并不支持）
+           * 导致 stalled job 会一直停留在 active（其实构建子进程运行已正常完成构建）
+           * 故手动移动 job 至 Completed 确保状态正常
+           */
+          if (job.data._stalled) {
+            job.moveToCompleted('stalled move', true).catch((e) => {
+              job.log(
+                'stalled move err: ' +
+                  JSON.stringify(e, Object.getOwnPropertyNames(e), 2),
+              );
+            });
+          }
+          await asyncWait(1000 * this.afterManagerWaitSecs);
           resolve();
         });
 
@@ -124,6 +138,15 @@ export class ChangelogProcessor {
           this.logger.error(info, { error });
           job.log(`[${getFormatNow()}] ${info}`);
           job.log(error);
+          // 理由见上面 ↑ job.moveToCompleted()
+          if (job.data._stalled) {
+            job.moveToFailed({ message: info }, true).catch((e) => {
+              job.log(
+                'stalled move err: ' +
+                  JSON.stringify(e, Object.getOwnPropertyNames(e), 2),
+              );
+            });
+          }
           await asyncWait(1000 * this.afterManagerWaitSecs);
           reject(e);
         });

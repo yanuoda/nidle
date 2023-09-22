@@ -75,5 +75,5 @@ export class DeleteByIdsDto {
 export class CallJobMethodDto {
   id: number;
   method: string;
-  params: Record<string, any>;
+  params: any[];
 }

@@ -70,6 +70,7 @@ export class ChangelogService {
   ) {
     this._nidleConfig = this.nestConfigService.get('nidleConfig');
     this.changelogQueue.on('stalled', (job: Job) => {
+      job.update({ ...job.data, _stalled: true });
       job.log(`[${getFormatNow()}] job ${job.id} has been marked as stalled.`);
     });
   }
@@ -699,6 +700,6 @@ export class ChangelogService {
   async callJobMethodBy({ id, method, params }: CallJobMethodDto) {
     const job = await this.changelogQueue.getJob(id);
     if (!job[method]) throw new Error(`job [${method}] is undefined.`);
-    return await job[method](params);
+    return await job[method](...params);
   }
 }
