@@ -7,7 +7,7 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 
 import _const from 'src/const';
-import { asyncWait } from 'src/utils';
+import { asyncWait, getFormatNow } from 'src/utils';
 import { nidleConfig } from 'src/configuration';
 import { ProjectService } from '../project/project.service';
 // import { Changelog } from './changelog.entity';
@@ -65,7 +65,7 @@ export class ChangelogProcessor {
         job.progress(Math.ceil((stageIndex / config.stages.length) * 100));
       }
       job.log(
-        `manager.mount update changelog:${changelogId} with data:${JSON.stringify(
+        `[${getFormatNow()}] manager.mount update changelog:${changelogId} with data:${JSON.stringify(
           _data,
         )}`,
       );
@@ -119,7 +119,7 @@ export class ChangelogProcessor {
           // const error = JSON.stringify(e); // Error 对象的 stack/message 为不可枚举的属性，此代码运行结果为 '{}'
           const error = JSON.stringify(e, Object.getOwnPropertyNames(e), 2);
           this.logger.error(info, { error });
-          job.log(info);
+          job.log(`[${getFormatNow()}] ${info}`);
           job.log(error);
           await asyncWait(1000 * this.afterManagerWaitSecs);
           reject(e);

@@ -3,7 +3,7 @@ import { ConfigService as NestConfigService, ConfigType } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, In, Not, Repository } from 'typeorm';
 import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bull';
+import { Job, Queue } from 'bull';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as extend from 'extend';
@@ -21,6 +21,7 @@ import {
   readConfig,
   writeConfig,
   renameFileToBak,
+  getFormatNow,
 } from 'src/utils';
 import nidleNext from 'src/utils/nidleNest';
 import { getDuration, transform } from 'src/utils/log';
@@ -37,6 +38,7 @@ import {
   CreateChangelogDto,
   GetLogDto,
   MergeHookDto,
+  CallJobMethodDto,
   StartChangelogDto,
 } from './changelog.dto';
 import {
@@ -67,6 +69,9 @@ export class ChangelogService {
     private readonly userService: UserService,
   ) {
     this._nidleConfig = this.nestConfigService.get('nidleConfig');
+    this.changelogQueue.on('stalled', (job: Job) => {
+      job.log(`[${getFormatNow()}] job ${job.id} has been marked as stalled.`);
+    });
   }
 
   async findOneBy(id: number) {
@@ -689,5 +694,11 @@ export class ChangelogService {
       mrDetail.target_branch,
     );
     return { crRes, adRes };
+  }
+
+  async callJobMethodBy({ id, method, params }: CallJobMethodDto) {
+    const job = await this.changelogQueue.getJob(id);
+    if (!job[method]) throw new Error(`job [${method}] is undefined.`);
+    return await job[method](params);
   }
 }

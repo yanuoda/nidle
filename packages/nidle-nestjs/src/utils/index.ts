@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import { FindOptionsWhere, Like } from 'typeorm';
+import * as dayjs from 'dayjs';
 
 import _const from 'src/const';
 import { SessionDto } from 'src/common/base.dto';
@@ -75,4 +76,8 @@ export function writeConfig(path: string, data: Record<string, any>) {
 
 export function renameFileToBak(path: string) {
   fs.renameSync(path, path + '.bak');
+}
+
+export function getFormatNow() {
+  return dayjs().format('YYYY-MM-DD HH:mm:ss');
 }

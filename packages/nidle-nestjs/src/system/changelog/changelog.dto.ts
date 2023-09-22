@@ -71,3 +71,9 @@ export class DeleteByIdsDto {
   @IsNotEmpty()
   readonly ids: number[];
 }
+
+export class CallJobMethodDto {
+  id: number;
+  method: string;
+  params: Record<string, any>;
+}

@@ -9,6 +9,7 @@ import {
   DeleteByIdsDto,
   GetLogDto,
   MergeHookDto,
+  CallJobMethodDto,
   StartChangelogDto,
   UpdateOneDto,
 } from './changelog.dto';
@@ -105,5 +106,12 @@ export class ChangelogController {
   async deleteByIds(@Body() { ids }: DeleteByIdsDto) {
     const affecteds = await this.changelogService.deleteByIds(ids);
     return { affecteds, idCount: ids.length };
+  }
+
+  @ApiOperation({ summary: 'call job method' })
+  @Post('callJobMethod')
+  async callJobMethod(@Body() body: CallJobMethodDto) {
+    const data = await this.changelogService.callJobMethodBy(body);
+    return { data };
   }
 }
