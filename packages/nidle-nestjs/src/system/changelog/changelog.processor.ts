@@ -40,7 +40,10 @@ export class ChangelogProcessor {
       id: changelog.project,
     });
     const msgTitle = `应用: ${project.name} [${_env.label}环境] `;
-    const msgContent = `git项目: ${config.name} | 分支: ${config.repository.branch} | 创建人: ${config.repository.userName}`;
+    let msgContent = `分支: ${config.repository.branch} | 创建人: ${config.repository.userName} | 发布id: ${changelog.id}`;
+    if (changelog.description) {
+      msgContent += ` | 描述: ${changelog.description}`;
+    }
 
     await manager.init();
     await manager.mount(options, (_data) => {
