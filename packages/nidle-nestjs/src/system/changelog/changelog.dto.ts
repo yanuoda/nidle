@@ -40,6 +40,12 @@ export class StartChangelogDto {
   readonly inputs?: any[];
   readonly notTransform?: boolean;
 }
+export interface StartParams {
+  environment: string;
+  changelogDesc: string;
+  projectId: number;
+  projectName: string;
+}
 
 export class GetLogDto {
   @IsNotEmpty()

@@ -12,7 +12,7 @@ export interface MessageData {
     id: number;
     /** 业务动作类型 */
     type: string;
-    enviroment: string;
+    environment: string;
     projectId?: number;
     /** 事件发起人 */
     sponsor?: string;

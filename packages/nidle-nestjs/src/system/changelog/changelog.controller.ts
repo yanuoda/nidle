@@ -48,18 +48,18 @@ export class ChangelogController {
   @Post('start')
   async start(@Body() body: StartChangelogDto, @Session() session: SessionDto) {
     const sessionUser = getSessionUser(session);
-    const { project, environment } = await this.changelogService.findOneBy(
-      body.id,
-    );
+    const { project, environment, description } =
+      await this.changelogService.findOneBy(body.id);
     const { projectName } = await this.changelogService.checkAndGetProjectInfo(
       project,
       sessionUser,
     );
-    const data = await this.changelogService.start(
-      body,
+    const data = await this.changelogService.start(body, {
       environment,
+      changelogDesc: description,
+      projectId: project,
       projectName,
-    );
+    });
     return { data };
   }
 

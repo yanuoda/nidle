@@ -40,6 +40,7 @@ import {
   MergeHookDto,
   CallJobMethodDto,
   StartChangelogDto,
+  StartParams,
 } from './changelog.dto';
 import {
   Changelog,
@@ -341,8 +342,7 @@ export class ChangelogService {
       inputs = [],
       notTransform = false,
     }: StartChangelogDto,
-    environment: string,
-    projectName: string,
+    { environment, changelogDesc, projectId, projectName }: StartParams,
   ) {
     const answers = inputs.length
       ? this.configService.setInput(inputAnswers, inputs, notTransform)
@@ -409,9 +409,11 @@ export class ChangelogService {
       'start',
       {
         changelogId,
-        environment,
         config,
         options,
+        environment,
+        changelogDesc,
+        projectId,
         projectName,
       },
       { attempts: 0 },
@@ -580,7 +582,7 @@ export class ChangelogService {
           body: {
             id: id,
             type: `code-review-${isMerged ? 'success' : 'fail'}`,
-            enviroment: environment,
+            environment,
             projectId: project,
           },
           users: [receiveUser.name || receiveUser.login],
@@ -648,8 +650,12 @@ export class ChangelogService {
               options: config.options || [],
               notTransform: true,
             },
-            newChangelog.environment,
-            projectName,
+            {
+              environment: newChangelog.environment,
+              changelogDesc: newChangelog.description,
+              projectId: changelog.project,
+              projectName,
+            },
           );
           res.startedIds.push(changelog.id);
         } catch (error) {
