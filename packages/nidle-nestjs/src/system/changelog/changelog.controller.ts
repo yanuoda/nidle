@@ -51,8 +51,15 @@ export class ChangelogController {
     const { project, environment } = await this.changelogService.findOneBy(
       body.id,
     );
-    await this.changelogService.checkAndGetProjectInfo(project, sessionUser);
-    const data = await this.changelogService.start(body, environment);
+    const { projectName } = await this.changelogService.checkAndGetProjectInfo(
+      project,
+      sessionUser,
+    );
+    const data = await this.changelogService.start(
+      body,
+      environment,
+      projectName,
+    );
     return { data };
   }
 

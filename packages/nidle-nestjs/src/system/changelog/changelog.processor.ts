@@ -32,14 +32,14 @@ export class ChangelogProcessor {
 
   @Process({ name: 'start', concurrency: _const.queueConcurrency })
   async handleStart(job: Job) {
-    const { config, options, changelogId, environment } = job.data;
+    const { config, options, changelogId, environment, projectName } = job.data;
     const _env = _const.environments.find((item) => item.value === environment);
     const manager = new Nidle({ ...config });
     const changelog = await this.changelogService.findOneBy(changelogId);
-    const project = await this.projectService.findOne({
-      id: changelog.project,
-    });
-    const msgTitle = `应用: ${project.name} [${_env.label}环境] `;
+    // const project = await this.projectService.findOne({
+    //   id: changelog.project,
+    // });
+    const msgTitle = `应用: ${projectName} [${_env.label}环境] `;
     let msgContent = `分支: ${config.repository.branch} | 创建人: ${config.repository.userName} | 发布id: ${changelog.id}`;
     if (changelog.description) {
       msgContent += ` | 描述: ${changelog.description}`;

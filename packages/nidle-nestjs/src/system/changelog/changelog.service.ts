@@ -342,6 +342,7 @@ export class ChangelogService {
       notTransform = false,
     }: StartChangelogDto,
     environment: string,
+    projectName: string,
   ) {
     const answers = inputs.length
       ? this.configService.setInput(inputAnswers, inputs, notTransform)
@@ -411,6 +412,7 @@ export class ChangelogService {
         environment,
         config,
         options,
+        projectName,
       },
       { attempts: 0 },
     );
@@ -647,6 +649,7 @@ export class ChangelogService {
               notTransform: true,
             },
             newChangelog.environment,
+            projectName,
           );
           res.startedIds.push(changelog.id);
         } catch (error) {
