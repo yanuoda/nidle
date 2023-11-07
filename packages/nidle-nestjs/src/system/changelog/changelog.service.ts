@@ -79,7 +79,6 @@ export class ChangelogService {
         this.logger.error('global:stalled error:', error);
       }
     });
-    });
   }
 
   async findOneBy(id: number) {
