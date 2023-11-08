@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { Module, forwardRef } from '@nestjs/common';
 import {
   ConfigModule as NestConfigModule,
@@ -9,6 +10,7 @@ import { BullModule } from '@nestjs/bull';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 
+import _const from 'src/const';
 import { queueConfig } from 'src/configuration';
 import { ProjectModule } from '../project/project.module';
 import { ServerModule } from '../server/server.module';
@@ -38,6 +40,13 @@ import { UserModule } from '../user/user.module';
             duration: Number(_queueConfig.changelog.duration),
           },
           settings: { stalledInterval: 0 },
+          processors: [
+            {
+              name: 'sepStart',
+              concurrency: _const.queueConcurrency,
+              path: join(__dirname, 'changelog.separate.processor.js'),
+            },
+          ],
         };
       },
     }),

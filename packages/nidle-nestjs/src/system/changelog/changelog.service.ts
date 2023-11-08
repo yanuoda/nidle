@@ -80,6 +80,25 @@ export class ChangelogService {
         this.logger.error('global:stalled error:', error);
       }
     });
+
+    // this.changelogQueue.on('global:progress', async (jobId, data) => {
+    //   console.log('global:progress', jobId, data);
+    // });
+    this.changelogQueue.on(
+      'progress',
+      (job: Job, data: number | Record<string, any>) => {
+        if (typeof data === 'number') return;
+        const { service, method, params = [] } = data;
+        try {
+          this[service][method](...params);
+        } catch (error) {
+          this.logger.error(`[${getFormatNow()}] queue progress error:`, {
+            error,
+            jobId: job.id,
+          });
+        }
+      },
+    );
   }
 
   async findOneBy(id: number) {
@@ -406,7 +425,7 @@ export class ChangelogService {
     });
 
     this.changelogQueue.add(
-      'start',
+      configPath.includes('style-admin-micro') ? 'sepStart' : 'start',
       {
         changelogId,
         config,
