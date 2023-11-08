@@ -90,7 +90,11 @@ export class ChangelogService {
         if (typeof data === 'number') return;
         const { service, method, params = [] } = data;
         try {
-          this[service][method](...params);
+          if (service === 'self') {
+            this[method](...params);
+          } else {
+            this[service][method](...params);
+          }
         } catch (e) {
           const error = JSON.stringify(e, Object.getOwnPropertyNames(e), 2);
           this.logger.error(`[${getFormatNow()}] queue progress error:`, {

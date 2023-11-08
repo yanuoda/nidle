@@ -62,7 +62,7 @@ export default async function (job: Job, cb: DoneCallback) {
         )}`,
       );
       job.progress({
-        service: 'changelogService',
+        service: 'self',
         method: 'updateOne',
         params: [changelogId, _data],
       });
