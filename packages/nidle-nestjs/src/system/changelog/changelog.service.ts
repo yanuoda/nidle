@@ -731,9 +731,12 @@ export class ChangelogService {
     return { crRes, adRes };
   }
 
-  async callJobMethodBy({ id, method, params }: CallJobMethodDto) {
-    const job = await this.changelogQueue.getJob(id);
-    if (!job[method]) throw new Error(`job [${method}] is undefined.`);
-    return await job[method](...params);
+  async callJobMethodBy({ ids, method, params }: CallJobMethodDto) {
+    for (const id of ids) {
+      const job = await this.changelogQueue.getJob(id);
+      if (!job[method]) throw new Error(`job [${method}] is undefined.`);
+      await job[method](...params);
+    }
+    return true;
   }
 }

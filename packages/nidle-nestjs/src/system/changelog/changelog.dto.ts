@@ -79,7 +79,7 @@ export class DeleteByIdsDto {
 }
 
 export class CallJobMethodDto {
-  id: number;
+  ids: number[];
   method: string;
   params: any[];
 }
