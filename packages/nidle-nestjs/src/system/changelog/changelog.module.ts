@@ -10,7 +10,7 @@ import { BullModule } from '@nestjs/bull';
 import { BullBoardModule } from '@bull-board/nestjs';
 import { BullAdapter } from '@bull-board/api/bullAdapter';
 
-import _const from 'src/const';
+// import _const from 'src/const';
 import { queueConfig } from 'src/configuration';
 import { ProjectModule } from '../project/project.module';
 import { ServerModule } from '../server/server.module';
@@ -43,7 +43,7 @@ import { UserModule } from '../user/user.module';
           processors: [
             {
               name: 'sepStart',
-              concurrency: _const.queueConcurrency,
+              concurrency: 1,
               path: join(__dirname, 'changelog.separate.processor.js'),
             },
           ],

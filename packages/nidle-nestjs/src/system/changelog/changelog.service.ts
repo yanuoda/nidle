@@ -91,10 +91,12 @@ export class ChangelogService {
         const { service, method, params = [] } = data;
         try {
           this[service][method](...params);
-        } catch (error) {
+        } catch (e) {
+          const error = JSON.stringify(e, Object.getOwnPropertyNames(e), 2);
           this.logger.error(`[${getFormatNow()}] queue progress error:`, {
             error,
             jobId: job.id,
+            data,
           });
         }
       },
