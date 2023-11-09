@@ -70,14 +70,14 @@ export class ChangelogService {
     private readonly userService: UserService,
   ) {
     this._nidleConfig = this.nestConfigService.get('nidleConfig');
-    this.changelogQueue.on('global:stalled', (job: Job) => {
+    this.changelogQueue.on('stalled', (job: Job) => {
       try {
         job.update({ ...job.data, _stalled: true });
         job.log(
           `[${getFormatNow()}] job ${job.id} has been marked as stalled.`,
         );
       } catch (error) {
-        this.logger.error('global:stalled error:', error);
+        this.logger.error('stalled error:', error);
       }
     });
 
