@@ -50,12 +50,6 @@ export default async function (job: Job, cb: DoneCallback) {
           ],
         });
       }
-      const stageIndex = config.stages.findIndex(
-        ({ name }) => name === _data.stage,
-      );
-      if (stageIndex > 0) {
-        job.progress(Math.ceil((stageIndex / config.stages.length) * 100));
-      }
       job.log(
         `[${getFormatNow()}] manager.mount update changelog:${changelogId} with data:${JSON.stringify(
           _data,
@@ -66,6 +60,12 @@ export default async function (job: Job, cb: DoneCallback) {
         method: 'updateOne',
         params: [changelogId, _data],
       });
+      const stageIndex = config.stages.findIndex(
+        ({ name }) => name === _data.stage,
+      );
+      if (stageIndex > 0) {
+        job.progress(Math.ceil((stageIndex / config.stages.length) * 100));
+      }
     });
 
     // const afterManagerStart = (): Promise<void> => {

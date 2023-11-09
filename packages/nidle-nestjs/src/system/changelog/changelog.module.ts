@@ -39,11 +39,14 @@ import { UserModule } from '../user/user.module';
             max: Number(_queueConfig.changelog.max),
             duration: Number(_queueConfig.changelog.duration),
           },
-          settings: { stalledInterval: 0 },
+          settings: {
+            lockDuration: Number(_queueConfig.changelog.lockDuration),
+            stalledInterval: Number(_queueConfig.changelog.stalledInterval),
+          },
           processors: [
             {
               name: 'sepStart',
-              concurrency: 4,
+              concurrency: Number(_queueConfig.changelog.concurrency),
               path: join(__dirname, 'changelog.separate.processor.js'),
             },
           ],

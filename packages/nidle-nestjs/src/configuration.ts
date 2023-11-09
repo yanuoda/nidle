@@ -54,6 +54,9 @@ export const queueConfig = registerAs('queueConfig', () => ({
   changelog: {
     max: process.env.QUEUE_CHANGELOG_MAX,
     duration: process.env.QUEUE_CHANGELOG_DURATION,
+    lockDuration: process.env.QUEUE_CHANGELOG_LOCK_DURATION,
+    stalledInterval: process.env.QUEUE_CHANGELOG_STALLED_INTERVAL,
+    concurrency: process.env.QUEUE_CHANGELOG_CONCURRENCY,
   },
 }));
 
