@@ -3,6 +3,41 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.3-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.2-alpha.0...v0.2.3-alpha.0) (2023-11-09)
+
+
+### Bug Fixes
+
+* 表字段length ([146b7d7](https://github.com/yanuoda/nidle/commit/146b7d78504ddbd1bde77f1ab0b11dd438d35165))
+* 代码提交错误 ([04101ec](https://github.com/yanuoda/nidle/commit/04101ece874e695f5b65c48ce801f0b5e0a8adf4))
+* 构建任务并发策略变更 ([b84b5ba](https://github.com/yanuoda/nidle/commit/b84b5bac0b9711f367435a7ef8f3328aa1beb0b0))
+* 删除发布记录时的重命名文件判断 ([ddec9b9](https://github.com/yanuoda/nidle/commit/ddec9b90d2c6016fa09bebeed9d0f814311837a1))
+* merge ([3fc45b9](https://github.com/yanuoda/nidle/commit/3fc45b9fdd72e54e7fd3cc58877dee2e578b7093))
+* remove user folder ([5fcdb7e](https://github.com/yanuoda/nidle/commit/5fcdb7e54bdb6b2ce678646221d6315085c5e2f4))
+* scp结束休眠等待scp完成；拦截gzip报错 ([dc363ca](https://github.com/yanuoda/nidle/commit/dc363ca6a7ae735b011522ee9c0c0f8210ba65a3))
+* session user 判断 ([f5d509a](https://github.com/yanuoda/nidle/commit/f5d509ac1109e098a9614f44b5234daabb8b1c37))
+* spa - 发布列表 - table横向滚动阈值 ([58fae58](https://github.com/yanuoda/nidle/commit/58fae588522d66e839721ddde49e7193b272e4da))
+* spa-config.js ([e713716](https://github.com/yanuoda/nidle/commit/e7137169ca9923e55062a95fe366072f34872eb3))
+
+
+### Features
+
+* 发布记录删除功能（物理）；相关配置、日志文件重命名为'.bak' ([3b74104](https://github.com/yanuoda/nidle/commit/3b74104d288a23195aced725cbd02cc7314e3f1f))
+* 发布详情-commiId展示、回到顶部 ([26ff185](https://github.com/yanuoda/nidle/commit/26ff18559afadfe48a22f8550b08aca2bb79966b))
+* 构建任务完成时根据 stalled 手动变更 job 状态 ([c17f847](https://github.com/yanuoda/nidle/commit/c17f84728f4c5feae86c96cf2e4fb1594b5d06ee))
+* 删除操作日志 ([5435f6d](https://github.com/yanuoda/nidle/commit/5435f6d6c94caf4daece28f6262a505edb4bf754))
+* 刷新登录cookie过期时间；fix crypto 包引入错误 ([1dab358](https://github.com/yanuoda/nidle/commit/1dab358c8955a52caa39b57ce298b3be8ac4f1c6))
+* 通知接收设置 ([a1977d0](https://github.com/yanuoda/nidle/commit/a1977d09cdd7baeac4c54bf55d20b69a7527799a))
+* 通知信息增加发布id、描述 ([c5110de](https://github.com/yanuoda/nidle/commit/c5110defda411af9dc9dc16f9b7279b86c174fdf))
+* job 操作及日志优化 ([8ec5dc6](https://github.com/yanuoda/nidle/commit/8ec5dc6f254bf7072695c01c8f6ff367dc656c73))
+* queue on global:stalled ([42baf82](https://github.com/yanuoda/nidle/commit/42baf8236d28cf3537d4df892afb417e363bf21a))
+* spa - 首页增加快捷入口 ([77f6602](https://github.com/yanuoda/nidle/commit/77f6602a047f64cad46ce05fbc784cdca6fc460f))
+* spa-模板删除功能 ([c790b9a](https://github.com/yanuoda/nidle/commit/c790b9a5b28346784ffa2f9d0579a29cf094ec13))
+
+
+
+
+
 ## [0.2.1-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.0-alpha.0...v0.2.1-alpha.0) (2023-08-10)
 
 

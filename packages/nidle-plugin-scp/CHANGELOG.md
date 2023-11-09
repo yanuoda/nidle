@@ -1,19 +1,18 @@
-## [0.2.2-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.2-aplpha.0...v0.2.2-alpha.0) (2023-09-13)
-
-
-
-## [0.2.2-aplpha.0](https://github.com/yanuoda/nidle/compare/v0.2.1-beta.0...v0.2.2-aplpha.0) (2023-09-13)
-
-
-
-## [0.2.1-beta.0](https://github.com/yanuoda/nidle/compare/v0.2.1-alpha.0...v0.2.1-beta.0) (2023-09-13)
-
-
-
 # Change Log
 
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## [0.2.3-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.2-alpha.0...v0.2.3-alpha.0) (2023-11-09)
+
+
+### Bug Fixes
+
+* scp结束休眠等待scp完成；拦截gzip报错 ([dc363ca](https://github.com/yanuoda/nidle/commit/dc363ca6a7ae735b011522ee9c0c0f8210ba65a3))
+
+
+
+
 
 # [0.2.0-alpha.0](https://github.com/yanuoda/nidle/compare/v0.1.8...v0.2.0-alpha.0) (2023-08-10)
 

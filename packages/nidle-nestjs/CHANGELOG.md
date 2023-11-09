@@ -1,65 +1,33 @@
-## [0.2.2-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.2-aplpha.0...v0.2.2-alpha.0) (2023-09-13)
-
-
-
-## [0.2.2-aplpha.0](https://github.com/yanuoda/nidle/compare/v0.2.1-beta.0...v0.2.2-aplpha.0) (2023-09-13)
-
-
-
-## [0.2.1-beta.0](https://github.com/yanuoda/nidle/compare/v0.2.1-alpha.0...v0.2.1-beta.0) (2023-09-13)
-
-
-### Bug Fixes
-
-* 调试接口问题修复 ([4341eac](https://github.com/yanuoda/nidle/commit/4341eac4bd62f9d96e031bf2a474384c98d1232c))
-* 更新部分接口返回数据 ([10d47dc](https://github.com/yanuoda/nidle/commit/10d47dc3b45a6d74006554cee6f5fd58e1d8dd33))
-* 关联表查询 ([054ad21](https://github.com/yanuoda/nidle/commit/054ad21695e25439fb999b729c275c8bda3484c3))
-* 接口调试问题修复 ([db4218e](https://github.com/yanuoda/nidle/commit/db4218e6103cb3bed8fee9f5fb8b999a0df4eb91))
-* 区分 SWAGGER、DEV；部署开始通知广播所有人 ([2f3d887](https://github.com/yanuoda/nidle/commit/2f3d887eda9a59899d905e682edbbfa6d42f4503))
-* 通过事件广播消息 ([c8e91ce](https://github.com/yanuoda/nidle/commit/c8e91ce468e8644dfd8aa4eb57e53765bf385c03))
-* 消息通知 ([13c49f9](https://github.com/yanuoda/nidle/commit/13c49f9b487d309fdea20b51c76db2732e59b73f))
-* 移除已关闭的sse ([9310d0f](https://github.com/yanuoda/nidle/commit/9310d0fc6627b521963c06200fc0dfd1eccd62e1))
-* changelog - 在某记录上新建时，复用 description ([8120361](https://github.com/yanuoda/nidle/commit/812036171ae11947480164009459a69318bedc5c))
-* configModule - getAppConfig missing logic ([7e80299](https://github.com/yanuoda/nidle/commit/7e8029947340e5c6d64919fd74c01dd8cfa50ca0))
-* err stringify;应用服务器占用释放时机 ([a89a2a8](https://github.com/yanuoda/nidle/commit/a89a2a8087640d8dacd70dc8edfe29fd2ce3c2a5))
-* Error对象 stringify ([cfbf438](https://github.com/yanuoda/nidle/commit/cfbf438ae33dd7bbbcba51357927c56f2b834886))
-* findOne where条件校验 ([e068284](https://github.com/yanuoda/nidle/commit/e06828402575d918525c79d81f0d73e6b2ed091a))
-* git merge hook 过滤处于新建状态的发布 ([38bce0d](https://github.com/yanuoda/nidle/commit/38bce0d509018dfbc28114d23ef54b1ee1369c97))
-* gitlab接口返回取值 ([c1bd352](https://github.com/yanuoda/nidle/commit/c1bd352adbccd7808968be045382fdf718b90f17))
-* merge Conflicts - 补全 CR 结果通知逻辑 ([4751d36](https://github.com/yanuoda/nidle/commit/4751d367e1b0a92660ecb95d8d4f4314ea4d3707))
-* merge hook 问题修复 ([582be7b](https://github.com/yanuoda/nidle/commit/582be7bc9e8240bf1799cb321e8773eb92e17237))
-* mysql time_zone ([eae7cf6](https://github.com/yanuoda/nidle/commit/eae7cf6b5f7f274ff1a0bc252ca6b84afc578436))
-* project - 添加时补全git项目相关字段 ([b629f5e](https://github.com/yanuoda/nidle/commit/b629f5e6bd2cdea421046482b373de6099b6dbe1))
-* projectServer字段返回missing ([aa81490](https://github.com/yanuoda/nidle/commit/aa814909021642cd346c84e18e585ac9b14b7852))
-* projectServers server 关联id ([b6177f2](https://github.com/yanuoda/nidle/commit/b6177f2d5e3d5b7131efe22e976aed0751cebdde))
-* queue concurrency 配置 ([bc347e1](https://github.com/yanuoda/nidle/commit/bc347e12e5ec789eb299863469b43428397daa4a))
-* queue registerQueueAsync ([e32f19a](https://github.com/yanuoda/nidle/commit/e32f19a22b24d65879440464087d8c6b5c531de9))
-* templateModule - add - missing return value ([f58f53d](https://github.com/yanuoda/nidle/commit/f58f53deb8a7362c821178bbb6af1a10c34344a7))
-
-
-### Features
-
-* 队列并发数配置 ([4a9c63c](https://github.com/yanuoda/nidle/commit/4a9c63c8454f01738dfb0f37adee4f0f160c648c))
-* 通过id查询用户 ([e944365](https://github.com/yanuoda/nidle/commit/e944365df10a9eb33d62d91f53b72fe83a9fe144))
-* 通知功能升级 ([4d7de0d](https://github.com/yanuoda/nidle/commit/4d7de0dab66a5fb99f186a764c89e5c883f9f2e9))
-* change_v2 表；添加手工维护数据接口 ([0df3632](https://github.com/yanuoda/nidle/commit/0df36322fd2ff7df0c9d2bf559a25b69d0b3d141))
-* changelog updateone ([5cf945d](https://github.com/yanuoda/nidle/commit/5cf945dbad5b07f741bc8c38a14db362f3815d58))
-* job log changelog update ([36b3203](https://github.com/yanuoda/nidle/commit/36b32035c6c3c5421f4e410617fef6bc4b60b70c))
-* queue 配置化 ([e6669ad](https://github.com/yanuoda/nidle/commit/e6669adf9f06cccbf4194df737f966870148b647))
-* queue job percent update by stage ([a341ef1](https://github.com/yanuoda/nidle/commit/a341ef143a987b3d3816a4aeea93f14543f7c91e))
-
-
-### Reverts
-
-* 不限制查询字段 ([492b1bf](https://github.com/yanuoda/nidle/commit/492b1bf88a58356afa66d57a4f1f48f098291ca2))
-* 改回commonjs ([9e80187](https://github.com/yanuoda/nidle/commit/9e80187c21473e5e6623cfcb694b42e64d4a95de))
-
-
-
 # Change Log
 
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## [0.2.3-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.2-alpha.0...v0.2.3-alpha.0) (2023-11-09)
+
+
+### Bug Fixes
+
+* 表字段length ([146b7d7](https://github.com/yanuoda/nidle/commit/146b7d78504ddbd1bde77f1ab0b11dd438d35165))
+* 代码提交错误 ([04101ec](https://github.com/yanuoda/nidle/commit/04101ece874e695f5b65c48ce801f0b5e0a8adf4))
+* 构建任务并发策略变更 ([b84b5ba](https://github.com/yanuoda/nidle/commit/b84b5bac0b9711f367435a7ef8f3328aa1beb0b0))
+* 删除发布记录时的重命名文件判断 ([ddec9b9](https://github.com/yanuoda/nidle/commit/ddec9b90d2c6016fa09bebeed9d0f814311837a1))
+* session user 判断 ([f5d509a](https://github.com/yanuoda/nidle/commit/f5d509ac1109e098a9614f44b5234daabb8b1c37))
+
+
+### Features
+
+* 发布记录删除功能（物理）；相关配置、日志文件重命名为'.bak' ([3b74104](https://github.com/yanuoda/nidle/commit/3b74104d288a23195aced725cbd02cc7314e3f1f))
+* 构建任务完成时根据 stalled 手动变更 job 状态 ([c17f847](https://github.com/yanuoda/nidle/commit/c17f84728f4c5feae86c96cf2e4fb1594b5d06ee))
+* 删除操作日志 ([5435f6d](https://github.com/yanuoda/nidle/commit/5435f6d6c94caf4daece28f6262a505edb4bf754))
+* 刷新登录cookie过期时间；fix crypto 包引入错误 ([1dab358](https://github.com/yanuoda/nidle/commit/1dab358c8955a52caa39b57ce298b3be8ac4f1c6))
+* 通知信息增加发布id、描述 ([c5110de](https://github.com/yanuoda/nidle/commit/c5110defda411af9dc9dc16f9b7279b86c174fdf))
+* job 操作及日志优化 ([8ec5dc6](https://github.com/yanuoda/nidle/commit/8ec5dc6f254bf7072695c01c8f6ff367dc656c73))
+* queue on global:stalled ([42baf82](https://github.com/yanuoda/nidle/commit/42baf8236d28cf3537d4df892afb417e363bf21a))
+
+
+
+
 
 ## [0.2.1-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.0-alpha.0...v0.2.1-alpha.0) (2023-08-10)
 
