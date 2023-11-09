@@ -48,6 +48,15 @@ function scp(task, config) {
           return
         }
 
+        if (str.indexOf('gzip: stdin: unexpected end of file') > -1) {
+          task.logger.error({
+            name: 'scp',
+            detail: str
+          })
+          subprocess.cancel()
+          return
+        }
+
         task.logger.info({
           name: 'scp',
           detail: data.toString()
