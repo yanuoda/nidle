@@ -30,19 +30,23 @@ export class ChangelogProcessor {
     this.afterManagerWaitSecs = Number(_nidleConfig.afterManagerWaitSecs);
   }
 
-  @Process({ name: 'start', concurrency: _const.queueConcurrency })
+  @Process({ name: 'start', concurrency: 1 })
   async handleStart(job: Job) {
-    const { config, options, changelogId, environment } = job.data;
+    const {
+      changelogId,
+      config,
+      options,
+      environment,
+      changelogDesc,
+      projectId,
+      projectName,
+    } = job.data;
     const _env = _const.environments.find((item) => item.value === environment);
     const manager = new Nidle({ ...config });
-    const changelog = await this.changelogService.findOneBy(changelogId);
-    const project = await this.projectService.findOne({
-      id: changelog.project,
-    });
-    const msgTitle = `应用: ${project.name} [${_env.label}环境] `;
-    let msgContent = `分支: ${config.repository.branch} | 创建人: ${config.repository.userName} | 发布id: ${changelog.id}`;
-    if (changelog.description) {
-      msgContent += ` | 描述: ${changelog.description}`;
+    const msgTitle = `应用: ${projectName} [${_env.label}环境] `;
+    let msgContent = `分支: ${config.repository.branch} | 创建人: ${config.repository.userName} | 发布id: ${changelogId}`;
+    if (changelogDesc) {
+      msgContent += ` | 描述: ${changelogDesc}`;
     }
 
     await manager.init();
@@ -56,8 +60,8 @@ export class ChangelogProcessor {
           body: {
             id: changelogId,
             type: 'code-review-request',
-            enviroment: environment,
-            projectId: changelog.project,
+            environment,
+            projectId,
           },
         });
       }
@@ -86,8 +90,8 @@ export class ChangelogProcessor {
             body: {
               id: changelogId,
               type: 'publish-success',
-              enviroment: environment,
-              projectId: changelog.project,
+              environment,
+              projectId,
             },
           });
           if (
@@ -128,8 +132,8 @@ export class ChangelogProcessor {
             body: {
               id: changelogId,
               type: 'publish-fail',
-              enviroment: environment,
-              projectId: changelog.project,
+              environment,
+              projectId,
             },
           });
           const info = `changelogProcessor error - changelogId:${changelogId} | environment:${environment}`;
@@ -161,8 +165,8 @@ export class ChangelogProcessor {
       body: {
         id: changelogId,
         type: 'publish-start',
-        enviroment: environment,
-        projectId: changelog.project,
+        environment,
+        projectId,
       },
     });
     await manager.start();

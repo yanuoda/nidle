@@ -40,6 +40,12 @@ export class StartChangelogDto {
   readonly inputs?: any[];
   readonly notTransform?: boolean;
 }
+export interface StartParams {
+  environment: string;
+  changelogDesc: string;
+  projectId: number;
+  projectName: string;
+}
 
 export class GetLogDto {
   @IsNotEmpty()
@@ -73,7 +79,7 @@ export class DeleteByIdsDto {
 }
 
 export class CallJobMethodDto {
-  id: number;
+  ids: number[];
   method: string;
   params: any[];
 }

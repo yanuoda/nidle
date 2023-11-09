@@ -40,6 +40,7 @@ import {
   MergeHookDto,
   CallJobMethodDto,
   StartChangelogDto,
+  StartParams,
 } from './changelog.dto';
 import {
   Changelog,
@@ -79,6 +80,31 @@ export class ChangelogService {
         this.logger.error('global:stalled error:', error);
       }
     });
+
+    // this.changelogQueue.on('global:progress', async (jobId, data) => {
+    //   console.log('global:progress', jobId, data);
+    // });
+    this.changelogQueue.on(
+      'progress',
+      (job: Job, data: number | Record<string, any>) => {
+        if (typeof data === 'number') return;
+        const { service, method, params = [] } = data;
+        try {
+          if (service === 'self') {
+            this[method](...params);
+          } else {
+            this[service][method](...params);
+          }
+        } catch (e) {
+          const error = JSON.stringify(e, Object.getOwnPropertyNames(e), 2);
+          this.logger.error(`[${getFormatNow()}] queue progress error:`, {
+            error,
+            jobId: job.id,
+            data,
+          });
+        }
+      },
+    );
   }
 
   async findOneBy(id: number) {
@@ -341,7 +367,7 @@ export class ChangelogService {
       inputs = [],
       notTransform = false,
     }: StartChangelogDto,
-    environment: string,
+    { environment, changelogDesc, projectId, projectName }: StartParams,
   ) {
     const answers = inputs.length
       ? this.configService.setInput(inputAnswers, inputs, notTransform)
@@ -405,12 +431,15 @@ export class ChangelogService {
     });
 
     this.changelogQueue.add(
-      'start',
+      'sepStart',
       {
         changelogId,
-        environment,
         config,
         options,
+        environment,
+        changelogDesc,
+        projectId,
+        projectName,
       },
       { attempts: 0 },
     );
@@ -578,7 +607,7 @@ export class ChangelogService {
           body: {
             id: id,
             type: `code-review-${isMerged ? 'success' : 'fail'}`,
-            enviroment: environment,
+            environment,
             projectId: project,
           },
           users: [receiveUser.name || receiveUser.login],
@@ -646,7 +675,12 @@ export class ChangelogService {
               options: config.options || [],
               notTransform: true,
             },
-            newChangelog.environment,
+            {
+              environment: newChangelog.environment,
+              changelogDesc: newChangelog.description,
+              projectId: changelog.project,
+              projectName,
+            },
           );
           res.startedIds.push(changelog.id);
         } catch (error) {
@@ -703,9 +737,12 @@ export class ChangelogService {
     return { crRes, adRes };
   }
 
-  async callJobMethodBy({ id, method, params }: CallJobMethodDto) {
-    const job = await this.changelogQueue.getJob(id);
-    if (!job[method]) throw new Error(`job [${method}] is undefined.`);
-    return await job[method](...params);
+  async callJobMethodBy({ ids, method, params }: CallJobMethodDto) {
+    for (const id of ids) {
+      const job = await this.changelogQueue.getJob(id);
+      if (!job[method]) throw new Error(`job [${method}] is undefined.`);
+      await job[method](...params);
+    }
+    return true;
   }
 }
