@@ -63,7 +63,6 @@ import { SystemModule } from './system/system.module';
     }),
     BullBoardModule.forRoot({
       route: '/queues',
-      // @ts-ignore
       adapter: ExpressAdapter,
     }),
     WinstonModule.forRootAsync({

@@ -431,7 +431,7 @@ export class ChangelogService {
     });
 
     this.changelogQueue.add(
-      configPath.includes('style-admin-micro') ? 'sepStart' : 'start',
+      'sepStart',
       {
         changelogId,
         config,

@@ -43,7 +43,7 @@ import { UserModule } from '../user/user.module';
           processors: [
             {
               name: 'sepStart',
-              concurrency: 1,
+              concurrency: 4,
               path: join(__dirname, 'changelog.separate.processor.js'),
             },
           ],
