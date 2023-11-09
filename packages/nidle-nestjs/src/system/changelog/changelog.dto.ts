@@ -78,8 +78,8 @@ export class DeleteByIdsDto {
   readonly ids: number[];
 }
 
-export class CallJobMethodDto {
-  ids: number[];
+export class CallQueueAndJobMethodDto {
+  ids?: number[];
   method: string;
   params: any[];
 }

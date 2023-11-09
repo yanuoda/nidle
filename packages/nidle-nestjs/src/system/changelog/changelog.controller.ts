@@ -9,7 +9,7 @@ import {
   DeleteByIdsDto,
   GetLogDto,
   MergeHookDto,
-  CallJobMethodDto,
+  CallQueueAndJobMethodDto,
   StartChangelogDto,
   UpdateOneDto,
 } from './changelog.dto';
@@ -115,9 +115,16 @@ export class ChangelogController {
     return { affecteds, idCount: ids.length };
   }
 
+  @ApiOperation({ summary: 'call queue method' })
+  @Post('callQueueMethod')
+  async callQueueMethod(@Body() body: CallQueueAndJobMethodDto) {
+    const data = await this.changelogService.callQueueMethodBy(body);
+    return { data };
+  }
+
   @ApiOperation({ summary: 'call job method' })
   @Post('callJobMethod')
-  async callJobMethod(@Body() body: CallJobMethodDto) {
+  async callJobMethod(@Body() body: CallQueueAndJobMethodDto) {
     const data = await this.changelogService.callJobMethodBy(body);
     return { data };
   }

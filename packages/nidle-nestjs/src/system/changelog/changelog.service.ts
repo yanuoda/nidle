@@ -38,7 +38,7 @@ import {
   CreateChangelogDto,
   GetLogDto,
   MergeHookDto,
-  CallJobMethodDto,
+  CallQueueAndJobMethodDto,
   StartChangelogDto,
   StartParams,
 } from './changelog.dto';
@@ -737,12 +737,26 @@ export class ChangelogService {
     return { crRes, adRes };
   }
 
-  async callJobMethodBy({ ids, method, params }: CallJobMethodDto) {
+  async callQueueMethodBy({ method, params }: CallQueueAndJobMethodDto) {
+    if (!this.changelogQueue[method]) {
+      throw new Error(`queue [${method}] is undefined.`);
+    }
+    const data = await this.changelogQueue[method](...params);
+    return JSON.stringify(data, Object.getOwnPropertyNames(data), 2);
+  }
+
+  async callJobMethodBy({ ids, method, params }: CallQueueAndJobMethodDto) {
+    const data: Record<number, string> = {};
     for (const id of ids) {
       const job = await this.changelogQueue.getJob(id);
       if (!job[method]) throw new Error(`job [${method}] is undefined.`);
-      await job[method](...params);
+      const jobdata = await job[method](...params);
+      data[id] = JSON.stringify(
+        jobdata,
+        Object.getOwnPropertyNames(jobdata),
+        2,
+      );
     }
-    return true;
+    return data;
   }
 }
