@@ -2,11 +2,14 @@ import { Controller, Post, Body, Session } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { IdBodyRequestDto, SessionDto } from 'src/common/base.dto';
+import { getSessionUser } from 'src/utils';
 import { ChangelogService } from './changelog.service';
 import {
   CreateChangelogDto,
+  DeleteByIdsDto,
   GetLogDto,
   MergeHookDto,
+  CallJobMethodDto,
   StartChangelogDto,
   UpdateOneDto,
 } from './changelog.dto';
@@ -22,10 +25,11 @@ export class ChangelogController {
     @Body() createChangelogDto: CreateChangelogDto,
     @Session() session: SessionDto,
   ) {
+    const sessionUser = getSessionUser(session);
     const { projectId, type, mode, id } = createChangelogDto;
     const projectData = await this.changelogService.checkAndGetProjectInfo(
       projectId,
-      session.user,
+      sessionUser,
     );
     const changelog = await this.changelogService.checkChangelogNext(
       type,
@@ -35,7 +39,7 @@ export class ChangelogController {
     const data = await this.changelogService.create(
       createChangelogDto,
       { ...projectData, changelog },
-      session.user,
+      sessionUser,
     );
     return { data };
   }
@@ -43,10 +47,11 @@ export class ChangelogController {
   @ApiOperation({ summary: '启动发布' })
   @Post('start')
   async start(@Body() body: StartChangelogDto, @Session() session: SessionDto) {
+    const sessionUser = getSessionUser(session);
     const { project, environment } = await this.changelogService.findOneBy(
       body.id,
     );
-    await this.changelogService.checkAndGetProjectInfo(project, session.user);
+    await this.changelogService.checkAndGetProjectInfo(project, sessionUser);
     const data = await this.changelogService.start(body, environment);
     return { data };
   }
@@ -54,8 +59,9 @@ export class ChangelogController {
   @ApiOperation({ summary: '退出发布' })
   @Post('quit')
   async quit(@Body() { id }: IdBodyRequestDto, @Session() session: SessionDto) {
+    const sessionUser = getSessionUser(session);
     const { project, configPath } = await this.changelogService.findOneBy(id);
-    await this.changelogService.checkAndGetProjectInfo(project, session.user);
+    await this.changelogService.checkAndGetProjectInfo(project, sessionUser);
     const data = await this.changelogService.quit(id, configPath);
     return { data };
   }
@@ -95,10 +101,17 @@ export class ChangelogController {
     return { data };
   }
 
-  @ApiOperation({ summary: 'delete one' })
-  @Post('deleteone')
-  async deleteone(@Body() { id }: IdBodyRequestDto) {
-    const { affected } = await this.changelogService.deleteOne(id);
-    return { affected };
+  @ApiOperation({ summary: 'delete by ids' })
+  @Post('delete')
+  async deleteByIds(@Body() { ids }: DeleteByIdsDto) {
+    const affecteds = await this.changelogService.deleteByIds(ids);
+    return { affecteds, idCount: ids.length };
+  }
+
+  @ApiOperation({ summary: 'call job method' })
+  @Post('callJobMethod')
+  async callJobMethod(@Body() body: CallJobMethodDto) {
+    const data = await this.changelogService.callJobMethodBy(body);
+    return { data };
   }
 }

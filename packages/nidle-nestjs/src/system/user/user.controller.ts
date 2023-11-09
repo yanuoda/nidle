@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Post, Session } from '@nestjs/common';
+import { Body, Controller, Get, Post, Session, Req } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Request } from 'express';
 
 import { FormatResponse, SessionDto } from 'src/common/base.dto';
+import { getSessionUser } from 'src/utils';
 import { UserService } from './user.service';
 import {
   QueryUserDto,
@@ -16,10 +18,9 @@ export class UserController {
 
   @ApiOperation({ summary: '获取用户信息' })
   @Get()
-  async getUser(@Session() session: SessionDto) {
-    if (session.user) return { data: session.user };
-    /** @todo customer error */
-    throw new Error('请先登录');
+  async getUser(@Req() req: Request, @Session() session: SessionDto) {
+    req.session.touch(); // 更新 cookie 过期时间
+    return { data: getSessionUser(session) };
   }
 
   @Post('login')

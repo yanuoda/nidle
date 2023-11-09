@@ -3,7 +3,7 @@ import { ConfigService as NestConfigService, ConfigType } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, In, Not, Repository } from 'typeorm';
 import { InjectQueue } from '@nestjs/bull';
-import { Queue } from 'bull';
+import { Job, Queue } from 'bull';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as extend from 'extend';
@@ -16,7 +16,13 @@ import _const from 'src/const';
 import { SessionUser } from 'src/common/base.dto';
 import { GitlabService } from 'src/lib/gitlab.service';
 import { nidleConfig } from 'src/configuration';
-import { checkValue, readConfig, writeConfig } from 'src/utils';
+import {
+  checkValue,
+  readConfig,
+  writeConfig,
+  renameFileToBak,
+  getFormatNow,
+} from 'src/utils';
 import nidleNext from 'src/utils/nidleNest';
 import { getDuration, transform } from 'src/utils/log';
 
@@ -32,6 +38,7 @@ import {
   CreateChangelogDto,
   GetLogDto,
   MergeHookDto,
+  CallJobMethodDto,
   StartChangelogDto,
 } from './changelog.dto';
 import {
@@ -62,6 +69,16 @@ export class ChangelogService {
     private readonly userService: UserService,
   ) {
     this._nidleConfig = this.nestConfigService.get('nidleConfig');
+    this.changelogQueue.on('global:stalled', (job: Job) => {
+      try {
+        job.update({ ...job.data, _stalled: true });
+        job.log(
+          `[${getFormatNow()}] job ${job.id} has been marked as stalled.`,
+        );
+      } catch (error) {
+        this.logger.error('global:stalled error:', error);
+      }
+    });
   }
 
   async findOneBy(id: number) {
@@ -83,12 +100,24 @@ export class ChangelogService {
     Object.assign(changelog, updateObj);
     return await this.changelogRepository.save(changelog);
   }
-  async deleteOne(id: number) {
-    const changelog = await this.findOneBy(id);
-    this.logger.info(`delete changelog:${id}`, {
-      original: changelog,
-    });
-    return await this.changelogRepository.delete({ id });
+  async deleteByIds(ids: number[]) {
+    let affecteds = 0;
+    for (const id of ids) {
+      const changelog = await this.findOneBy(id);
+      const { affected = 0 } = await this.changelogRepository.delete({ id });
+      this.logger.info(`delete changelog:${id}`, {
+        original: changelog,
+        affected,
+      });
+      affecteds += affected;
+      // 重命名相关文件（增加 '.bak' 后缀，可方便清理或恢复）
+      renameFileToBak(changelog.configPath);
+      if (changelog.status !== Status.NEW) {
+        // 新建的发布还没有生成 log 文件
+        renameFileToBak(changelog.logPath);
+      }
+    }
+    return affecteds;
   }
 
   async findAllByOpts(opts: FindManyOptions<Changelog>) {
@@ -378,10 +407,10 @@ export class ChangelogService {
     this.changelogQueue.add(
       'start',
       {
-        config,
-        options,
         changelogId,
         environment,
+        config,
+        options,
       },
       { attempts: 0 },
     );
@@ -548,11 +577,10 @@ export class ChangelogService {
           content: `${mrProjectName}/${branch} ${title}; 创建人: ${lastCommit?.author?.name}; 处理人: ${mrUserName}`,
           body: {
             id: id,
-            projectId: project,
             type: `code-review-${isMerged ? 'success' : 'fail'}`,
             enviroment: environment,
+            projectId: project,
           },
-          timestamp: new Date().getTime(),
           users: [receiveUser.name || receiveUser.login],
         });
       }
@@ -597,7 +625,7 @@ export class ChangelogService {
         try {
           // webhook发布
           // 1. 新建发布记录
-          const newChangelog = await this.create(
+          const { changelog: newChangelog } = await this.create(
             {
               id: changelog.id,
               branch: changelog.branch,
@@ -612,13 +640,13 @@ export class ChangelogService {
           const config = readConfig(changelog.configPath);
           await this.start(
             {
-              id: newChangelog.changelog.id,
-              configPath: newChangelog.changelog.configPath,
+              id: newChangelog.id,
+              configPath: newChangelog.configPath,
               inputs: config.inputs,
               options: config.options || [],
               notTransform: true,
             },
-            newChangelog.changelog.environment,
+            newChangelog.environment,
           );
           res.startedIds.push(changelog.id);
         } catch (error) {
@@ -673,5 +701,11 @@ export class ChangelogService {
       mrDetail.target_branch,
     );
     return { crRes, adRes };
+  }
+
+  async callJobMethodBy({ id, method, params }: CallJobMethodDto) {
+    const job = await this.changelogQueue.getJob(id);
+    if (!job[method]) throw new Error(`job [${method}] is undefined.`);
+    return await job[method](...params);
   }
 }

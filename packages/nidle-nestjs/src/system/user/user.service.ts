@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 
 import { Member } from './member.entity';
 import { ModifyPasswordDto, QueryUserDto, RegisterDto } from './user.dto';

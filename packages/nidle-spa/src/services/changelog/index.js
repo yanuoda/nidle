@@ -68,3 +68,11 @@ export async function updateChangelog(params) {
     data: params
   })
 }
+
+// 批量删除发布
+export async function deleteByIds(params) {
+  return request('/api/changelog/delete', {
+    method: 'POST',
+    data: params
+  })
+}

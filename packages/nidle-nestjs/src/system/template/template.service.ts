@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 import { buildEqualWhere, buildLikeWhere } from 'src/utils';
 import {
@@ -15,6 +17,8 @@ export class TemplateService {
   constructor(
     @InjectRepository(Template)
     private readonly templateRepository: Repository<Template>,
+    @Inject(WINSTON_MODULE_PROVIDER)
+    private readonly logger: Logger,
   ) {}
 
   async create(createTemplateDto: CreateTemplateDto) {
@@ -58,6 +62,10 @@ export class TemplateService {
   }
 
   async remove(id: number) {
+    const template = await this.findOneBy({ id });
+    this.logger.info(`delete template:${id}`, {
+      original: template,
+    });
     return await this.templateRepository.delete({ id });
   }
 }

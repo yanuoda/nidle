@@ -131,8 +131,12 @@ const ServerList = () => {
       key: 'action',
       render: (text, record) => (
         <Space size="middle">
-          <a onClick={() => handleOpenModal(record)}>编辑</a>
-          <a onClick={() => handleDeleteServer(record)}>删除</a>
+          <Button type="link" onClick={() => handleOpenModal(record)} style={{ padding: 4 }}>
+            编辑
+          </Button>
+          <Button type="link" onClick={() => handleDeleteServer(record)} style={{ padding: 4 }}>
+            删除
+          </Button>
         </Space>
       )
     }

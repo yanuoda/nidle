@@ -7,7 +7,7 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 
 import _const from 'src/const';
-import { asyncWait } from 'src/utils';
+import { asyncWait, getFormatNow } from 'src/utils';
 import { nidleConfig } from 'src/configuration';
 import { ProjectService } from '../project/project.service';
 // import { Changelog } from './changelog.entity';
@@ -39,8 +39,11 @@ export class ChangelogProcessor {
     const project = await this.projectService.findOne({
       id: changelog.project,
     });
-    const msgTitle = `应用:${project.name} [${_env.label}环境] `;
-    const msgContent = `git项目: ${config.name} / 分支: ${config.repository.branch} / 创建人: ${config.repository.userName}`;
+    const msgTitle = `应用: ${project.name} [${_env.label}环境] `;
+    let msgContent = `分支: ${config.repository.branch} | 创建人: ${config.repository.userName} | 发布id: ${changelog.id}`;
+    if (changelog.description) {
+      msgContent += ` | 描述: ${changelog.description}`;
+    }
 
     await manager.init();
     await manager.mount(options, (_data) => {
@@ -52,11 +55,10 @@ export class ChangelogProcessor {
           content: msgContent,
           body: {
             id: changelogId,
-            projectId: changelog.project,
             type: 'code-review-request',
             enviroment: environment,
+            projectId: changelog.project,
           },
-          timestamp: new Date().getTime(),
         });
       }
       const stageIndex = config.stages.findIndex(
@@ -66,7 +68,7 @@ export class ChangelogProcessor {
         job.progress(Math.ceil((stageIndex / config.stages.length) * 100));
       }
       job.log(
-        `manager.mount update changelog:${changelogId} with data:${JSON.stringify(
+        `[${getFormatNow()}] manager.mount update changelog:${changelogId} with data:${JSON.stringify(
           _data,
         )}`,
       );
@@ -83,11 +85,10 @@ export class ChangelogProcessor {
             content: msgContent,
             body: {
               id: changelogId,
-              projectId: changelog.project,
               type: 'publish-success',
               enviroment: environment,
+              projectId: changelog.project,
             },
-            timestamp: new Date().getTime(),
           });
           if (
             environment ===
@@ -98,9 +99,23 @@ export class ChangelogProcessor {
             await this.projectService.resetProjectServerOccupation(changelogId);
             await manager.backup();
           }
-          job.progress(98);
-          await asyncWait(1000 * this.afterManagerWaitSecs);
           await job.progress(100);
+          /**
+           * 默认情况下 resolve() 以后会自动移动到 Completed
+           * 但构建任务时间长，容易被 bull 标记成 stalled, 同时因为我们的 settings: { stalledInterval: 0 }
+           * 不会去检查 stalled 的 job （检查到了会自动重新运行，我们的构建任务并不支持）
+           * 导致 stalled job 会一直停留在 active（其实构建子进程运行已正常完成构建）
+           * 故手动移动 job 至 Completed 确保状态正常
+           */
+          if (job.data._stalled) {
+            job.moveToCompleted('stalled move', true).catch((e) => {
+              job.log(
+                'stalled move err: ' +
+                  JSON.stringify(e, Object.getOwnPropertyNames(e), 2),
+              );
+            });
+          }
+          await asyncWait(1000 * this.afterManagerWaitSecs);
           resolve();
         });
 
@@ -112,18 +127,26 @@ export class ChangelogProcessor {
             content: msgContent,
             body: {
               id: changelogId,
-              projectId: changelog.project,
               type: 'publish-fail',
               enviroment: environment,
+              projectId: changelog.project,
             },
-            timestamp: new Date().getTime(),
           });
           const info = `changelogProcessor error - changelogId:${changelogId} | environment:${environment}`;
           // const error = JSON.stringify(e); // Error 对象的 stack/message 为不可枚举的属性，此代码运行结果为 '{}'
           const error = JSON.stringify(e, Object.getOwnPropertyNames(e), 2);
           this.logger.error(info, { error });
-          job.log(info);
+          job.log(`[${getFormatNow()}] ${info}`);
           job.log(error);
+          // 理由见上面 ↑ job.moveToCompleted()
+          if (job.data._stalled) {
+            job.moveToFailed({ message: info }, true).catch((e) => {
+              job.log(
+                'stalled move err: ' +
+                  JSON.stringify(e, Object.getOwnPropertyNames(e), 2),
+              );
+            });
+          }
           await asyncWait(1000 * this.afterManagerWaitSecs);
           reject(e);
         });
@@ -137,11 +160,10 @@ export class ChangelogProcessor {
       content: msgContent,
       body: {
         id: changelogId,
-        projectId: changelog.project,
         type: 'publish-start',
         enviroment: environment,
+        projectId: changelog.project,
       },
-      timestamp: new Date().getTime(),
     });
     await manager.start();
     await afterManagerStart();

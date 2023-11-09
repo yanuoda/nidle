@@ -63,7 +63,17 @@ export class CodeReviewDto {
 }
 
 export class UpdateOneDto extends PartialType(Changelog) {
-  /** 所属项目id */
   @IsNotEmpty()
   readonly id: number;
+}
+
+export class DeleteByIdsDto {
+  @IsNotEmpty()
+  readonly ids: number[];
+}
+
+export class CallJobMethodDto {
+  id: number;
+  method: string;
+  params: any[];
 }

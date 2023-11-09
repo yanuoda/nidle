@@ -1,6 +1,6 @@
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard from '@ant-design/pro-card'
-import { Tabs, Button, Space, Modal, message, Input } from 'antd'
+import { Tabs, Button, Space, Modal, message, Input, BackTop } from 'antd'
 import { useState, useEffect, useRef } from 'react'
 import { Link, history } from 'umi'
 import { create, start, quit, detail as fetchDetail, fetchLog, updateChangelog } from '@/services/changelog'
@@ -371,7 +371,7 @@ const App = props => {
   }
 
   const BaseInfo = (
-    <ProCard title="基础信息" hoverable extra={nextBtns()}>
+    <ProCard title="基础信息" extra={nextBtns()}>
       <table className="mod-baseinfo">
         <tbody>
           <tr>
@@ -381,7 +381,7 @@ const App = props => {
             <td>
               {changelog.commitId ? (
                 <a href={`${config.repository.url}/tree/${changelog.commitId}`} target="_blank" rel="noreferrer">
-                  查看代码
+                  {changelog.commitId.slice(0, 10)}
                 </a>
               ) : (
                 '-'
@@ -500,6 +500,7 @@ const App = props => {
       ></Steps>
       {TabContainer}
       <ProCard style={{ marginTop: '20px' }}>发布动作：{nextBtns('large')}</ProCard>
+      <BackTop />
     </PageContainer>
   )
 }

@@ -1,11 +1,32 @@
 import { PageContainer } from '@ant-design/pro-layout'
 import ProTable from '@ant-design/pro-table'
-import { Button } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
-import { queryTemplateList } from '@/services/template'
+import { Modal, Space, Button } from 'antd'
+import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
+import { queryTemplateList, deleteTemplate } from '@/services/template'
 import { Link } from 'umi'
 
 const Template = () => {
+  const handleDeleteTemp = id => {
+    Modal.confirm({
+      title: 'Confirm',
+      icon: <ExclamationCircleOutlined />,
+      content: '确认删除该模板？',
+      onOk() {
+        return delMethod(id)
+      }
+    })
+  }
+
+  const delMethod = async id => {
+    const delRes = await deleteTemplate({ id })
+    const { success } = delRes || {}
+
+    if (success) {
+      ref.current.reload()
+      message.success('删除成功！')
+    }
+  }
+
   const columns = [
     {
       title: '模板名称',
@@ -23,11 +44,18 @@ const Template = () => {
       valueType: 'option',
       align: 'center',
       width: 300,
-      render: (dom, { id, name }) => [
-        <Link key="settings" to={`/template/detail?id=${id}&name=${name}`}>
-          编辑
-        </Link>
-      ]
+      render: (dom, { id, name }) => (
+        <Space size="middle">
+          <Link key="settings" to={`/template/detail?id=${id}&name=${name}`}>
+            <Button type="link" style={{ padding: 4 }}>
+              编辑
+            </Button>
+          </Link>
+          <Button type="link" onClick={() => handleDeleteTemp(id)} style={{ padding: 4 }}>
+            删除
+          </Button>
+        </Space>
+      )
     }
   ]
 

@@ -2,6 +2,8 @@ import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository, In } from 'typeorm';
 import * as dayjs from 'dayjs';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 import { buildEqualWhere, buildLikeWhere, checkValue } from 'src/utils';
 import nidleNext from 'src/utils/nidleNest';
@@ -36,6 +38,8 @@ export class ProjectService {
     private readonly changelogService: ChangelogService,
     private readonly userService: UserService,
     private readonly serverService: ServerService,
+    @Inject(WINSTON_MODULE_PROVIDER)
+    private readonly logger: Logger,
   ) {}
 
   async create(createProjectDto: CreateProjectDto) {
@@ -159,6 +163,10 @@ export class ProjectService {
   }
 
   async remove(id: number) {
+    const project = await this.findOne({ id });
+    this.logger.info(`delete project:${id}`, {
+      original: project,
+    });
     return await this.projectRepository.delete({ id });
   }
 
@@ -216,6 +224,10 @@ export class ProjectService {
   }
 
   async removeProjectServer(id: number) {
+    const projectServer = await this.findProjectServerBy({ id });
+    this.logger.info(`delete projectServer:${id}`, {
+      original: projectServer,
+    });
     return await this.projectServerRepository.delete({ id });
   }
 

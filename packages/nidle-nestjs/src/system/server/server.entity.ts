@@ -13,7 +13,7 @@ export class Server {
   @Column({ length: 20, nullable: true, comment: '服务器ip' })
   ip: string;
 
-  @Column({ length: 30, nullable: true, comment: '服务器描述' })
+  @Column({ length: 255, nullable: true, comment: '服务器描述' })
   description: string;
 
   @Column({ length: 20, nullable: true, comment: '服务器所属环境' })

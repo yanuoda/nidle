@@ -32,7 +32,7 @@ export class Changelog {
   @Column({ type: 'int', nullable: true, comment: '所属项目id' })
   project: number;
 
-  @Column({ length: 30, nullable: true, comment: '部署分支' })
+  @Column({ length: 255, nullable: true, comment: '部署分支' })
   branch: string;
 
   @Column({ length: 255, nullable: true })

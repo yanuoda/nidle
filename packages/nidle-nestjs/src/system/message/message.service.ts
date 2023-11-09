@@ -1,30 +1,25 @@
-import { Injectable, MessageEvent as CommonMessageEvent } from '@nestjs/common';
+import { Injectable, MessageEvent } from '@nestjs/common';
 import { Observable, Subscriber } from 'rxjs';
-import { MessageEvent } from './message.interface';
 import { remove } from 'lodash';
-// import * as EventEmitter from 'events';
+
+import { MessageData } from './message.interface';
 
 @Injectable()
 export class MessageService {
-  // private readonly emitter = new EventEmitter();
-  private sseSubscribers = [];
+  private sseSubscribers: Subscriber<MessageEvent>[] = [];
 
-  send(message: MessageEvent) {
-    this.sendSse(message);
+  send(message: MessageData) {
+    this.sendSse({ ...message, timestamp: message.timestamp || Date.now() });
   }
 
   createSse() {
-    return new Observable((subscriber: Subscriber<CommonMessageEvent>) => {
-      // this.emitter.on('send', (data: any) => {
-      //   subscriber.next({ data });
-      // });
+    return new Observable((subscriber: Subscriber<MessageEvent>) => {
       remove(this.sseSubscribers, (subscriber) => subscriber.closed);
       this.sseSubscribers.push(subscriber);
     });
   }
 
-  sendSse(message: MessageEvent) {
-    // this.emitter.emit('send', message);
+  sendSse(message: MessageData) {
     remove(this.sseSubscribers, (subscriber) => subscriber.closed);
     this.sseSubscribers.forEach((subscriber) => {
       subscriber.next({

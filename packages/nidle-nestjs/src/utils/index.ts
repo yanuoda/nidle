@@ -1,7 +1,15 @@
 import * as fs from 'fs';
 import { FindOptionsWhere, Like } from 'typeorm';
+import * as dayjs from 'dayjs';
 
 import _const from 'src/const';
+import { SessionDto } from 'src/common/base.dto';
+
+export function getSessionUser(session: SessionDto) {
+  if (session.user) return session.user;
+  /** @todo customer error */
+  throw new Error('请先登录');
+}
 
 export function formatPageParams(page: unknown, pageSize: unknown) {
   let [_page, _pageSize] = [Number(page), Number(pageSize)];
@@ -64,4 +72,12 @@ export function readConfig(path: string) {
 }
 export function writeConfig(path: string, data: Record<string, any>) {
   fs.writeFileSync(path, JSON.stringify(data, undefined, 2));
+}
+
+export function renameFileToBak(path: string) {
+  fs.renameSync(path, path + '.bak');
+}
+
+export function getFormatNow() {
+  return dayjs().format('YYYY-MM-DD HH:mm:ss');
 }
