@@ -42,6 +42,7 @@ import { UserModule } from '../user/user.module';
           settings: {
             lockDuration: Number(_queueConfig.changelog.lockDuration),
             stalledInterval: Number(_queueConfig.changelog.stalledInterval),
+            maxStalledCount: Number(_queueConfig.changelog.maxStalledCount),
           },
           processors: [
             {
