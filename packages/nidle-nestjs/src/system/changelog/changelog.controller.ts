@@ -76,12 +76,16 @@ export class ChangelogController {
         changelog.project,
         sessionUser,
       );
-    const data = this.changelogService.createAndStart(changelog, {
-      repositoryType,
-      repositoryUrl,
-      name: projectName,
-      gitlabId,
-    });
+    const data = await this.changelogService.createAndStart(
+      changelog,
+      {
+        repositoryType,
+        repositoryUrl,
+        name: projectName,
+        gitlabId,
+      },
+      sessionUser,
+    );
     return { data };
   }
 

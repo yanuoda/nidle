@@ -37,6 +37,14 @@ export async function start(params) {
   })
 }
 
+// 详情
+export async function republish(params) {
+  return request('/api/changelog/republish', {
+    method: 'POST',
+    data: params
+  })
+}
+
 // 退出构建任务
 export async function quit(params) {
   return request('/api/changelog/quit', {

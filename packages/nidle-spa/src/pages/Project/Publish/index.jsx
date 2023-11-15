@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
-import { Modal, Tabs, Badge, Button, message } from 'antd'
-import { ExclamationCircleOutlined } from '@ant-design/icons'
+import { Modal, Tabs, Badge, Button, Popconfirm, message } from 'antd'
+import { ExclamationCircleOutlined, SubnodeOutlined } from '@ant-design/icons'
 import { Link, history } from 'umi'
 
 import { queryPublishData } from '@/services/publish'
-import { deleteByIds } from '@/services/changelog'
+import { deleteByIds, republish } from '@/services/changelog'
 import PublishList from './components/PublishList'
 import CreateChangelog from './components/CreateChangelog'
 import { transformDuration } from '@/utils'
@@ -14,7 +14,7 @@ import { mode as environmentList } from '@/dicts/app'
 import styles from './index.less'
 
 const Publish = props => {
-  const { name, id } = props.location.query
+  const { name: projectName, id: projectId } = props.location.query
 
   // 面包屑导航自定义
   const routes = [
@@ -23,7 +23,7 @@ const Publish = props => {
       breadcrumbName: '应用列表'
     },
     {
-      breadcrumbName: name || id
+      breadcrumbName: projectName || projectId
     },
     {
       breadcrumbName: '发布记录'
@@ -34,7 +34,7 @@ const Publish = props => {
   const [publishDataList, setPublishDataList] = useState({})
   useEffect(async () => {
     // 获取所有发布数据
-    const { data, success } = await queryPublishData({ id })
+    const { data, success } = await queryPublishData({ id: projectId })
     if (success) {
       setPublishDataList(data)
     }
@@ -58,9 +58,7 @@ const Publish = props => {
       ),
       onOk: async () => {
         const ids = [id, ...children.map(({ id }) => id)]
-        console.log('delete changelog:', ids)
         const res = await deleteByIds({ ids })
-        console.log('res:', res)
         if (res.success) {
           message.success('删除成功')
           setPublishDataList(_data => {
@@ -83,6 +81,21 @@ const Publish = props => {
         }
       }
     })
+  }
+
+  const republishConfirm = async ({ id, status }) => {
+    if (status !== 'PENDING') {
+      message.info('请等当前发布完成后再进行操作')
+      return
+    }
+    const res = await republish({ id })
+    if (res.success) {
+      message.success('操作成功')
+      const { data, success } = await queryPublishData({ id: projectId })
+      if (success) {
+        setPublishDataList(data)
+      }
+    }
   }
 
   const columns = [
@@ -173,7 +186,7 @@ const Publish = props => {
       align: 'center',
       width: 300,
       render: (dom, record, index) => {
-        const { id, project, status, isChild, nextPublish } = record
+        const { id, project, status, isChild, nextPublish, pendingMR } = record
         const btnDoms = [
           <Link key="publish" to={`/project/${project}/changelog/detail?id=${id}`}>
             <Button type="link" key="发布详情" className={styles.linkBtn}>
@@ -194,6 +207,13 @@ const Publish = props => {
         ]
         // 子发布记录不可操作，直接返回
         if (isChild) return btnDoms
+        if (pendingMR) {
+          btnDoms.unshift(
+            <Popconfirm placement="top" trigger="hover" title="有新的内容，是否直接重新发布？" onConfirm={() => republishConfirm(record)}>
+              <Button type='primary' icon={<SubnodeOutlined />}></Button>
+            </Popconfirm> 
+          )
+        }
         //
         const { buttonText, redirectUrl, quit } = nextPublish || {}
         if (quit) {
@@ -228,7 +248,7 @@ const Publish = props => {
   return (
     <PageContainer
       header={{
-        title: `应用：${name}`,
+        title: `应用：${projectName}`,
         breadcrumb: {
           routes,
           itemRender({ path, breadcrumbName }) {
@@ -237,12 +257,12 @@ const Publish = props => {
           }
         },
         extra: [
-          <CreateChangelog projectId={id} projectName={name} key="CreateChangelog" />,
+          <CreateChangelog projectId={projectId} projectName={projectName} key="CreateChangelog" />,
           <Button
             key="projectSettings"
             type="default"
             onClick={() => {
-              history.push(`/project/settings?id=${id}&name=${name}`)
+              history.push(`/project/settings?id=${projectId}&name=${projectName}`)
             }}
           >
             应用设置

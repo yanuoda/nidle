@@ -579,6 +579,7 @@ export class ChangelogService {
       name: projectName,
       gitlabId,
     }: Partial<Project>,
+    user?: SessionUser,
   ) {
     // 1. 新建发布记录
     const { changelog: newChangelog } = await this.create(
@@ -590,6 +591,7 @@ export class ChangelogService {
         mode: changelog.environment,
       },
       { repositoryType, repositoryUrl, projectName, gitlabId, changelog },
+      user,
     );
 
     // 2. 开始构建
