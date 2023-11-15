@@ -63,6 +63,28 @@ export class ChangelogController {
     return { data };
   }
 
+  @ApiOperation({ summary: '基于当前发布创建并运行发布任务' })
+  @Post('republish')
+  async republish(
+    @Body() { id }: IdBodyRequestDto,
+    @Session() session: SessionDto,
+  ) {
+    const sessionUser = getSessionUser(session);
+    const changelog = await this.changelogService.findOneBy(id);
+    const { repositoryType, repositoryUrl, projectName, gitlabId } =
+      await this.changelogService.checkAndGetProjectInfo(
+        changelog.project,
+        sessionUser,
+      );
+    const data = this.changelogService.createAndStart(changelog, {
+      repositoryType,
+      repositoryUrl,
+      name: projectName,
+      gitlabId,
+    });
+    return { data };
+  }
+
   @ApiOperation({ summary: '退出发布' })
   @Post('quit')
   async quit(@Body() { id }: IdBodyRequestDto, @Session() session: SessionDto) {

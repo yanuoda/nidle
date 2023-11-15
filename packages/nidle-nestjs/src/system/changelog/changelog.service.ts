@@ -321,6 +321,7 @@ export class ChangelogService {
       active: 0,
       commitId,
       description: _description,
+      pendingMR: 0,
     });
     if (user?.id) newChangelogInstance.developer = user?.id;
     if (createConfig) newChangelogInstance.logPath = config.log.all;
@@ -570,6 +571,47 @@ export class ChangelogService {
     }
   }
 
+  async createAndStart(
+    changelog: Changelog,
+    {
+      repositoryType,
+      repositoryUrl,
+      name: projectName,
+      gitlabId,
+    }: Partial<Project>,
+  ) {
+    // 1. 新建发布记录
+    const { changelog: newChangelog } = await this.create(
+      {
+        id: changelog.id,
+        branch: changelog.branch,
+        type: changelog.type,
+        projectId: changelog.project,
+        mode: changelog.environment,
+      },
+      { repositoryType, repositoryUrl, projectName, gitlabId, changelog },
+    );
+
+    // 2. 开始构建
+    const config = readConfig(changelog.configPath);
+    await this.start(
+      {
+        id: newChangelog.id,
+        configPath: newChangelog.configPath,
+        inputs: config.inputs,
+        options: config.options || [],
+        notTransform: true,
+      },
+      {
+        environment: newChangelog.environment,
+        changelogDesc: newChangelog.description,
+        projectId: changelog.project,
+        projectName,
+      },
+    );
+    return newChangelog.id;
+  }
+
   async handleCodeReviewByMR({
     projectIds,
     mrProjectName,
@@ -635,7 +677,7 @@ export class ChangelogService {
     projects: Project[],
     targetBranch: string,
   ): Promise<{ startedIds: number[]; errorIds: number[] }> {
-    const res = { startedIds: [], errorIds: [] };
+    const res = { startedIds: [], errorIds: [], pendingIds: [] };
     const changelogs = await this.changelogRepository.findBy({
       project: In(projects.map(({ id }) => id)),
       branch: targetBranch,
@@ -645,6 +687,20 @@ export class ChangelogService {
     });
     if (changelogs.length) {
       for (const changelog of changelogs) {
+        if (
+          // 构建中的 MR
+          changelog.status === Status.PENDING ||
+          // 生产环境的 webhook
+          changelog.environment === 'production'
+        ) {
+          /** MR 累积 */
+          await this.changelogRepository.update(
+            { id: changelog.id },
+            { pendingMR: (changelog.pendingMR || 0) + 1 },
+          );
+          res.pendingIds.push(changelog.id);
+          continue;
+        }
         const {
           repositoryType,
           repositoryUrl,
@@ -653,35 +709,12 @@ export class ChangelogService {
         } = projects.find(({ id }) => id === changelog.project);
         try {
           // webhook发布
-          // 1. 新建发布记录
-          const { changelog: newChangelog } = await this.create(
-            {
-              id: changelog.id,
-              branch: changelog.branch,
-              type: changelog.type,
-              projectId: changelog.project,
-              mode: changelog.environment,
-            },
-            { repositoryType, repositoryUrl, projectName, gitlabId, changelog },
-          );
-
-          // 2. 开始构建
-          const config = readConfig(changelog.configPath);
-          await this.start(
-            {
-              id: newChangelog.id,
-              configPath: newChangelog.configPath,
-              inputs: config.inputs,
-              options: config.options || [],
-              notTransform: true,
-            },
-            {
-              environment: newChangelog.environment,
-              changelogDesc: newChangelog.description,
-              projectId: changelog.project,
-              projectName,
-            },
-          );
+          this.createAndStart(changelog, {
+            repositoryType,
+            repositoryUrl,
+            name: projectName,
+            gitlabId,
+          });
           res.startedIds.push(changelog.id);
         } catch (error) {
           // 某一条报错后不影响其他记录的发布

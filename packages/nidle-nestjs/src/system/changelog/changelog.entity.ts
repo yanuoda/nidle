@@ -86,4 +86,11 @@ export class Changelog {
 
   @Column({ length: 255, nullable: true, comment: '描述' })
   description: string;
+
+  @Column({
+    type: 'int',
+    nullable: true,
+    comment: '被暂缓构建动作的MR',
+  })
+  pendingMR: number;
 }
