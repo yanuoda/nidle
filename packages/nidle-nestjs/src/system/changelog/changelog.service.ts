@@ -687,6 +687,12 @@ export class ChangelogService {
     });
     if (changelogs.length) {
       for (const changelog of changelogs) {
+        const {
+          repositoryType,
+          repositoryUrl,
+          name: projectName,
+          gitlabId,
+        } = projects.find(({ id }) => id === changelog.project);
         if (
           // 构建中的 MR
           changelog.status === Status.PENDING ||
@@ -698,15 +704,25 @@ export class ChangelogService {
             { id: changelog.id },
             { pendingMR: (changelog.pendingMR || 0) + 1 },
           );
+          const _env = _const.environments.find(
+            (item) => item.value === changelog.environment,
+          );
+          this.messageService.send({
+            type: 'notification',
+            title: `应用: ${projectName} [${_env.label}环境] 发布待确认`,
+            content: `未自动发布，请手动确认 | 分支: ${
+              changelog.branch
+            } | 发布id: ${changelog.id} ${changelog.description || ''}`,
+            body: {
+              id: changelog.id,
+              type: 'publish-start',
+              environment: changelog.environment,
+              projectId: changelog.project,
+            },
+          });
           res.pendingIds.push(changelog.id);
           continue;
         }
-        const {
-          repositoryType,
-          repositoryUrl,
-          name: projectName,
-          gitlabId,
-        } = projects.find(({ id }) => id === changelog.project);
         try {
           // webhook发布
           this.createAndStart(changelog, {
