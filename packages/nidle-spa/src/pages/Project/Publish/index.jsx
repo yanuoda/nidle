@@ -84,7 +84,7 @@ const Publish = props => {
   }
 
   const republishConfirm = async ({ id, status }) => {
-    if (status !== 'PENDING') {
+    if (status === 'PENDING') {
       message.info('请等当前发布完成后再进行操作')
       return
     }
