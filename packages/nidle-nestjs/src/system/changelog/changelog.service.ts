@@ -700,6 +700,13 @@ export class ChangelogService {
           name: projectName,
           gitlabId,
         } = projects.find(({ id }) => id === changelog.project);
+        const _env = _const.environments.find(
+          (item) => item.value === changelog.environment,
+        );
+        const msgTitle = `应用: ${projectName} [${_env.label}环境]`;
+        const msgContent = `分支: ${changelog.branch} | 发布id: ${
+          changelog.id
+        } ${changelog.description || ''}`;
         if (
           // 构建中的 MR
           changelog.status === Status.PENDING ||
@@ -711,15 +718,10 @@ export class ChangelogService {
             { id: changelog.id },
             { pendingMR: (changelog.pendingMR || 0) + 1 },
           );
-          const _env = _const.environments.find(
-            (item) => item.value === changelog.environment,
-          );
           this.messageService.send({
             type: 'notification',
-            title: `应用: ${projectName} [${_env.label}环境] 发布待确认`,
-            content: `未自动发布，请手动确认 | 分支: ${
-              changelog.branch
-            } | 发布id: ${changelog.id} ${changelog.description || ''}`,
+            title: `${msgTitle} 发布待确认`,
+            content: `未自动发布，请手动确认 | ${msgContent}`,
             body: {
               id: changelog.id,
               type: 'publish-start',
@@ -732,7 +734,7 @@ export class ChangelogService {
         }
         try {
           // webhook发布
-          this.createAndStart(changelog, {
+          await this.createAndStart(changelog, {
             repositoryType,
             repositoryUrl,
             name: projectName,
@@ -741,11 +743,22 @@ export class ChangelogService {
           res.startedIds.push(changelog.id);
         } catch (error) {
           // 某一条报错后不影响其他记录的发布
-          res.errorIds.push(changelog.id);
+          this.messageService.send({
+            type: 'notification',
+            title: `${msgTitle} webhook 响应失败`,
+            content: `未能正常触发自动发布，请检查 | ${msgContent}`,
+            body: {
+              id: changelog.id,
+              type: 'publish-fail',
+              environment: changelog.environment,
+              projectId: changelog.project,
+            },
+          });
           this.logger.error(
             `handleAutoDeployByMR error: changelog id = ${changelog.id}`,
             { error },
           );
+          res.errorIds.push(changelog.id);
         }
       }
     }
