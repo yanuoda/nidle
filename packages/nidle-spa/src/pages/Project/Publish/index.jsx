@@ -30,6 +30,8 @@ const Publish = props => {
     }
   ]
 
+  const [republishLoading, setRepublishLoading] = useState(false)
+
   // 处理数据
   const [publishDataList, setPublishDataList] = useState({})
   useEffect(async () => {
@@ -88,14 +90,20 @@ const Publish = props => {
       message.info('请等当前发布完成后再进行操作')
       return
     }
-    const res = await republish({ id })
-    if (res.success) {
-      message.success('操作成功')
-      const { data, success } = await queryPublishData({ id: projectId })
-      if (success) {
-        setPublishDataList(data)
+    setRepublishLoading(true)
+    try {
+      const res = await republish({ id })
+      if (res.success) {
+        message.success('操作成功')
+        const { data, success } = await queryPublishData({ id: projectId })
+        if (success) {
+          setPublishDataList(data)
+        }
       }
+    } catch (error) {
+      console.error(error)
     }
+    setRepublishLoading(false)
   }
 
   const columns = [
@@ -207,9 +215,16 @@ const Publish = props => {
         ]
         // 子发布记录不可操作，直接返回
         if (isChild) return btnDoms
-        if (pendingMR) {
+        // 待发布的 MR，非 新建、取消 状态的记录才展示
+        if (!['NEW', 'CANCEL'].includes(status) && pendingMR) {
           btnDoms.unshift(
-            <Popconfirm placement="top" trigger="hover" title="有新的内容，是否直接重新发布？" onConfirm={() => republishConfirm(record)}>
+            <Popconfirm
+              placement="top"
+              trigger={republishLoading ? "click" : "hover"}
+              title="有新的内容，是否直接重新发布？"
+              showCancel={false}
+              onConfirm={() => republishConfirm(record)}
+            >
               <Button type='primary' icon={<SubnodeOutlined />}></Button>
             </Popconfirm> 
           )
