@@ -365,7 +365,13 @@ export class ChangelogService {
       inputs = [],
       notTransform = false,
     }: StartChangelogDto,
-    { environment, changelogDesc, projectId, projectName }: StartParams,
+    {
+      environment,
+      changelogType,
+      changelogDesc,
+      projectId,
+      projectName,
+    }: StartParams,
   ) {
     const answers = inputs.length
       ? this.configService.setInput(inputAnswers, inputs, notTransform)
@@ -435,6 +441,7 @@ export class ChangelogService {
         config,
         options,
         environment,
+        changelogType,
         changelogDesc,
         projectId,
         projectName,
@@ -603,6 +610,7 @@ export class ChangelogService {
       },
       {
         environment: newChangelog.environment,
+        changelogType: newChangelog.type,
         changelogDesc: newChangelog.description,
         projectId: changelog.project,
         projectName,

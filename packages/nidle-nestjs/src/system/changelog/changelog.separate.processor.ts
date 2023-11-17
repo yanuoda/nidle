@@ -16,6 +16,7 @@ export default async function (job: Job, cb: DoneCallback) {
       config,
       options,
       environment,
+      changelogType,
       changelogDesc,
       projectId,
       projectName,
@@ -113,16 +114,19 @@ export default async function (job: Job, cb: DoneCallback) {
         ],
       });
       if (
+        // 生产环境
         environment ===
-        _const.environments[_const.environments.length - 1].value
+          _const.environments[_const.environments.length - 1].value &&
+        // 非 webhook 类型的发布
+        changelogType !== 'webhook'
       ) {
-        // 生产结束要释放资源
         // 解除环境占用
         job.progress({
           service: 'projectService',
           method: 'resetProjectServerOccupation',
           params: [changelogId],
         });
+        // 清理生成的文件
         await manager.backup();
       }
       await job.progress(100);

@@ -42,6 +42,7 @@ export class StartChangelogDto {
 }
 export interface StartParams {
   environment: string;
+  changelogType: string;
   changelogDesc: string;
   projectId: number;
   projectName: string;
