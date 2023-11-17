@@ -5,6 +5,8 @@ import * as requireFromString from 'require-from-string';
 import * as extend from 'extend';
 import { isEmpty, isFunction } from 'lodash';
 import * as NidleChain from 'nidle-chain';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 import { GitlabService } from 'src/lib/gitlab.service';
 import { nidleConfig } from 'src/configuration';
@@ -22,6 +24,8 @@ export class ConfigService {
     private readonly nestConfigService: NestConfigService,
     @Inject(forwardRef(() => ProjectService))
     private readonly projectService: ProjectService,
+    @Inject(WINSTON_MODULE_PROVIDER)
+    private readonly logger: Logger,
   ) {
     this._nidleConfig = this.nestConfigService.get('nidleConfig');
   }
@@ -63,8 +67,13 @@ export class ConfigService {
     if (!configStr) return '';
 
     let config = requireFromString(configStr);
-    if (typeof config === 'function') {
-      config = config({ type, isNew });
+    try {
+      if (typeof config === 'function') {
+        config = config({ type, isNew });
+      }
+    } catch (error) {
+      this.logger.error('nidle config function error.', { error });
+      throw error;
     }
 
     if (config.extend) {
