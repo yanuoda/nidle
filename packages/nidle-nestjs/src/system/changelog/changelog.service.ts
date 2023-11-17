@@ -138,10 +138,7 @@ export class ChangelogService {
       affecteds += affected;
       // 重命名相关文件（增加 '.bak' 后缀，可方便清理或恢复）
       renameFileToBak(changelog.configPath);
-      if (changelog.status !== Status.NEW) {
-        // 新建的发布还没有生成 log 文件
-        renameFileToBak(changelog.logPath);
-      }
+      renameFileToBak(changelog.logPath);
     }
     return affecteds;
   }

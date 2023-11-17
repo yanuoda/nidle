@@ -75,7 +75,10 @@ export function writeConfig(path: string, data: Record<string, any>) {
 }
 
 export function renameFileToBak(path: string) {
-  fs.renameSync(path, path + '.bak');
+  const state = fs.statSync(path, { throwIfNoEntry: false });
+  if (typeof state !== 'undefined') {
+    fs.renameSync(path, path + '.bak');
+  }
 }
 
 export function getFormatNow() {
