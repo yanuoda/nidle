@@ -120,6 +120,14 @@ export class FetchProjectServerResponseDto extends FormatResponse {
   data: ServerList | RelatedProjectServer[];
 }
 
+export class QueryPublishListDto extends PageQuery {
+  readonly projectId?: number;
+  readonly environment?: string;
+  readonly excludeId?: number;
+  readonly period?: string;
+  readonly showInfo?: boolean;
+}
+
 export class AssembleChangelog extends OmitType(Changelog, ['developer']) {
   developer?: string;
   commitUrl?: string;
@@ -136,4 +144,10 @@ export class PublishEnvListMap implements Record<Environment, unknown> {
 
 export class PublishListResponseDto extends FormatResponse {
   data: PublishEnvListMap;
+  total?: number;
+}
+
+export class PublishListResponseDtoV2 extends FormatResponse {
+  data: AssembleChangelog[];
+  total?: number;
 }

@@ -5,6 +5,7 @@ import ProForm, { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-
 import { PlusOutlined } from '@ant-design/icons'
 
 import { fetchBranches, create } from '@/services/changelog'
+import { mode as modeOptions } from '@/dicts/app'
 
 const publishTypes = [
   {
@@ -12,22 +13,8 @@ const publishTypes = [
     value: 'normal'
   },
   {
-    lable: 'webhook自动集成',
+    label: 'webhook自动部署',
     value: 'webhook'
-  }
-]
-const modeOptions = [
-  {
-    value: 'development',
-    label: '测试环境'
-  },
-  {
-    value: 'pre',
-    label: '预发布环境'
-  },
-  {
-    value: 'production',
-    label: '生产环境'
   }
 ]
 
@@ -44,9 +31,6 @@ const CreateChangelog = props => {
     if (success === true) {
       history.push(`/project/${props.projectId}/changelog/detail?id=${data.changelog.id}`)
     }
-    // history.push(
-    //   `/project/${props.projectId}/changelog/detail?branch=${values.branch}&type=${values.type}&projectName=${props.projectName}&mode=${values.mode}`
-    // )
     return true
   }
 

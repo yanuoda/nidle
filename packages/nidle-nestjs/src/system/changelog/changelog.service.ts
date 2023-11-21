@@ -126,7 +126,7 @@ export class ChangelogService {
     Object.assign(changelog, updateObj);
     return await this.changelogRepository.save(changelog);
   }
-  async deleteByIds(ids: number[]) {
+  async deleteByIds(ids: number[], cascade?: boolean) {
     let affecteds = 0;
     for (const id of ids) {
       const changelog = await this.findOneBy(id);
@@ -139,6 +139,21 @@ export class ChangelogService {
       // 重命名相关文件（增加 '.bak' 后缀，可方便清理或恢复）
       renameFileToBak(changelog.configPath);
       renameFileToBak(changelog.logPath);
+
+      if (cascade) {
+        const children = await this.findAllByOpts({
+          select: ['id'],
+          where: {
+            project: changelog.project,
+            environment: changelog.environment,
+            period: changelog.period,
+            id: Not(changelog.id),
+          },
+        });
+        if (children?.length > 0) {
+          affecteds += await this.deleteByIds(children.map(({ id }) => id));
+        }
+      }
     }
     return affecteds;
   }
@@ -149,6 +164,39 @@ export class ChangelogService {
 
   async findAllByPage(opts: FindManyOptions<Changelog>) {
     return await this.changelogRepository.findAndCount(opts);
+  }
+
+  async findPublishGroupByPage(
+    projectId: number,
+    environment: string,
+    current: number,
+    pageSize: number,
+  ) {
+    /**
+     * 基于 period 分组，取最新一条记录 MAX(id)
+     */
+    const baseSql = `
+      SELECT MAX(id) AS id, COUNT(id) AS periodCount
+      FROM changelog_v2
+      WHERE project=${projectId} AND environment='${environment}'
+      GROUP BY period
+    `;
+    const [{ total }] = await this.changelogRepository.query(`
+      SELECT COUNT(*) AS total FROM (${baseSql}) tc
+    `);
+    /**
+     * 基于分组后的数据id，查询对应记录，并 updatedTime 降序 及 分页
+     */
+    const list = await this.changelogRepository.query(
+      `
+        SELECT t1.*, t2.periodCount
+        FROM changelog_v2 t1
+        INNER JOIN (${baseSql}) t2 ON t1.id = t2.id
+        ORDER BY t1.updatedTime DESC
+        LIMIT ${(current - 1) * pageSize},${pageSize}
+      `,
+    );
+    return [list, total] as [(Changelog & { periodCount: number })[], number];
   }
 
   async checkAndGetProjectInfo(projectId: number, user: SessionUser) {

@@ -137,8 +137,8 @@ export class ChangelogController {
 
   @ApiOperation({ summary: 'delete by ids' })
   @Post('delete')
-  async deleteByIds(@Body() { ids }: DeleteByIdsDto) {
-    const affecteds = await this.changelogService.deleteByIds(ids);
+  async deleteByIds(@Body() { ids, cascade }: DeleteByIdsDto) {
+    const affecteds = await this.changelogService.deleteByIds(ids, cascade);
     return { affecteds, idCount: ids.length };
   }
 

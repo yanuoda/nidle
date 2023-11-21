@@ -1,6 +1,6 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Repository, In } from 'typeorm';
+import { FindOptionsWhere, Repository, In, Not } from 'typeorm';
 import * as dayjs from 'dayjs';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
@@ -22,6 +22,7 @@ import {
   UpdateProjectServerDto,
   AssembleChangelog,
   PublishEnvListMap,
+  QueryPublishListDto,
 } from './project.dto';
 import { Project } from './entities/project.entity';
 import { ProjectServer } from './entities/project_server.entity';
@@ -270,16 +271,9 @@ export class ProjectService {
   }
 
   /**
-   * @todo 查询全部 changelog 后才分组
-   *
-   * 1.优化成条件Environment查询
-   *
-   * 2.优化成分页 `this.changelogService.findAllByPage`(sql 难点)
-   *
-   * 重构为分页时需考虑 period 聚合问题，可以先按 period 字段 groupBy 取最新一条，
-   * 再根据 period 查询(left join)过往记录组装 children
-   *
-   * 需要使用 typeorm `QueryBuilder` 构建 sql
+   * 查询全部 changelog 后才分组
+   * - 已优化为分组分页查询 @see findPublishByPage
+   * @deprecated
    */
   async getPublishList(projectId: number) {
     const changelogList = await this.changelogService.findAllByOpts({
@@ -349,5 +343,77 @@ export class ProjectService {
       });
     });
     return publishEnvMap;
+  }
+
+  async findPublishByPage({
+    projectId,
+    environment,
+    current,
+    pageSize,
+  }: QueryPublishListDto) {
+    const [changelogList, total] =
+      await this.changelogService.findPublishGroupByPage(
+        projectId,
+        environment,
+        current,
+        pageSize,
+      );
+
+    const members = await this.userService.findAllByWhere({
+      id: In(
+        Array.from(new Set(changelogList.map(({ developer }) => developer))),
+      ),
+    });
+    const { repositoryUrl } = await this.findOne({ id: projectId });
+    const list = changelogList.map(
+      ({ developer, periodCount, ...changelog }) => {
+        // 开发者信息
+        const currentDeveloper = members.find(({ id }) => id === developer);
+        return {
+          ...changelog,
+          developer: currentDeveloper?.name || String(developer || '-'),
+          commitUrl: `${repositoryUrl}/commit/${changelog.commitId}`,
+          nextPublish: nidleNext(changelog),
+          children: periodCount > 1 ? [] : undefined,
+        } as AssembleChangelog;
+      },
+    );
+    return { list, total };
+  }
+
+  async findPublishChildren({
+    projectId,
+    environment,
+    excludeId,
+    period,
+    showInfo,
+    current,
+    pageSize,
+  }: QueryPublishListDto) {
+    const [changelogList, total] = await this.changelogService.findAllByPage({
+      skip: (current - 1) * pageSize,
+      take: pageSize,
+      order: { createdTime: 'DESC' },
+      where: { project: projectId, environment, id: Not(excludeId), period },
+    });
+    const members = await this.userService.findAllByWhere({
+      id: In(
+        Array.from(new Set(changelogList.map(({ developer }) => developer))),
+      ),
+    });
+    const { repositoryUrl } = await this.findOne({ id: projectId });
+    const list = changelogList.map(({ developer, ...changelog }) => {
+      // 开发者信息
+      const currentDeveloper = members.find(({ id }) => id === developer);
+      return {
+        ...changelog,
+        isChild: true,
+        branch: showInfo ? changelog.branch : undefined,
+        description: showInfo ? changelog.description : undefined,
+        developer: currentDeveloper?.name || String(developer || '-'),
+        commitUrl: `${repositoryUrl}/commit/${changelog.commitId}`,
+      } as AssembleChangelog;
+    });
+    return { list, total };
   }
 }

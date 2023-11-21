@@ -16,9 +16,11 @@ import {
   FetchProjectServerDto,
   FetchProjectServerResponseDto,
   PublishListResponseDto,
+  PublishListResponseDtoV2,
   QueryProjectListDto,
   QueryProjectListResponseDto,
   QueryProjectResponseDto,
+  QueryPublishListDto,
   UpdateContactsDto,
   UpdateProjectServerDto,
   UpdateProjectServerResponseDto,
@@ -141,5 +143,37 @@ export class ProjectController {
   ): Promise<PublishListResponseDto> {
     const data = await this.projectService.getPublishList(id);
     return { data };
+  }
+
+  @ApiOperation({ summary: '获取项目发布列表V2' })
+  @Post('publish/list')
+  async getPublishListV2(
+    @Body() body: QueryPublishListDto,
+  ): Promise<PublishListResponseDtoV2> {
+    const { current, pageSize: _pageSize } = body;
+    const { page, pageSize } = formatPageParams(current, _pageSize);
+
+    const { list, total } = await this.projectService.findPublishByPage({
+      ...body,
+      current: page,
+      pageSize,
+    });
+    return { data: list, total };
+  }
+
+  @ApiOperation({ summary: '获取项目发布子记录列表' })
+  @Post('publish/child-list')
+  async getPublishChildren(
+    @Body() body: QueryPublishListDto,
+  ): Promise<PublishListResponseDtoV2> {
+    const { current, pageSize: _pageSize } = body;
+    const { page, pageSize } = formatPageParams(current, _pageSize);
+
+    const { list, total } = await this.projectService.findPublishChildren({
+      ...body,
+      current: page,
+      pageSize,
+    });
+    return { data: list, total };
   }
 }

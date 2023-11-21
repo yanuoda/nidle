@@ -77,6 +77,7 @@ export class UpdateOneDto extends PartialType(Changelog) {
 export class DeleteByIdsDto {
   @IsNotEmpty()
   readonly ids: number[];
+  readonly cascade?: boolean;
 }
 
 export class CallQueueAndJobMethodDto {
