@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { Tag } from 'antd'
 import { groupBy, remove, sum } from 'lodash'
 import moment from 'moment'
-import { useModel } from 'umi'
+import { useModel, history } from 'umi'
 
 import { getFormatDate } from '@/utils'
 import { NOTIFICATION_SETTING_KEY, OFFEN_USE_PROJECTS_KEY } from '@/config'
@@ -114,11 +114,16 @@ const NoticeIconView = () => {
       ])
 
       if (window.Notification && Notification.permission === 'granted') {
-        new Notification(message.title, {
+        let n = new Notification(message.title, {
+          tag: message.timestamp,
           body: message.content,
           icon: NOTIFICATION_ICONS[message.body.type],
           requireInteraction: message.body.type.includes('fail')
         })
+        n.onclick = () => {
+          history.push(`/project/${message.body.projectId}/changelog/detail?id=${message.body.id}`)
+          n = null
+        }
       }
     }
 
