@@ -116,6 +116,18 @@ export class FetchProjectServerDto {
   readonly mode?: string;
 }
 
+export class FetchProjectBranchesDto {
+  /**
+   * 项目id
+   */
+  @IsNotEmpty()
+  readonly id: number;
+  /**
+   * 模糊查询
+   */
+  readonly search?: string;
+}
+
 export class FetchProjectServerResponseDto extends FormatResponse {
   data: ServerList | RelatedProjectServer[];
 }

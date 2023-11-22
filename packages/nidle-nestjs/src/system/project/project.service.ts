@@ -171,11 +171,13 @@ export class ProjectService {
     return await this.projectRepository.delete({ id });
   }
 
-  async getBranches(id: number) {
+  async getBranches(id: number, search?: string) {
     const { gitlabId, repositoryType } = await this.findOne({ id });
+    const query: Record<string, any> = { per_page: 50 };
+    if (search) query.search = search;
     let branches: Record<string, any>;
     if (repositoryType === 'gitlab') {
-      branches = await this.gitlabService.getBranches(gitlabId);
+      branches = await this.gitlabService.getBranches(gitlabId, query);
     } else {
       /** @check github getBranches(repositoryUrl) */
     }

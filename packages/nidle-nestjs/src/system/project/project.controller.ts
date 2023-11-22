@@ -13,6 +13,7 @@ import {
   CreateOrUpdateProjectResponseDto,
   CreateProjectServerDto,
   CreateProjectServerResponseDto,
+  FetchProjectBranchesDto,
   FetchProjectServerDto,
   FetchProjectServerResponseDto,
   PublishListResponseDto,
@@ -75,12 +76,12 @@ export class ProjectController {
     return { affected };
   }
 
-  @ApiOperation({ summary: '查询项目分支（size=100）' })
+  @ApiOperation({ summary: '查询项目分支（size=50）' })
   @Get('branches')
   async branches(
-    @Query() { id }: IdQueryRequestDto,
+    @Query() { id, search }: FetchProjectBranchesDto,
   ): Promise<Record<string, any>> {
-    const data = await this.projectService.getBranches(id);
+    const data = await this.projectService.getBranches(id, search);
     return { data };
   }
 

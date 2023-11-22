@@ -114,10 +114,17 @@ export class GitlabService {
   }
 
   // 获取项目分支信息
-  async getBranches(id: number) {
+  async getBranches(id: number, params?: Record<string, any>) {
     return await this.apiv4get(
-      // 现在将分页限制放开限制为100条；如果以后还超出此限制，需要做分页请求；参考https://docs.gitlab.com/ee/api/#pagination
-      `/projects/${id}/repository/branches?per_page=100`,
+      /**
+       * https://docs.gitlab.com/ee/api/branches.html
+       *
+       * query 字段：
+       * per_page: 上限为 100，超出 100 依然只返回 100 条
+       * search: 模糊搜索
+       */
+      `/projects/${id}/repository/branches`,
+      { params },
     );
   }
 

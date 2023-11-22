@@ -18,18 +18,27 @@ const publishTypes = [
   }
 ]
 
-const CreateChangelog = props => {
+const CreateChangelog = ({ projectId }) => {
   const [isLoading, setIsLoading] = useState(false)
-  const { data: options } = useRequest(() => {
-    return fetchBranches(props.projectId)
+  const [isBranchLoading, setIsBranchLoading] = useState(false)
+  const [searchInput, setSearchInput] = useState()
+
+  const { data: branchesOptions } = useRequest(async () => {
+    setIsBranchLoading(true)
+    const res = await fetchBranches(projectId, searchInput || undefined)
+    setIsBranchLoading(false)
+    return res
+  }, {
+    debounceInterval: 300,
+    refreshDeps: [searchInput],
   })
 
   const onFinish = async values => {
     setIsLoading(true)
-    const { data, success, errorMessage } = await create({ ...values, projectId: props.projectId })
+    const { data, success, errorMessage } = await create({ ...values, projectId })
     setIsLoading(false)
     if (success === true) {
-      history.push(`/project/${props.projectId}/changelog/detail?id=${data.changelog.id}`)
+      history.push(`/project/${projectId}/changelog/detail?id=${data.changelog.id}`)
     }
     return true
   }
@@ -76,11 +85,16 @@ const CreateChangelog = props => {
         </Col>
       </Row>
       <ProFormSelect
-        showSearch
-        options={options || []}
+        fieldProps={{
+          showSearch: true,
+          filterOption: false,
+          onSearch: setSearchInput,
+          options: branchesOptions || [],
+          allowClear: false,
+          loading: isBranchLoading,
+        }}
         name="branch"
         label="分支"
-        allowClear={false}
         rules={[{ required: true, message: '请选择分支' }]}
       />
       <ProFormText name="description" label="描述" />

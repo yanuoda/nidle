@@ -1,12 +1,10 @@
 import { request } from 'umi'
 
 // 获取分支
-export async function fetchBranches(id) {
+export async function fetchBranches(id, search) {
   const result = await request('/api/project/branches', {
     method: 'GET',
-    params: {
-      id
-    }
+    params: { id, search }
   })
 
   if (result.success === true) {
