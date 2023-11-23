@@ -678,6 +678,7 @@ export class ChangelogService {
     const changelogs = await this.changelogRepository.findBy({
       project: In(projectIds),
       commitId: lastCommit.id,
+      // commit提交人: lastCommit?.author?.name
       codeReviewStatus: CodeReviewStatus.PENDING,
       active: 0,
     });
@@ -696,11 +697,13 @@ export class ChangelogService {
         res.affectedId = id;
         // CR结果通知
         const receiveUser = await this.userService.findOneBy(developer);
-        const title = `CodeReview ${isMerged ? '通过' : '拒绝'}`;
+        const title = `应用: ${mrProjectName} CodeReview ${
+          isMerged ? '通过' : '拒绝'
+        }`;
         this.messageService.send({
           type: 'notification',
           title,
-          content: `${mrProjectName}/${branch} ${title}; 创建人: ${lastCommit?.author?.name}; 处理人: ${mrUserName}`,
+          content: `分支: ${branch} ${title} | 处理人: ${mrUserName}`,
           body: {
             id: id,
             type: `code-review-${isMerged ? 'success' : 'fail'}`,

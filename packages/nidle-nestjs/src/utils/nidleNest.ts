@@ -94,7 +94,9 @@ export default function (changelog: PickedChangelog | null, mode?: string) {
       label: '重新发布',
       environment: environments[0],
       buttonText: '重新发布',
-      redirectUrl: `/project/${project}/changelog/detail?id=${id}&branch=${branch}&action=CREATE&mode=${environments[0].value}&type=${type}`,
+      redirectUrl: `/project/${project}/changelog/detail?id=${id}&branch=${branch}&action=CREATE&mode=${
+        type === 'webhook' ? current.value : environments[0].value
+      }&type=${type}`,
     };
   }
 

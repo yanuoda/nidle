@@ -387,16 +387,16 @@ const App = props => {
                 '-'
               )}
             </td>
-            <th>发起人:</th>
+            <th>创建人:</th>
             <td>{config.repository && config.repository.userName}</td>
           </tr>
           <tr>
-            <th>持续时间:</th>
+            <th>发布耗时:</th>
             <td>{getDuration(logs.duration)}</td>
             <th>状态:</th>
             <td>{statusMap[changelog.status + ''] || changelog.status}</td>
-            <th>环境:</th>
-            <td>{modeMap[changelog.environment] || changelog.environment}</td>
+            <th>发布环境及类型:</th>
+            <td>{modeMap[changelog.environment] || changelog.environment} {changelog.type}</td>
           </tr>
           <tr>
             <th>创建时间:</th>

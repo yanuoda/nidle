@@ -89,7 +89,7 @@ const useColumns = ({
       },
     },
     {
-      title: 'commitId',
+      title: 'CommitId',
       dataIndex: 'commitId',
       align: 'center',
       width: 100,
@@ -104,7 +104,7 @@ const useColumns = ({
       },
     },
     {
-      title: '开发人员',
+      title: '创建人',
       dataIndex: 'developer',
       align: 'center',
       width: 150,
