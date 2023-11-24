@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.7-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.6-alpha.0...v0.2.7-alpha.0) (2023-11-24)
+
+
+### Bug Fixes
+
+* catch 初始存在空目录错误 ([f9c4048](https://github.com/yanuoda/nidle/commit/f9c4048f0df5362157e73fc22045f3ab3c6dfd39))
+
+
+### Features
+
+* 构建时复用 source；发布记录通用查询接口 ([ae92bde](https://github.com/yanuoda/nidle/commit/ae92bde37ebfbafb0d023c5a60dc8d76fecd6a1b))
+
+
+
+
+
 ## [0.2.6-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.5-alpha.0...v0.2.6-alpha.0) (2023-11-24)
 
 **Note:** Version bump only for package nidle-monorepo
