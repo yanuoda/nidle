@@ -3,6 +3,39 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.4-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.3-alpha.0...v0.2.4-alpha.0) (2023-11-24)
+
+
+### Bug Fixes
+
+* 发布配置函数运行错误捕获日志 ([911ed75](https://github.com/yanuoda/nidle/commit/911ed758102ba60ca263f8425399ed23d43ea662))
+* 删除发布-重命名文件时先判断文件是否存在 ([45a5a88](https://github.com/yanuoda/nidle/commit/45a5a881d6b7a106cd3c20c82c811f2e4ee94736))
+* 生产环境的webhook发布不释放资源占用 ([1ed09d5](https://github.com/yanuoda/nidle/commit/1ed09d566e7be31a44c7488e3145a82d50100ce9))
+* 子进程 progress 方法调用 ([8c23525](https://github.com/yanuoda/nidle/commit/8c23525cbe08f423d95c8fc2acb99815254a5b9b))
+* 子进程progress error log ([ac7f760](https://github.com/yanuoda/nidle/commit/ac7f760e0628699317c1b54c59b963193c2c764d))
+* queue on stalled event ([a856736](https://github.com/yanuoda/nidle/commit/a85673682df5c4fa7be43f34b60bf352c591acf7))
+* webhook 重新发布对应环境；发布记录字段文案调整 ([79f2f4b](https://github.com/yanuoda/nidle/commit/79f2f4b7e20bcdc3ff83e688c212e2176f464b4b))
+* webhook响应失败时发送通知 ([6b7999e](https://github.com/yanuoda/nidle/commit/6b7999ed7e40aab8d9b629078f272cce619e98d7))
+
+
+### Features
+
+* 创建发布 - 分支查询优化 ([ee13156](https://github.com/yanuoda/nidle/commit/ee13156b5add5e55fdd1da23387c449906f28a57))
+* 调整queue配置 maxStalledCount ([2b021f8](https://github.com/yanuoda/nidle/commit/2b021f826bcd8c3b6fbd18e980642e50a0f05706))
+* 队列任务切换子进程 ([6b11583](https://github.com/yanuoda/nidle/commit/6b11583d69df775b5e42ea4edb221fab381576d1))
+* 发布记录查询重构为分组分页查询 ([0fc34c7](https://github.com/yanuoda/nidle/commit/0fc34c7e4f4cdc601e73231449f327df760e7516))
+* 获取队列运行信息、函数调用 ([c6060df](https://github.com/yanuoda/nidle/commit/c6060df5e1d077e324f15caf06505612461fb68a))
+* 自动发布流程手动确认功能 ([8200d82](https://github.com/yanuoda/nidle/commit/8200d827c32d6ffcbe1d264dcbd75634f905efa5))
+* 自动发布流程暂缓MR时推送通知 ([913dc4d](https://github.com/yanuoda/nidle/commit/913dc4d3a0f83ea161026c36bef30e7a9112e1d9))
+* 子进程任务参数配置化；队列 lockDuration调整 ([b8d962a](https://github.com/yanuoda/nidle/commit/b8d962aa322784276c0d2eea6afebc89b67c56c6))
+* 子进程运行队列任务 ([59c2678](https://github.com/yanuoda/nidle/commit/59c26784d1954f64402e9802eab563437b68849e))
+* callJobMethodBy update ([2895642](https://github.com/yanuoda/nidle/commit/2895642fd87e6d4366a4428bc1c1e6c52010b0a4))
+* webhook发布插入手动确认流程 ([32644af](https://github.com/yanuoda/nidle/commit/32644afbc303ddf102e5bf3b235733da0d702a75))
+
+
+
+
+
 ## [0.2.3-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.2-alpha.0...v0.2.3-alpha.0) (2023-11-09)
 
 

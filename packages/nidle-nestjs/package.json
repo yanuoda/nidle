@@ -1,6 +1,6 @@
 {
   "name": "nidle-nestjs",
-  "version": "0.2.3-alpha.0",
+  "version": "0.2.4-alpha.0",
   "private": true,
   "description": "refactor nidle using nestjs.",
   "repository": {
@@ -66,10 +66,10 @@
     "lodash": "^4.17.21",
     "mysql2": "^3.5.0",
     "nest-winston": "^1.9.3",
-    "nidle": "0.2.3-alpha.0",
+    "nidle": "0.2.4-alpha.0",
     "nidle-chain": "0.2.3-alpha.0",
     "nidle-plugin-build": "0.2.3-alpha.0",
-    "nidle-plugin-clone": "0.2.3-alpha.0",
+    "nidle-plugin-clone": "0.2.4-alpha.0",
     "nidle-plugin-escheck": "0.2.3-alpha.0",
     "nidle-plugin-eslint": "0.2.3-alpha.0",
     "nidle-plugin-imagemin": "0.2.3-alpha.0",

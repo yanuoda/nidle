@@ -3,6 +3,33 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.4-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.3-alpha.0...v0.2.4-alpha.0) (2023-11-24)
+
+
+### Bug Fixes
+
+* 手动确认发布交互优化 ([e340434](https://github.com/yanuoda/nidle/commit/e3404343bdec5615a5dc247d7119a182c6a1e496))
+* 自动发布手动确认流程判断条件 ([dbce035](https://github.com/yanuoda/nidle/commit/dbce0359f413aa52f5ecd81967f4ed809eddf9d6))
+* antd props deprecated ([07f1b6d](https://github.com/yanuoda/nidle/commit/07f1b6d8422bd83a4d9b97b0a13b9856fb50e2b3))
+* webhook 重新发布对应环境；发布记录字段文案调整 ([79f2f4b](https://github.com/yanuoda/nidle/commit/79f2f4b7e20bcdc3ff83e688c212e2176f464b4b))
+
+
+### Features
+
+* 创建发布 - 分支查询优化 ([ee13156](https://github.com/yanuoda/nidle/commit/ee13156b5add5e55fdd1da23387c449906f28a57))
+* 发布记录查询重构为分组分页查询 ([0fc34c7](https://github.com/yanuoda/nidle/commit/0fc34c7e4f4cdc601e73231449f327df760e7516))
+* 系统通知多tab下防止重复通知；点击事件跳转对应发布详情 ([c281aaf](https://github.com/yanuoda/nidle/commit/c281aaf582cd90aa8766b89e79b956396065ebaa))
+* 自动发布流程手动确认功能 ([8200d82](https://github.com/yanuoda/nidle/commit/8200d827c32d6ffcbe1d264dcbd75634f905efa5))
+
+
+### Reverts
+
+* Revert "fix: merge" ([6907b12](https://github.com/yanuoda/nidle/commit/6907b12b2a3e33464aa6f071045b5871179da482))
+
+
+
+
+
 ## [0.2.3-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.2-alpha.0...v0.2.3-alpha.0) (2023-11-09)
 
 
