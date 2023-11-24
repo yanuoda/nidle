@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.5-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.4-alpha.0...v0.2.5-alpha.0) (2023-11-24)
+
+**Note:** Version bump only for package nidle-plugin-install
+
+
+
+
+
 ## [0.2.3-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.2-alpha.0...v0.2.3-alpha.0) (2023-11-09)
 
 **Note:** Version bump only for package nidle-plugin-install
