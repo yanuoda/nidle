@@ -334,9 +334,38 @@ export class ChangelogService {
       const manager = new Nidle(extend(true, {}, config));
       initConfig = await manager.init();
 
-      // 重新开始 || webhook自动构建，要清除源文件
-      if (id && (type === 'webhook' || mode === _const.environments[0].value)) {
-        manager.clear();
+      /**
+       * 基于某个发布新建时
+       * 保留 source 文件，可以避免重新 git clone + npm i，节省带宽占用及IO占用
+       * 但是 output 需要清除，避免非生产环境的缓存累积（生产环境的缓存控制不在此环节，所以所有环境都要清除 output）
+       * manager.clear: (reuse: boolean) => void; - reuse: 是否保留 source 以复用
+       *
+       * 普通发布时(type !== 'webhook')，只有 development 环境可以清除，其他环境会复用上一步的构建产物直接 scp
+       */
+      // if (id && (type === 'webhook' || mode === _const.environments[0].value)) {
+      //   manager.clear(true);
+      // }
+      if (id) {
+        if (type === 'webhook') {
+          /**
+           * webhook 没有 下一步
+           * 先测试 development | pre 环境，理论上所有环境都可以
+           */
+          if (mode !== 'production') {
+            // 保留 source，只清除 output，避免非生产环境的缓存累积
+            manager.clear(true);
+          } else {
+            manager.clear();
+          }
+        } else {
+          /**
+           * 普通发布的 下一步 不清除文件，会复用上一步的构建产物直接 scp
+           * 普通发布的 重新发布 会重置 mode=development，保留 source，只清除 output，避免非生产环境的缓存累积
+           */
+          if (mode === _const.environments[0].value) {
+            manager.clear(true);
+          }
+        }
       }
     }
 

@@ -2,7 +2,7 @@ import { Controller, Post, Body, Session } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { IdBodyRequestDto, SessionDto } from 'src/common/base.dto';
-import { getSessionUser } from 'src/utils';
+import { buildEqualWhere, getSessionUser } from 'src/utils';
 import { ChangelogService } from './changelog.service';
 import {
   CreateChangelogDto,
@@ -12,6 +12,7 @@ import {
   CallQueueAndJobMethodDto,
   StartChangelogDto,
   UpdateOneDto,
+  QueryChangelogDto,
 } from './changelog.dto';
 
 @ApiTags('发布相关接口')
@@ -118,6 +119,16 @@ export class ChangelogController {
   @Post('mergeHook')
   async mergeHook(@Body() body: MergeHookDto) {
     const data = await this.changelogService.mergeHook(body);
+    return { data };
+  }
+
+  @ApiOperation({ summary: '根据条件查询' })
+  @Post('find')
+  async find(@Body() body: QueryChangelogDto) {
+    const data = await this.changelogService.findAllByOpts({
+      where: buildEqualWhere(body),
+      order: { createdTime: 'DESC' },
+    });
     return { data };
   }
 
