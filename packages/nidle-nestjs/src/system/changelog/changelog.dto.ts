@@ -61,6 +61,8 @@ export class MergeHookDto {
   readonly user: Record<string, any>;
 }
 
+export class QueryChangelogDto extends PartialType(Changelog) {}
+
 export class CodeReviewDto {
   readonly projectIds: number[];
   readonly mrProjectName: string;
