@@ -17,17 +17,21 @@ function clone(task) {
     })
 
     if (typeof sourceState !== 'undefined') {
-      const { stdout } = await execa(`cd ${source} && git branch --show-current`, {
-        shell: true
-      })
-
-      if (stdout === repository.branch) {
-        action = 'pull'
-        shell = `cd ${source} && git pull`
-      } else {
-        fs.rmSync(source, {
-          recursive: true
+      try {
+        const { stdout } = await execa(`cd ${source} && git branch --show-current`, {
+          shell: true
         })
+
+        if (stdout === repository.branch) {
+          action = 'pull'
+          shell = `cd ${source} && git pull`
+        } else {
+          fs.rmSync(source, {
+            recursive: true
+          })
+        }
+      } catch (err) {
+        console.error('git branch --show-current error:', err)
       }
     }
 
