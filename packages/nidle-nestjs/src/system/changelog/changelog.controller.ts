@@ -1,8 +1,11 @@
 import { Controller, Post, Body, Session } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { In } from 'typeorm';
 
 import { IdBodyRequestDto, SessionDto } from 'src/common/base.dto';
 import { buildEqualWhere, getSessionUser } from 'src/utils';
+
+import { ProjectService } from '../project/project.service';
 import { ChangelogService } from './changelog.service';
 import {
   CreateChangelogDto,
@@ -18,7 +21,10 @@ import {
 @ApiTags('发布相关接口')
 @Controller('changelog')
 export class ChangelogController {
-  constructor(private readonly changelogService: ChangelogService) {}
+  constructor(
+    private readonly changelogService: ChangelogService,
+    private readonly projectService: ProjectService,
+  ) {}
 
   @ApiOperation({ summary: '创建发布' })
   @Post('create')
@@ -129,7 +135,19 @@ export class ChangelogController {
       where: buildEqualWhere(body),
       order: { createdTime: 'DESC' },
     });
-    return { data };
+    const projects = await this.projectService.findAllByWhere({
+      id: In(Array.from(new Set(data.map(({ project }) => project)))),
+    });
+    const projectObj = projects.reduce(
+      (obj, { id, name }) => ({ ...obj, [id]: name }),
+      {},
+    );
+    return {
+      data: data.map((item) => ({
+        ...item,
+        projectName: projectObj[item.project],
+      })),
+    };
   }
 
   @ApiOperation({ summary: 'find one' })

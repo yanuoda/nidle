@@ -82,3 +82,11 @@ export async function deleteByIds(params) {
     data: params
   })
 }
+
+// 根据条件查询发布记录
+export async function getChangelogs(params) {
+  return request('/api/changelog/find', {
+    method: 'POST',
+    data: params
+  })
+}
