@@ -1,6 +1,6 @@
 {
   "name": "nidle-plugin-escheck",
-  "version": "0.2.6-alpha.0",
+  "version": "0.2.7-alpha.0",
   "description": "nidle plugin of es-check formatting output",
   "keywords": [
     "escheck",
