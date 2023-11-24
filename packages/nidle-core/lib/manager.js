@@ -186,19 +186,22 @@ class Manager extends EventEmitter {
   }
 
   // 清除
-  clear() {
+  // reuse: 是否复用源文件
+  clear(reuse = false) {
     const { config } = this
 
     try {
-      // 删除源文件
-      const sourceState = fs.statSync(config.source, {
-        throwIfNoEntry: false
-      })
-
-      if (typeof sourceState !== 'undefined') {
-        fs.rmSync(config.source, {
-          recursive: true
+      if (!reuse) {
+        // 删除源文件
+        const sourceState = fs.statSync(config.source, {
+          throwIfNoEntry: false
         })
+
+        if (typeof sourceState !== 'undefined') {
+          fs.rmSync(config.source, {
+            recursive: true
+          })
+        }
       }
 
       // 删除构建文件
