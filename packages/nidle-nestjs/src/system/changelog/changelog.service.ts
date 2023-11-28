@@ -538,6 +538,7 @@ export class ChangelogService {
   async quit(id: number, configPath: string) {
     // 解除环境占用
     await this.projectService.resetProjectServerOccupation(id);
+    const { status, active } = await this.findOneBy(id);
     await this.changelogRepository.update(
       { id },
       {
@@ -546,6 +547,10 @@ export class ChangelogService {
       },
     );
 
+    this.logger.info(`changelog[${id}] quit.`, {
+      originStatus: status,
+      originActive: active,
+    });
     // 清除缓存
     const config = readConfig(configPath);
     const manager = new Nidle({
