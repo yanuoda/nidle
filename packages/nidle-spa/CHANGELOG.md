@@ -3,6 +3,23 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.8-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.7-alpha.0...v0.2.8-alpha.0) (2023-11-28)
+
+
+### Bug Fixes
+
+* 前端UI优化 ([4ca23ca](https://github.com/yanuoda/nidle/commit/4ca23cadd14ae90ea4579597b706f27cb8404cf1))
+* node_modules目录存在时走 npm update, 保证能更新到新版本 ([455d4c3](https://github.com/yanuoda/nidle/commit/455d4c3ba6ed9d03d4d68ef0a97b5f6ccca6311a))
+
+
+### Features
+
+* 首页展示运行中任务 ([3f37280](https://github.com/yanuoda/nidle/commit/3f37280b1c4088c7788ec244f878d8d38e48c985))
+
+
+
+
+
 ## [0.2.7-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.6-alpha.0...v0.2.7-alpha.0) (2023-11-24)
 
 **Note:** Version bump only for package nidle-spa
