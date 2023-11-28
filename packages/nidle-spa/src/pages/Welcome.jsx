@@ -17,6 +17,10 @@ import { Link, useRequest } from 'umi'
 import { NOTIFICATION_SETTING_KEY, OFFEN_USE_PROJECTS_KEY } from '@/config'
 import { getChangelogs } from '@/services/changelog'
 import { getFormatDate } from '@/utils'
+import { dictsToMap } from '@/utils/filter'
+import { mode as modes } from '@/dicts/app'
+
+const modeMap = dictsToMap(modes)
 
 export default function Welcome() {
   const [notificationSetting, setnotificationSetting] = useState(
@@ -65,7 +69,7 @@ export default function Welcome() {
           )}
         >
           <Row>
-            <Col span={12}>发布环境：{changelog.environment}</Col>
+            <Col span={12}>发布环境：{modeMap[changelog.environment]}</Col>
             <Col span={12}>发布类型：{changelog.type}</Col>
             <Col span={24}>创建时间：{getFormatDate(changelog.createdTime)}</Col>
             <Col span={24}>发布描述：{changelog.description}</Col>
@@ -112,6 +116,7 @@ export default function Welcome() {
             <Typography.Text type="secondary">{getFormatDate(statusTimestamp)}</Typography.Text>
           </Space>
         }
+        extra={<Button type="link" onClick={() => window.open('/queues/queue/changelog')}>任务队列面板</Button>}
       >
         {renderLoadingTasks()}
       </Card>
