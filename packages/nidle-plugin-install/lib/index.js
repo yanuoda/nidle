@@ -1,16 +1,29 @@
 const execa = require('execa')
+const fs = require('fs')
 
 async function install(task, config) {
   return new Promise((resolve, reject) => {
     const { source } = task
-    const shell = `cd ${source} && npm install --production=${config.production}`
+    let action = 'install'
+    let shell = `cd ${source} && npm install --production=${config.production}`
+
+    // 判断 node_modules 目录是否存在；Y - npm update； N - npm install；
+    const nodeModuleState = fs.statSync(`${source}/node_modules`, {
+      throwIfNoEntry: false
+    })
+
+    if (typeof nodeModuleState !== 'undefined') {
+      action = 'update'
+      shell = `cd ${source} && npm update ${config.production ? '' : '-D'}`
+    }
+
     const subprocess = execa(shell, {
       shell: true,
       preferLocal: true,
       execPath: task.processOptions.execPath
     })
     task.logger.info({
-      name: 'install',
+      name: action,
       detail: `execa: ${shell}\n`
     })
 
@@ -18,7 +31,7 @@ async function install(task, config) {
       const str = data.toString()
 
       task.logger.info({
-        name: 'install',
+        name: action,
         detail: str
       })
     })
@@ -28,7 +41,7 @@ async function install(task, config) {
 
       if (str.indexOf('ERR!') > -1) {
         task.logger.error({
-          name: 'install',
+          name: action,
           detail: str
         })
         subprocess.cancel()
@@ -36,7 +49,7 @@ async function install(task, config) {
       }
 
       task.logger.info({
-        name: 'install',
+        name: action,
         detail: str
       })
     })
@@ -49,7 +62,7 @@ async function install(task, config) {
 
       const error = `child process fail: code === ${code}\n`
       task.logger.error({
-        name: 'install',
+        name: action,
         detail: error
       })
       reject(new Error(error))

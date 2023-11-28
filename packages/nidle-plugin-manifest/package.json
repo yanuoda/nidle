@@ -1,6 +1,6 @@
 {
   "name": "nidle-plugin-manifest",
-  "version": "0.2.7-alpha.0",
+  "version": "0.2.8-alpha.0",
   "description": "nidle plugin of sync manifest",
   "keywords": [
     "manifest",

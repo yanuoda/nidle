@@ -1,6 +1,6 @@
 {
   "name": "nidle-spa",
-  "version": "0.2.7-alpha.0",
+  "version": "0.2.8-alpha.0",
   "private": true,
   "description": "Nidle web client application.",
   "scripts": {
