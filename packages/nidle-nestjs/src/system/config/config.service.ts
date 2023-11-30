@@ -53,7 +53,7 @@ export class ConfigService {
       configStr = await this.gitlabService
         .getFile(gitlabId, branch, fileName)
         .catch((err) => {
-          if (err.message.includes('Not Found')) {
+          if (err.message.includes('404')) {
             // 如果是文件没找到，说明该应用没有在此环境的发布配置，特殊处理，不抛出错误
             return '';
           } else {
