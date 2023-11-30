@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.9-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.8-alpha.0...v0.2.9-alpha.0) (2023-11-30)
+
+
+### Bug Fixes
+
+* npm update 存在依赖更新未验证风险，回滚代码 ([a0adfbb](https://github.com/yanuoda/nidle/commit/a0adfbb1bca3b5222579546d8d8c7ee4a39056eb))
+
+
+
+
+
 ## [0.2.8-alpha.0](https://github.com/yanuoda/nidle/compare/v0.2.7-alpha.0...v0.2.8-alpha.0) (2023-11-28)
 
 
