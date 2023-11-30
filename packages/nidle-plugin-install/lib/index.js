@@ -1,21 +1,10 @@
 const execa = require('execa')
-const fs = require('fs')
 
 async function install(task, config) {
   return new Promise((resolve, reject) => {
     const { source } = task
-    let action = 'install'
-    let shell = `cd ${source} && npm install --production=${config.production}`
-
-    // 判断 node_modules 目录是否存在；Y - npm update； N - npm install；
-    const nodeModuleState = fs.statSync(`${source}/node_modules`, {
-      throwIfNoEntry: false
-    })
-
-    if (typeof nodeModuleState !== 'undefined') {
-      action = 'update'
-      shell = `cd ${source} && npm update ${config.production ? '' : '-D'}`
-    }
+    const action = 'install'
+    const shell = `cd ${source} && npm install --production=${config.production}`
 
     const subprocess = execa(shell, {
       shell: true,

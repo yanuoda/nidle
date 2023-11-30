@@ -1,6 +1,6 @@
 {
   "name": "nidle-monorepo",
-  "version": "0.2.8-alpha.0",
+  "version": "0.2.9-alpha.0",
   "private": true,
   "repository": "git@github.com:yanuoda/nidle.git",
   "license": "MIT",
