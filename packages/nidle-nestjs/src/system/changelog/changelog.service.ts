@@ -637,9 +637,15 @@ export class ChangelogService {
         result.endTime = logs[len - 1].time;
 
         if (!changelog.duration) {
+          /**
+           * 更新 duration 时不希望自动更新 updatedTime（列表降序）
+           * 自动更新逻辑：1.不传 updatedTime; 2.updatedTime和原值一样（年月日时分秒相等）
+           * 故在原值上加 1ms，与原值不等，不会自动更新，而写入时毫秒精度会丢失，所以可以实现幂等，不会更新 updatedTime
+           */
+          const updatedTime = new Date(changelog.updatedTime.getTime() + 1);
           await this.changelogRepository.update(
             { id },
-            { duration: result.duration },
+            { duration: result.duration, updatedTime },
           );
         }
       }
