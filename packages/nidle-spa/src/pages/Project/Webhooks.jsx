@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 // import ProTable from '@ant-design/pro-table'
-import { Button, Row, Col, Card, Modal, Table } from 'antd'
+import { Button, Row, Col, Card, Modal, Table, message } from 'antd'
 // import { PlusOutlined } from '@ant-design/icons'
 import { Link, history, useRequest } from 'umi'
 
@@ -19,6 +19,7 @@ const Webhooks = (props) => {
 
   const [activeBranch,  setActiveBranch] = useState('')
   const [modalOpen,  setModalOpen] = useState(false)
+  const [submitLoading,  setSubmitLoading] = useState(false)
 
   const onWebhookClick = (branch) => {
     setActiveBranch(branch)
@@ -30,30 +31,37 @@ const Webhooks = (props) => {
   }
 
   const onSubmit = async () => {
+    setSubmitLoading(true)
     const { data, success, errorMessage } = await invokeWebhooks({ id: projectId, branch: activeBranch });
     if (success === true) {
       message.success('触发成功')
+      setModalOpen(false)
     } else {
       message.error(errorMessage)
     }
+    setSubmitLoading(false)
   }
 
   const renderWebhook = (branchGroup) => {
-    return Object.entries(branchGroup).map(([branch, changelogs]) => (
-      <Col span={6} key={branch}>
-        <Card
-          // type="inner"
-          title={branch}
-          style={{ marginBottom: 24 }}
-          extra={<Button onClick={() => onWebhookClick(branch)}>手动触发</Button>}
-        >
-          <Row>
-            <Col span={12}>可响应的发布：{changelogs.length} 个</Col>
-            <Col span={24}>涉及的发布环境：{getEnvStr(changelogs)}</Col>
-          </Row>
-        </Card>
-      </Col>
-    ))
+    const branchs = Object.keys(branchGroup).sort()
+    return branchs.map((branch) => {
+      const changelogs = branchGroup[branch]
+      return (
+        <Col span={6} key={branch}>
+          <Card
+            // type="inner"
+            title={branch}
+            style={{ marginBottom: 24 }}
+            extra={<Button onClick={() => onWebhookClick(branch)}>手动触发</Button>}
+          >
+            <Row>
+              <Col span={12}>可响应的发布：{changelogs.length} 个</Col>
+              <Col span={24}>涉及的发布环境：{getEnvStr(changelogs)}</Col>
+            </Row>
+          </Card>
+        </Col>
+      )
+    })
   }
 
   return (
@@ -106,6 +114,7 @@ const Webhooks = (props) => {
         width={800}
         open={modalOpen}
         onOk={onSubmit}
+        confirmLoading={submitLoading}
         onCancel={() => setModalOpen(false)}
         closable
       >
