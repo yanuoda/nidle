@@ -29,9 +29,8 @@ export default function Welcome() {
   const offenUseProjects = JSON.parse(localStorage.getItem(OFFEN_USE_PROJECTS_KEY) || '[]')
 
   const [statusTimestamp, setStatusTimestamp] = useState(Date.now())
-  const { loading, data = [] } = useRequest(async () => {
-    const res = await getChangelogs({ status: 'PENDING' })
-    return res
+  const { loading, data = [] } = useRequest(() => {
+    return getChangelogs({ status: 'PENDING' })
   }, {
     refreshDeps: [statusTimestamp],
   })

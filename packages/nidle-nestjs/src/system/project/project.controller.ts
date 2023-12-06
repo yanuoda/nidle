@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Session } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
-import { formatPageParams } from 'src/utils';
+import { formatPageParams, getSessionUser } from 'src/utils';
 import {
   IdQueryRequestDto,
   IdBodyRequestDto,
   AffectedResponseDto,
+  SessionDto,
 } from 'src/common/base.dto';
 import { ProjectService } from './project.service';
 import {
@@ -16,6 +17,7 @@ import {
   FetchProjectBranchesDto,
   FetchProjectServerDto,
   FetchProjectServerResponseDto,
+  InvokeWebhooksBodyDto,
   PublishListResponseDto,
   PublishListResponseDtoV2,
   QueryProjectListDto,
@@ -176,5 +178,27 @@ export class ProjectController {
       pageSize,
     });
     return { data: list, total };
+  }
+
+  @ApiOperation({ summary: '获取webhooks' })
+  @Post('get-webhooks')
+  async getWebhooks(@Body() { id }: IdBodyRequestDto) {
+    const data = await this.projectService.getWebhooks(id);
+    return { data };
+  }
+
+  @ApiOperation({ summary: '触发webhooks' })
+  @Post('invoke-webhooks')
+  async invokeWebhooks(
+    @Body() { id, branch }: InvokeWebhooksBodyDto,
+    @Session() session: SessionDto,
+  ) {
+    const sessionUser = getSessionUser(session);
+    const data = await this.projectService.invokeWebhooks(
+      id,
+      branch,
+      sessionUser,
+    );
+    return { data };
   }
 }

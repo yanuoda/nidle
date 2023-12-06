@@ -4,10 +4,11 @@ import { FindOptionsWhere, Repository, In, Not } from 'typeorm';
 import * as dayjs from 'dayjs';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
+import { groupBy } from 'lodash';
 
 import { buildEqualWhere, buildLikeWhere, checkValue } from 'src/utils';
 import nidleNext from 'src/utils/nidleNest';
-import { Environment } from 'src/common/base.dto';
+import { Environment, SessionUser } from 'src/common/base.dto';
 import { GitlabService } from 'src/lib/gitlab.service';
 import { ChangelogService } from '../changelog/changelog.service';
 import { UserService } from '../user/user.service';
@@ -417,5 +418,20 @@ export class ProjectService {
       } as AssembleChangelog;
     });
     return { list, total };
+  }
+
+  async getWebhooks(productId: number) {
+    const changelogs = await this.changelogService.getWebhookChangelogs([
+      productId,
+    ]);
+    return groupBy(changelogs, 'branch');
+  }
+
+  async invokeWebhooks(productId: number, branch: string, user: SessionUser) {
+    const projectRow = await this.changelogService.checkAndGetProjectInfo(
+      productId,
+      user,
+    );
+    return await this.changelogService.handleAutoDeploy([projectRow], branch);
   }
 }

@@ -1,7 +1,13 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { ConfigService as NestConfigService, ConfigType } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, In, Not, Repository } from 'typeorm';
+import {
+  FindManyOptions,
+  FindOptionsWhere,
+  In,
+  Not,
+  Repository,
+} from 'typeorm';
 import { InjectQueue } from '@nestjs/bull';
 import { Job, Queue } from 'bull';
 import * as path from 'path';
@@ -200,12 +206,8 @@ export class ChangelogService {
   }
 
   async checkAndGetProjectInfo(projectId: number, user: SessionUser) {
-    const {
-      repositoryType,
-      repositoryUrl,
-      name: projectName,
-      gitlabId,
-    } = await this.projectService.findOne({ id: projectId });
+    const projectRow = await this.projectService.findOne({ id: projectId });
+    const { repositoryType, repositoryUrl } = projectRow;
     const repositoryUserId: number = user[`${repositoryType}UserId`];
     if (!repositoryUserId) {
       throw new Error(`未关联 ${repositoryType} 账号`);
@@ -227,12 +229,7 @@ export class ChangelogService {
       throw new Error('您没有该应用权限，不能进行此操作');
     }
 
-    return {
-      repositoryType,
-      repositoryUrl,
-      projectName,
-      gitlabId,
-    };
+    return projectRow;
   }
 
   async checkChangelogNext(type: string, mode: string, id?: number) {
@@ -663,6 +660,17 @@ export class ChangelogService {
     }
   }
 
+  async getWebhookChangelogs(projectIds: number[], branch?: string) {
+    const where: FindOptionsWhere<Changelog> = {
+      project: In(projectIds),
+      active: 0,
+      type: 'webhook',
+      status: Not(Status.NEW), // 过滤新建的发布记录，此时前端还没有提交保存 inputs，无法进行发布
+    };
+    if (branch) where.branch = branch;
+    return await this.changelogRepository.findBy(where);
+  }
+
   async createAndStart(
     changelog: Changelog,
     {
@@ -707,7 +715,7 @@ export class ChangelogService {
     return newChangelog.id;
   }
 
-  async handleCodeReviewByMR({
+  async handleCodeReview({
     projectIds,
     mrProjectName,
     mrUserName,
@@ -771,86 +779,79 @@ export class ChangelogService {
     return res;
   }
 
-  async handleAutoDeployByMR(
+  async handleAutoDeploy(
     projects: Project[],
     targetBranch: string,
-  ): Promise<{ startedIds: number[]; errorIds: number[] }> {
+  ): Promise<Record<string, any>> {
+    const changelogs = await this.getWebhookChangelogs(
+      projects.map(({ id }) => id),
+      targetBranch,
+    );
+    if (!changelogs.length) {
+      return { msg: `未查询到符合条件的发布任务[${targetBranch}]` };
+    }
     const res = { startedIds: [], errorIds: [], pendingIds: [] };
-    const changelogs = await this.changelogRepository.findBy({
-      project: In(projects.map(({ id }) => id)),
-      branch: targetBranch,
-      active: 0,
-      type: 'webhook',
-      status: Not(Status.NEW), // 过滤新建的发布记录，此时前端还没有提交保存 inputs，无法进行发布
-    });
-    if (changelogs.length) {
-      for (const changelog of changelogs) {
-        const {
-          repositoryType,
-          repositoryUrl,
-          name: projectName,
-          gitlabId,
-        } = projects.find(({ id }) => id === changelog.project);
-        const _env = _const.environments.find(
-          (item) => item.value === changelog.environment,
+    for (const changelog of changelogs) {
+      const projectRow = projects.find(({ id }) => id === changelog.project);
+      const _env = _const.environments.find(
+        (item) => item.value === changelog.environment,
+      );
+      const msgTitle = `应用: ${projectRow.name} [${_env.label}环境]`;
+      const msgContent = `分支: ${changelog.branch} | 发布id: ${changelog.id} ${
+        changelog.description || ''
+      }`;
+
+      /**
+       * 检查发布是否可以自动运行
+       */
+      if (
+        // 构建中的 MR
+        changelog.status === Status.PENDING ||
+        // 生产环境的 webhook
+        changelog.environment === 'production'
+      ) {
+        /** MR 累积 */
+        await this.changelogRepository.update(
+          { id: changelog.id },
+          { pendingMR: (changelog.pendingMR || 0) + 1 },
         );
-        const msgTitle = `应用: ${projectName} [${_env.label}环境]`;
-        const msgContent = `分支: ${changelog.branch} | 发布id: ${
-          changelog.id
-        } ${changelog.description || ''}`;
-        if (
-          // 构建中的 MR
-          changelog.status === Status.PENDING ||
-          // 生产环境的 webhook
-          changelog.environment === 'production'
-        ) {
-          /** MR 累积 */
-          await this.changelogRepository.update(
-            { id: changelog.id },
-            { pendingMR: (changelog.pendingMR || 0) + 1 },
-          );
-          this.messageService.send({
-            type: 'notification',
-            title: `${msgTitle} 发布待确认`,
-            content: `未自动发布，请手动确认 | ${msgContent}`,
-            body: {
-              id: changelog.id,
-              type: 'publish-start',
-              environment: changelog.environment,
-              projectId: changelog.project,
-            },
-          });
-          res.pendingIds.push(changelog.id);
-          continue;
-        }
-        try {
-          // webhook发布
-          await this.createAndStart(changelog, {
-            repositoryType,
-            repositoryUrl,
-            name: projectName,
-            gitlabId,
-          });
-          res.startedIds.push(changelog.id);
-        } catch (error) {
-          // 某一条报错后不影响其他记录的发布
-          this.messageService.send({
-            type: 'notification',
-            title: `${msgTitle} webhook 响应失败`,
-            content: `未能正常触发自动发布，请检查 | ${msgContent}`,
-            body: {
-              id: changelog.id,
-              type: 'publish-fail',
-              environment: changelog.environment,
-              projectId: changelog.project,
-            },
-          });
-          this.logger.error(
-            `handleAutoDeployByMR error: changelog id = ${changelog.id}`,
-            { error },
-          );
-          res.errorIds.push(changelog.id);
-        }
+        this.messageService.send({
+          type: 'notification',
+          title: `${msgTitle} 发布待确认`,
+          content: `未自动发布，请手动确认 | ${msgContent}`,
+          body: {
+            id: changelog.id,
+            type: 'publish-start',
+            environment: changelog.environment,
+            projectId: changelog.project,
+          },
+        });
+        res.pendingIds.push(changelog.id);
+        continue;
+      }
+
+      try {
+        // webhook发布
+        await this.createAndStart(changelog, projectRow);
+        res.startedIds.push(changelog.id);
+      } catch (error) {
+        // 某一条报错后不影响其他记录的发布
+        this.messageService.send({
+          type: 'notification',
+          title: `${msgTitle} webhook 响应失败`,
+          content: `未能正常触发自动发布，请检查 | ${msgContent}`,
+          body: {
+            id: changelog.id,
+            type: 'publish-fail',
+            environment: changelog.environment,
+            projectId: changelog.project,
+          },
+        });
+        this.logger.error(
+          `handleAutoDeployByMR error: changelog id = ${changelog.id}`,
+          { error },
+        );
+        res.errorIds.push(changelog.id);
       }
     }
     return res;
@@ -880,7 +881,7 @@ export class ChangelogService {
       throw new Error(`未识别的应用: ${JSON.stringify({ id, name, web_url })}`);
     }
 
-    const crRes = await this.handleCodeReviewByMR({
+    const crRes = await this.handleCodeReview({
       projectIds: projects.map(({ id }) => id),
       mrProjectName: mrProject.name,
       mrUserName: mrUser.name,
@@ -890,10 +891,7 @@ export class ChangelogService {
     // cr 流程有命中则直接 return
     if (crRes.affectedId > -1 || !isMerged) return { crRes };
     // merged 状态的 mr 才去检查 webhook
-    const adRes = await this.handleAutoDeployByMR(
-      projects,
-      mrDetail.target_branch,
-    );
+    const adRes = await this.handleAutoDeploy(projects, mrDetail.target_branch);
     return { crRes, adRes };
   }
 

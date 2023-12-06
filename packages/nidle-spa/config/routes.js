@@ -16,6 +16,7 @@ export default [
       { path: '/project/list', name: '应用列表', icon: 'smile', component: './Project/List' },
       { path: '/project/settings', name: '应用配置', component: './Project/Settings', hideInMenu: true },
       { path: '/project/publish', name: '发布记录', component: './Project/Publish', hideInMenu: true },
+      { path: '/project/webhooks', name: 'webhooks', component: './Project/Webhooks', hideInMenu: true },
       { path: '/project', redirect: '/project/list' },
       { path: '/project/:id/changelog/detail', name: '发布详情', component: './Changelog/Detail', hideInMenu: true },
       { component: './404' }

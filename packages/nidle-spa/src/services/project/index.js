@@ -63,3 +63,19 @@ export async function getProjectServer(params) {
     data: params
   })
 }
+
+// 获取应用webhooks
+export async function getWebhooks(params) {
+  return request('/api/project/get-webhooks', {
+    method: 'POST',
+    data: params
+  })
+}
+
+// 触发应用某个分支的webhooks
+export async function invokeWebhooks(params) {
+  return request('/api/project/invoke-webhooks', {
+    method: 'POST',
+    data: params
+  })
+}

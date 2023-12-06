@@ -34,10 +34,11 @@ export class ChangelogController {
   ) {
     const sessionUser = getSessionUser(session);
     const { projectId, type, mode, id } = createChangelogDto;
-    const projectData = await this.changelogService.checkAndGetProjectInfo(
-      projectId,
-      sessionUser,
-    );
+    const { repositoryType, repositoryUrl, name, gitlabId } =
+      await this.changelogService.checkAndGetProjectInfo(
+        projectId,
+        sessionUser,
+      );
     const changelog = await this.changelogService.checkChangelogNext(
       type,
       mode,
@@ -45,7 +46,7 @@ export class ChangelogController {
     );
     const data = await this.changelogService.create(
       createChangelogDto,
-      { ...projectData, changelog },
+      { repositoryType, repositoryUrl, projectName: name, gitlabId, changelog },
       sessionUser,
     );
     return { data };
@@ -57,7 +58,7 @@ export class ChangelogController {
     const sessionUser = getSessionUser(session);
     const { project, environment, type, description } =
       await this.changelogService.findOneBy(body.id);
-    const { projectName } = await this.changelogService.checkAndGetProjectInfo(
+    const { name } = await this.changelogService.checkAndGetProjectInfo(
       project,
       sessionUser,
     );
@@ -66,7 +67,7 @@ export class ChangelogController {
       changelogType: type,
       changelogDesc: description,
       projectId: project,
-      projectName,
+      projectName: name,
     });
     return { data };
   }
@@ -79,19 +80,13 @@ export class ChangelogController {
   ) {
     const sessionUser = getSessionUser(session);
     const changelog = await this.changelogService.findOneBy(id);
-    const { repositoryType, repositoryUrl, projectName, gitlabId } =
-      await this.changelogService.checkAndGetProjectInfo(
-        changelog.project,
-        sessionUser,
-      );
+    const projectRow = await this.changelogService.checkAndGetProjectInfo(
+      changelog.project,
+      sessionUser,
+    );
     const data = await this.changelogService.createAndStart(
       changelog,
-      {
-        repositoryType,
-        repositoryUrl,
-        name: projectName,
-        gitlabId,
-      },
+      projectRow,
       sessionUser,
     );
     return { data };

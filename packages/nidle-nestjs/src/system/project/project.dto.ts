@@ -163,3 +163,8 @@ export class PublishListResponseDtoV2 extends FormatResponse {
   data: AssembleChangelog[];
   total?: number;
 }
+
+export class InvokeWebhooksBodyDto {
+  id: number;
+  branch: string;
+}

@@ -56,18 +56,25 @@ const ProjectSettings = props => {
             return <span>{breadcrumbName}</span>
           }
         },
-        extra: [
-          id ? (
-            <Button
-              type="default"
-              onClick={() => {
-                history.push(`/project/publish?id=${id}&name=${projectName}`)
-              }}
-            >
-              应用发布记录
-            </Button>
-          ) : null
-        ]
+        extra: id ? [
+          <Button
+            type="default"
+            onClick={() => {
+              history.push(`/project/publish?id=${id}&name=${projectName}`)
+            }}
+          >
+            应用发布记录
+          </Button>,
+          <Button
+            key="projectWebhooks"
+            type="default"
+            onClick={() => {
+              history.push(`/project/webhooks?id=${id}&name=${projectName}`)
+            }}
+          >
+            应用webhooks
+          </Button>,
+        ] : null,
       }}
     >
       <BasicInfo projectData={projectData} />

@@ -83,6 +83,15 @@ const Publish = props => {
         extra: [
           <CreateChangelog projectId={projectId} projectName={projectName} key="CreateChangelog" />,
           <Button
+            key="projectWebhooks"
+            type="default"
+            onClick={() => {
+              history.push(`/project/webhooks?id=${projectId}&name=${projectName}`)
+            }}
+          >
+            应用webhooks
+          </Button>,
+          <Button
             key="projectSettings"
             type="default"
             onClick={() => {
@@ -90,7 +99,7 @@ const Publish = props => {
             }}
           >
             应用设置
-          </Button>
+          </Button>,
         ]
       }}
     >
