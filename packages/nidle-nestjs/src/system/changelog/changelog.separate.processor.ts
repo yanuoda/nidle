@@ -24,10 +24,16 @@ export default async function (job: Job, cb: DoneCallback) {
     const _env = _const.environments.find((item) => item.value === environment);
     const manager = new Nidle({ ...config });
     const msgTitle = `应用: ${projectName} [${_env.label}环境] `;
-    let msgContent = `分支: ${config.repository.branch} | 创建人: ${config.repository.userName} | 发布id: ${changelogId}`;
-    if (changelogDesc) {
-      msgContent += ` | 描述: ${changelogDesc}`;
-    }
+    const isWebhook = changelogType === 'webhook';
+    const msgContent = [
+      `分支: ${config.repository.branch}`,
+      `提交人: ${config.repository.committer}`,
+      isWebhook ? '自动创建' : `创建人: ${config.repository.userName}`,
+      `发布id: ${changelogId}`,
+      changelogDesc ? `描述: ${changelogDesc}` : null,
+    ]
+      .filter(Boolean)
+      .join(' | ');
 
     await manager.init();
     await manager.mount(options, (_data) => {

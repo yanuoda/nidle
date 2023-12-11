@@ -266,11 +266,13 @@ export class ChangelogService {
     user?: SessionUser,
   ) {
     let commitId: string;
+    let committer: string;
     if (!id || mode === _const.environments[0].value || type === 'webhook') {
       // 从测试环境发布时，取分支的最新commitId，后续发布都基于此commitId
       if (repositoryType === 'gitlab') {
         const branchInfo = await this.gitlabService.getBranch(gitlabId, branch);
         commitId = branchInfo.commit.id;
+        committer = branchInfo.commit.committer_name;
       } else {
         /** @todo github */
         // const branchInfo = await ctx.service.github.getBranch(repositoryUrl, branch);
@@ -290,6 +292,7 @@ export class ChangelogService {
         branch,
         commitId,
         userName: user?.name || type,
+        committer,
       },
       source: '',
       output: '',
