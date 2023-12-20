@@ -51,30 +51,33 @@ const ProjectSettings = props => {
         title: id ? `应用：${projectName}` : '新增应用',
         breadcrumb: {
           routes: routes.filter(Boolean),
-          itemRender({ path, breadcrumbName, extraJump }) {
+          itemRender({ path, breadcrumbName }) {
             if (path) return <Link to={path}>{breadcrumbName}</Link>
             return <span>{breadcrumbName}</span>
           }
         },
-        extra: id ? [
-          <Button
-            type="default"
-            onClick={() => {
-              history.push(`/project/publish?id=${id}&name=${projectName}`)
-            }}
-          >
-            应用发布记录
-          </Button>,
-          <Button
-            key="projectWebhooks"
-            type="default"
-            onClick={() => {
-              history.push(`/project/webhooks?id=${id}&name=${projectName}`)
-            }}
-          >
-            应用webhooks
-          </Button>,
-        ] : null,
+        extra: id
+          ? [
+              <Button
+                key="projectPublishList"
+                type="default"
+                onClick={() => {
+                  history.push(`/project/publish?id=${id}&name=${projectName}`)
+                }}
+              >
+                应用发布记录
+              </Button>,
+              <Button
+                key="projectWebhooks"
+                type="default"
+                onClick={() => {
+                  history.push(`/project/webhooks?id=${id}&name=${projectName}`)
+                }}
+              >
+                应用webhooks
+              </Button>
+            ]
+          : null
       }}
     >
       <BasicInfo projectData={projectData} />

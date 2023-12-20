@@ -11,28 +11,30 @@ import { mode as modes } from '@/dicts/app'
 
 const modeMap = dictsToMap(modes)
 
-const Webhooks = (props) => {
+const Webhooks = props => {
   const { name: projectName, id: projectId } = props.location.query
-  const { loading, data = {} } = useRequest(async () => {
+  const { data = {} } = useRequest(async () => {
     return await getWebhooks({ id: projectId })
   })
 
-  const [activeBranch,  setActiveBranch] = useState('')
-  const [modalOpen,  setModalOpen] = useState(false)
-  const [submitLoading,  setSubmitLoading] = useState(false)
+  const [activeBranch, setActiveBranch] = useState('')
+  const [modalOpen, setModalOpen] = useState(false)
+  const [submitLoading, setSubmitLoading] = useState(false)
 
-  const onWebhookClick = (branch) => {
+  const onWebhookClick = branch => {
     setActiveBranch(branch)
     setModalOpen(true)
   }
-  const getEnvStr = (changelogs) => {
+  const getEnvStr = changelogs => {
     const envSet = new Set(changelogs.map(({ environment }) => environment))
-    return Array.from(envSet).map((env) => modeMap[env]).join('、')
+    return Array.from(envSet)
+      .map(env => modeMap[env])
+      .join('、')
   }
 
   const onSubmit = async () => {
     setSubmitLoading(true)
-    const { data, success, errorMessage } = await invokeWebhooks({ id: projectId, branch: activeBranch });
+    const { success, errorMessage } = await invokeWebhooks({ id: projectId, branch: activeBranch })
     if (success === true) {
       message.success('触发成功')
       setModalOpen(false)
@@ -42,9 +44,9 @@ const Webhooks = (props) => {
     setSubmitLoading(false)
   }
 
-  const renderWebhook = (branchGroup) => {
+  const renderWebhook = branchGroup => {
     const branchs = Object.keys(branchGroup).sort()
-    return branchs.map((branch) => {
+    return branchs.map(branch => {
       const changelogs = branchGroup[branch]
       return (
         <Col span={6} key={branch}>
@@ -86,25 +88,28 @@ const Webhooks = (props) => {
             return <span>{breadcrumbName}</span>
           }
         },
-        extra: projectId ? [
-          <Button
-            type="default"
-            onClick={() => {
-              history.push(`/project/publish?id=${projectId}&name=${projectName}`)
-            }}
-          >
-            应用发布记录
-          </Button>,
-          <Button
-            key="projectSettings"
-            type="default"
-            onClick={() => {
-              history.push(`/project/settings?id=${projectId}&name=${projectName}`)
-            }}
-          >
-            应用设置
-          </Button>,
-        ] : null,
+        extra: projectId
+          ? [
+              <Button
+                key="projectPublishList"
+                type="default"
+                onClick={() => {
+                  history.push(`/project/publish?id=${projectId}&name=${projectName}`)
+                }}
+              >
+                应用发布记录
+              </Button>,
+              <Button
+                key="projectSettings"
+                type="default"
+                onClick={() => {
+                  history.push(`/project/settings?id=${projectId}&name=${projectName}`)
+                }}
+              >
+                应用设置
+              </Button>
+            ]
+          : null
       }}
     >
       <Row gutter={24}>{renderWebhook(data)}</Row>
@@ -122,13 +127,13 @@ const Webhooks = (props) => {
           rowKey="id"
           dataSource={data[activeBranch]}
           columns={[
-            {      
+            {
               title: '发布环境',
               dataIndex: 'environment',
               width: 120,
-              render: (text) => modeMap[text],
+              render: text => modeMap[text]
             },
-            {      
+            {
               title: 'CommitId',
               dataIndex: 'commitId',
               width: 120,
@@ -138,25 +143,27 @@ const Webhooks = (props) => {
                     {(commitId || '').slice(0, 10)}
                   </a>
                 )
-              },
+              }
             },
             {
               title: '描述',
-              dataIndex: 'description',
+              dataIndex: 'description'
             },
             {
               title: '操作',
               dataIndex: 'option',
               valueType: 'option',
               width: 100,
-              render: (_, record, index) => {
+              render: (_, record) => {
                 return (
                   <Link key="publish" to={`/project/${projectId}/changelog/detail?id=${record.id}`}>
-                    <Button type="link" style={{ padding: '4px 0' }}>发布详情</Button>
+                    <Button type="link" style={{ padding: '4px 0' }}>
+                      发布详情
+                    </Button>
                   </Link>
                 )
-              },
-            },
+              }
+            }
           ]}
         />
       </Modal>

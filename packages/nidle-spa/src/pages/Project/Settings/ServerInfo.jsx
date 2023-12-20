@@ -168,10 +168,7 @@ const ServerInfo = props => {
               required
               rules={[{ required: true, message: '请输入部署目录！' }]}
             />
-            <ProFormText
-              name="description"
-              label="描述"
-            />
+            <ProFormText name="description" label="描述" />
           </ModalForm>
         </>
       )}

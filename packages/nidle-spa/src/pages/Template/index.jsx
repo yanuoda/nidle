@@ -1,11 +1,14 @@
+import { useRef } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProTable from '@ant-design/pro-table'
-import { Modal, Space, Button } from 'antd'
+import { Modal, Space, message, Button } from 'antd'
 import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
 import { queryTemplateList, deleteTemplate } from '@/services/template'
 import { Link } from 'umi'
 
 const Template = () => {
+  const ref = useRef(null)
+
   const handleDeleteTemp = id => {
     Modal.confirm({
       title: 'Confirm',

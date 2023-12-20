@@ -26,7 +26,7 @@ const ServerInput = props => {
     {
       title: '描述',
       dataIndex: 'description'
-    },
+    }
   ]
 
   useEffect(async () => {

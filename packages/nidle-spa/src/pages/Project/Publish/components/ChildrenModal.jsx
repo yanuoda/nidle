@@ -1,27 +1,23 @@
-import { useState, useRef } from 'react'
+import { useRef } from 'react'
 import ProTable from '@ant-design/pro-table'
-import {  Modal, Button, message } from 'antd'
+import { Modal } from 'antd'
 
 import { getChildPublishList } from '@/services/publish'
 
 import useColumns from '../hooks/useColumns'
 
-const ChildrenModal = ({
-  open,
-  params,
-  onClose,
-}) => {
+const ChildrenModal = ({ open, params, onClose }) => {
   const actionRef = useRef()
 
   const columns = useColumns({
     onReload: () => {
-      actionRef?.current.reload();
-    },
+      actionRef?.current.reload()
+    }
   })
 
   const handleCancel = () => {
-    onClose && onClose();
-  };
+    onClose && onClose()
+  }
 
   return (
     <Modal

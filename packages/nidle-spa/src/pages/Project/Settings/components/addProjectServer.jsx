@@ -44,7 +44,7 @@ const AddProjectServer = props => {
         environment: mode,
         server: parseInt(server),
         output,
-        description,
+        description
       })
 
       if (success) {
@@ -92,10 +92,7 @@ const AddProjectServer = props => {
           required
           rules={[{ required: true, message: '请输入部署目录！' }]}
         />
-        <ProFormText
-          name="description"
-          label="描述"
-        />
+        <ProFormText name="description" label="描述" />
       </ModalForm>
     </>
   )

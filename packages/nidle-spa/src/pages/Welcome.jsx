@@ -1,17 +1,7 @@
 import { useState, useEffect } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
-import { 
-  Card,
-  Radio,
-  Button,
-  Row,
-  Col,
-  Empty,
-  Space,
-  Typography,
-  notification,
-} from 'antd'
-import { SyncOutlined, SearchOutlined } from '@ant-design/icons'
+import { Card, Radio, Button, Row, Col, Empty, Space, Typography } from 'antd'
+import { SyncOutlined } from '@ant-design/icons'
 import { Link, useRequest } from 'umi'
 
 import { NOTIFICATION_SETTING_KEY, OFFEN_USE_PROJECTS_KEY } from '@/config'
@@ -29,11 +19,14 @@ export default function Welcome() {
   const offenUseProjects = JSON.parse(localStorage.getItem(OFFEN_USE_PROJECTS_KEY) || '[]')
 
   const [statusTimestamp, setStatusTimestamp] = useState(Date.now())
-  const { loading, data = [] } = useRequest(() => {
-    return getChangelogs({ status: 'PENDING' })
-  }, {
-    refreshDeps: [statusTimestamp],
-  })
+  const { loading, data = [] } = useRequest(
+    () => {
+      return getChangelogs({ status: 'PENDING' })
+    },
+    {
+      refreshDeps: [statusTimestamp]
+    }
+  )
 
   const setnotificationMode = val => {
     setnotificationSetting(_setting => ({ ..._setting, mode: val }))
@@ -56,16 +49,16 @@ export default function Welcome() {
     if (data.length === 0) {
       return <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
     }
-    const cards = data.map((changelog) => (
+    const cards = data.map(changelog => (
       <Col span={6} key={changelog.id}>
         <Card
           type="inner"
           style={{ marginBottom: 24 }}
-          title={(
+          title={
             <Link to={`/project/${changelog.project}/changelog/detail?id=${changelog.id}`}>
               {`[${changelog.id}] ${changelog.projectName} | ${changelog.branch}`}
             </Link>
-          )}
+          }
         >
           <Row>
             <Col span={12}>发布环境：{modeMap[changelog.environment]}</Col>
@@ -111,11 +104,17 @@ export default function Welcome() {
               icon={<SyncOutlined />}
               loading={loading}
               onClick={() => setStatusTimestamp(Date.now())}
-            >刷新</Button>
+            >
+              刷新
+            </Button>
             <Typography.Text type="secondary">{getFormatDate(statusTimestamp)}</Typography.Text>
           </Space>
         }
-        extra={<Button type="link" onClick={() => window.open('/queues/queue/changelog')}>任务队列面板</Button>}
+        extra={
+          <Button type="link" onClick={() => window.open('/queues/queue/changelog')}>
+            任务队列面板
+          </Button>
+        }
       >
         {renderLoadingTasks()}
       </Card>

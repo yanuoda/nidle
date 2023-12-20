@@ -396,7 +396,9 @@ const App = props => {
             <th>状态:</th>
             <td>{statusMap[changelog.status + ''] || changelog.status}</td>
             <th>发布环境及类型:</th>
-            <td>{modeMap[changelog.environment] || changelog.environment} {changelog.type}</td>
+            <td>
+              {modeMap[changelog.environment] || changelog.environment} {changelog.type}
+            </td>
           </tr>
           <tr>
             <th>创建时间:</th>

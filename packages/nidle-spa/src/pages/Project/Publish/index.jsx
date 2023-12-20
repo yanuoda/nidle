@@ -1,14 +1,14 @@
 import { useState, useRef } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProTable from '@ant-design/pro-table'
-import {  Tabs, Button, message } from 'antd'
+import { Tabs, Button } from 'antd'
 // import {  } from '@ant-design/icons'
 import { Link, history } from 'umi'
 
 import { getPublishList, getChildPublishList } from '@/services/publish'
 import { mode as environmentList } from '@/dicts/app'
 
-import styles from './index.less'
+// import styles from './index.less'
 import useColumns from './hooks/useColumns'
 import CreateChangelog from './components/CreateChangelog'
 import ChildrenModal from './components/ChildrenModal'
@@ -38,16 +38,16 @@ const Publish = props => {
 
   const columns = useColumns({
     onReload: () => {
-      actionRef?.current.reload();
-      setExpandedRowKeys([]);
+      actionRef?.current.reload()
+      setExpandedRowKeys([])
     },
     moreListClick: ({ id, period }) => {
       setChildrenModalOpen(true)
       setChildrenModalParams({
         excludeId: id,
-        period,
+        period
       })
-    },
+    }
   })
 
   const loadChildPublishList = async ({ id, period }) => {
@@ -57,14 +57,17 @@ const Publish = props => {
       environment: activeTabKey,
       period,
       current: 1,
-      pageSize: 10,
+      pageSize: 10
     })
     if (total > data.length) {
-      return [...data, {
-        totalChilds: total,
-        id: 'totalChilds',
-        changelog: { id, period },
-      }]
+      return [
+        ...data,
+        {
+          totalChilds: total,
+          id: 'totalChilds',
+          changelog: { id, period }
+        }
+      ]
     }
     return data
   }
@@ -99,18 +102,18 @@ const Publish = props => {
             }}
           >
             应用设置
-          </Button>,
+          </Button>
         ]
       }}
     >
       {environmentList.length > 0 && (
         <>
-          <Tabs 
+          <Tabs
             items={environmentList.map(({ value, label }) => ({ label, key: value }))}
             activeKey={activeTabKey}
-            onChange={(val) => {
-              setActiveTabKey(val);
-              setExpandedRowKeys([]);
+            onChange={val => {
+              setActiveTabKey(val)
+              setExpandedRowKeys([])
             }}
             style={{ marginTop: -24 }}
           />
@@ -125,9 +128,9 @@ const Publish = props => {
                 if (expanded && !record.children.length) {
                   record.children = await loadChildPublishList(record)
                 }
-                if (expanded) setExpandedRowKeys((_ids) => [..._ids, record.id])
-                else setExpandedRowKeys((_ids) => _ids.filter((id) => id !== record.id))
-              },
+                if (expanded) setExpandedRowKeys(_ids => [..._ids, record.id])
+                else setExpandedRowKeys(_ids => _ids.filter(id => id !== record.id))
+              }
             }}
             rowKey="id"
             bordered
@@ -141,7 +144,7 @@ const Publish = props => {
               showInfo: true,
               projectId,
               environment: activeTabKey,
-              ...childrenModalParams,
+              ...childrenModalParams
             }}
             onClose={() => setChildrenModalOpen(false)}
           />

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useRequest, history } from 'umi'
 import { Row, Col, Button } from 'antd'
-import ProForm, { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form'
+import { ModalForm, ProFormSelect, ProFormText } from '@ant-design/pro-form'
 import { PlusOutlined } from '@ant-design/icons'
 
 import { fetchBranches, create } from '@/services/changelog'
@@ -23,19 +23,22 @@ const CreateChangelog = ({ projectId }) => {
   const [isBranchLoading, setIsBranchLoading] = useState(false)
   const [searchInput, setSearchInput] = useState()
 
-  const { data: branchesOptions } = useRequest(async () => {
-    setIsBranchLoading(true)
-    const res = await fetchBranches(projectId, searchInput || undefined)
-    setIsBranchLoading(false)
-    return res
-  }, {
-    debounceInterval: 300,
-    refreshDeps: [searchInput],
-  })
+  const { data: branchesOptions } = useRequest(
+    async () => {
+      setIsBranchLoading(true)
+      const res = await fetchBranches(projectId, searchInput || undefined)
+      setIsBranchLoading(false)
+      return res
+    },
+    {
+      debounceInterval: 300,
+      refreshDeps: [searchInput]
+    }
+  )
 
   const onFinish = async values => {
     setIsLoading(true)
-    const { data, success, errorMessage } = await create({ ...values, projectId })
+    const { data, success } = await create({ ...values, projectId })
     setIsLoading(false)
     if (success === true) {
       history.push(`/project/${projectId}/changelog/detail?id=${data.changelog.id}`)
@@ -91,7 +94,7 @@ const CreateChangelog = ({ projectId }) => {
           onSearch: setSearchInput,
           options: branchesOptions || [],
           allowClear: false,
-          loading: isBranchLoading,
+          loading: isBranchLoading
         }}
         name="branch"
         label="分支"

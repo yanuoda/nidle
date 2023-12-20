@@ -10,21 +10,18 @@ import { mode as environmentList } from '@/dicts/app'
 
 import styles from '../index.less'
 
-const useColumns = ({
-  onReload,
-  moreListClick,
-}) => {
+const useColumns = ({ onReload, moreListClick }) => {
   const [republishLoading, setRepublishLoading] = useState(false)
 
   const sharedOnCell = ({ totalChilds }) => {
     if (totalChilds) {
-      return { colSpan: 0 };
+      return { colSpan: 0 }
     }
-    return {};
-  };
+    return {}
+  }
 
-  const deleteChangelogByPeriod = (record, index) => {
-    const { id, children, isChild, environment, period } = record
+  const deleteChangelogByPeriod = record => {
+    const { id, children, isChild } = record
     Modal.confirm({
       title: 'Confirm',
       icon: <ExclamationCircleOutlined />,
@@ -76,17 +73,21 @@ const useColumns = ({
       fixed: 'left',
       align: 'center',
       onCell: ({ totalChilds }) => ({
-        colSpan: totalChilds ? 9 : 1,
+        colSpan: totalChilds ? 9 : 1
       }),
       render: (text, { changelog, totalChilds }) => {
         if (totalChilds) {
-          return <>
-            <span>已展示前10条，共{totalChilds}条</span>
-            <Button type="link" onClick={() => moreListClick && moreListClick(changelog)}>查看全部</Button>
-          </>
+          return (
+            <>
+              <span>已展示前10条，共{totalChilds}条</span>
+              <Button type="link" onClick={() => moreListClick && moreListClick(changelog)}>
+                查看全部
+              </Button>
+            </>
+          )
         }
         return text
-      },
+      }
     },
     {
       title: 'CommitId',
@@ -101,14 +102,14 @@ const useColumns = ({
             {(commitId || '').slice(0, 10)}
           </a>
         )
-      },
+      }
     },
     {
       title: '创建人',
       dataIndex: 'developer',
       align: 'center',
       width: 150,
-      onCell: sharedOnCell,
+      onCell: sharedOnCell
     },
     {
       title: '创建时间',
@@ -116,7 +117,7 @@ const useColumns = ({
       valueType: 'dateTime',
       align: 'center',
       width: 100,
-      onCell: sharedOnCell,
+      onCell: sharedOnCell
     },
     {
       title: '修改时间',
@@ -124,7 +125,7 @@ const useColumns = ({
       valueType: 'dateTime',
       align: 'center',
       width: 100,
-      onCell: sharedOnCell,
+      onCell: sharedOnCell
     },
     {
       title: '发布耗时',
@@ -135,27 +136,27 @@ const useColumns = ({
       render: (_, { duration, totalChilds }) => {
         if (totalChilds) return ''
         return transformDuration(duration)
-      },
+      }
     },
     {
       title: '触发方式',
       dataIndex: 'source',
       align: 'center',
       width: 80,
-      onCell: sharedOnCell,
+      onCell: sharedOnCell
     },
     {
       title: '发布类型',
       dataIndex: 'type',
       align: 'center',
       width: 90,
-      onCell: sharedOnCell,
+      onCell: sharedOnCell
     },
     {
       title: '描述',
       dataIndex: 'description',
       align: 'center',
-      onCell: sharedOnCell,
+      onCell: sharedOnCell
     },
     {
       title: '状态',
@@ -170,7 +171,7 @@ const useColumns = ({
         const { label: envName } = environmentList.find(env => env.value === environment)
         const { label, badgeStatus } = statusList.find(item => item.value === status)
         return <Badge status={badgeStatus} text={`${envName} - ${label}`} />
-      },
+      }
     },
     {
       title: '操作',
@@ -198,7 +199,7 @@ const useColumns = ({
             >
               删除
             </Button>
-          ) : null,
+          ) : null
         ]
         // 子发布记录不可操作，直接返回
         if (isChild) return btnDoms
@@ -208,13 +209,13 @@ const useColumns = ({
             <Popconfirm
               key="republish"
               placement="top"
-              trigger={republishLoading ? "click" : "hover"}
+              trigger={republishLoading ? 'click' : 'hover'}
               title="有新的内容，是否直接重新发布？"
               showCancel={false}
               onConfirm={() => republishConfirm(record)}
             >
-              <Button type='primary' icon={<SubnodeOutlined />}></Button>
-            </Popconfirm> 
+              <Button type="primary" icon={<SubnodeOutlined />}></Button>
+            </Popconfirm>
           )
         }
         //
@@ -244,7 +245,7 @@ const useColumns = ({
           btnDoms.unshift(textBtn)
         }
         return btnDoms
-      },
+      }
     }
   ]
 }
