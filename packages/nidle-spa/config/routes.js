@@ -64,6 +64,21 @@ export default [
       { component: './404' }
     ]
   },
+  {
+    path: '/airline-publish',
+    name: '航司服务器关系管理',
+    icon: 'table',
+    routes: [
+      {
+        path: '/airline-publish/list',
+        name: '航司服务器关系列表',
+        icon: 'smile',
+        component: './AirlinePublish/List'
+      },
+      { path: '/airline-publish', redirect: '/airline-publish/list' },
+      { component: './404' }
+    ]
+  },
   { path: '/modifypassword', name: '修改密码', icon: 'edit', component: './User/ModifyPassword' },
   { path: '/associatedAccount', name: '关联账号', icon: 'heart', component: './User/associatedAccount' },
   { path: '/', redirect: '/welcome' },
