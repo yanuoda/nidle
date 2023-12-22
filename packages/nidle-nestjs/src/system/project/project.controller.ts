@@ -133,7 +133,10 @@ export class ProjectController {
   async fetchProjectServer(
     @Body() { id, mode }: FetchProjectServerDto,
   ): Promise<FetchProjectServerResponseDto> {
-    const data = await this.projectService.fetchProjectServer(id, mode);
+    const data = await this.projectService.fetchProjectServerBy({
+      project: { id },
+      environment: mode,
+    });
     return { data };
   }
 

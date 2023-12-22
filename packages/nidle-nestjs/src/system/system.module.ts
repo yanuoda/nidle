@@ -8,6 +8,7 @@ import { ChangelogModule } from './changelog/changelog.module';
 import { ConfigModule } from './config/config.module';
 import { OauthModule } from './oauth/oauth.module';
 import { MessageModule } from './message/message.module';
+import { AirlineModule } from './biz/airline/airline.module';
 
 const modules = [
   ServerModule,
@@ -18,6 +19,7 @@ const modules = [
   ConfigModule,
   OauthModule,
   MessageModule,
+  AirlineModule,
 ];
 
 @Module({

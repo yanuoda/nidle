@@ -245,15 +245,9 @@ export class ProjectService {
     );
   }
 
-  async fetchProjectServer(projectId: number, environment = '') {
-    const _where: FindOptionsWhere<ProjectServer> = {
-      project: { id: projectId },
-    };
-    if (environment) {
-      _where.environment = environment;
-    }
+  async fetchProjectServerBy(_where: FindOptionsWhere<ProjectServer>) {
     const list = await this.projectServerRepository.find({
-      where: _where,
+      where: buildEqualWhere(_where),
       relations: { server: true },
     });
     const projectServers = list.map(({ server, ...restData }) => {
@@ -264,13 +258,7 @@ export class ProjectService {
         ...restData,
       };
     });
-    if (environment) return projectServers;
-
-    const serverList = new ServerList();
-    projectServers.forEach((pss) => {
-      serverList[pss.environment as Environment].push(pss);
-    });
-    return serverList;
+    return projectServers;
   }
 
   /**

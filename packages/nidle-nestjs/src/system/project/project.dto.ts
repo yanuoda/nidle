@@ -129,7 +129,7 @@ export class FetchProjectBranchesDto {
 }
 
 export class FetchProjectServerResponseDto extends FormatResponse {
-  data: ServerList | RelatedProjectServer[];
+  data: RelatedProjectServer[];
 }
 
 export class QueryPublishListDto extends PageQuery {
