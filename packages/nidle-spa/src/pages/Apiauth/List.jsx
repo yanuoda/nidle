@@ -112,10 +112,10 @@ const ApiauthList = () => {
               hideInSearch: true,
               render: (text, record) => (
                 <Space size="small">
-                  <Button type="link" onClick={() => handleModalOpen(record)}>
+                  <Button type="link" onClick={() => handleModalOpen(record)} style={{ padding: 4 }}>
                     编辑
                   </Button>
-                  <Button type="link" onClick={() => handleDeleteServer(record)}>
+                  <Button type="link" onClick={() => handleDeleteServer(record)} style={{ padding: 4 }}>
                     删除
                   </Button>
                 </Space>
