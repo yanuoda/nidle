@@ -8,6 +8,7 @@ import { ChangelogModule } from './changelog/changelog.module';
 import { ConfigModule } from './config/config.module';
 import { OauthModule } from './oauth/oauth.module';
 import { MessageModule } from './message/message.module';
+import { ApiauthModule } from './apiauth/apiauth.module';
 import { AirlineModule } from './biz/airline/airline.module';
 
 const modules = [
@@ -20,6 +21,7 @@ const modules = [
   OauthModule,
   MessageModule,
   AirlineModule,
+  ApiauthModule,
 ];
 
 @Module({
