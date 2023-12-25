@@ -104,18 +104,46 @@ export class ProjectController {
   @ApiOperation({ summary: '添加项目服务器配置' })
   @Post('server/add')
   async addProjectServer(
-    @Body() param: CreateProjectServerDto,
+    @Body()
+    {
+      environment,
+      output,
+      project,
+      server,
+      description,
+    }: CreateProjectServerDto,
   ): Promise<CreateProjectServerResponseDto> {
-    const data = await this.projectService.createProjectServer(param);
+    const data = await this.projectService.createProjectServer({
+      environment,
+      output,
+      project,
+      server,
+      description,
+    });
     return { data };
   }
 
   @ApiOperation({ summary: '编辑项目服务器配置' })
   @Post('server/modify')
   async modifyProjectServer(
-    @Body() param: UpdateProjectServerDto,
+    @Body()
+    {
+      id,
+      environment,
+      output,
+      project,
+      server,
+      description,
+    }: UpdateProjectServerDto,
   ): Promise<UpdateProjectServerResponseDto> {
-    const data = await this.projectService.updateProjectServer(param);
+    const data = await this.projectService.updateProjectServer({
+      id,
+      environment,
+      output,
+      project,
+      server,
+      description,
+    });
     return { data };
   }
 

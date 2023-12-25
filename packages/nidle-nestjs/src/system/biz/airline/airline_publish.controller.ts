@@ -18,21 +18,42 @@ export class AirlineController {
 
   @Post('add')
   async create(
-    @Body() createAirlineDto: CreateAirlinePublishDto,
+    @Body()
+    {
+      airline,
+      environment,
+      projectServer,
+      relativePath,
+      status,
+      description,
+    }: CreateAirlinePublishDto,
   ): Promise<IdResponseDto> {
-    const { id } = await this.airlineService.create(createAirlineDto);
+    const { id } = await this.airlineService.create({
+      airline,
+      environment,
+      projectServer,
+      relativePath,
+      status,
+      description,
+    });
     return { id };
   }
 
   @ApiOperation({ summary: '查询列表' })
   @Post('list')
   async findAllByPage(
-    @Body() queryParam: QeuryAirlinePublishListDTO,
+    @Body()
+    {
+      current,
+      pageSize: _pageSize,
+      airline,
+      environment,
+    }: QeuryAirlinePublishListDTO,
   ): Promise<QueryAirlinePublishListResponseDTO> {
-    const { current, pageSize: _pageSize } = queryParam;
     const { page, pageSize } = formatPageParams(current, _pageSize);
     const { list, total } = await this.airlineService.findAllByPage({
-      ...queryParam,
+      airline,
+      environment,
       current: page,
       pageSize,
     });
@@ -40,20 +61,39 @@ export class AirlineController {
   }
 
   @Get(':id')
-  async findOne(@Param() { id: _id }: IdQueryRequestDto) {
-    const data = await this.airlineService.findOne(+_id);
+  async findOne(@Param() { id }: IdQueryRequestDto) {
+    const data = await this.airlineService.findOne(+id);
     return { data };
   }
 
   @Post('modify')
-  async update(@Body() updateAirlineDto: UpdateAirlinePublishDto) {
-    const { id } = await this.airlineService.update(updateAirlineDto);
+  async update(
+    @Body()
+    {
+      id: _id,
+      airline,
+      environment,
+      projectServer,
+      relativePath,
+      status,
+      description,
+    }: UpdateAirlinePublishDto,
+  ) {
+    const { id } = await this.airlineService.update({
+      id: _id,
+      airline,
+      environment,
+      projectServer,
+      relativePath,
+      status,
+      description,
+    });
     return { id };
   }
 
   @Post('delete')
-  async remove(@Body() { id: _id }: IdQueryRequestDto) {
-    const { affected } = await this.airlineService.remove(+_id);
+  async remove(@Body() { id }: IdQueryRequestDto) {
+    const { affected } = await this.airlineService.remove(+id);
     return { affected };
   }
 }

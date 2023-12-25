@@ -26,29 +26,39 @@ export class ServerController {
 
   @ApiOperation({ summary: '添加服务器' })
   @Post('add')
-  async addServer(@Body() param: CreateServerDTO): Promise<IdResponseDto> {
-    const { id } = await this.serverService.create(param);
+  async addServer(
+    @Body() { environment, name, ip, username, password }: CreateServerDTO,
+  ): Promise<IdResponseDto> {
+    const { id } = await this.serverService.create({
+      environment,
+      name,
+      ip,
+      username,
+      password,
+    });
     return { id };
   }
 
   @ApiOperation({ summary: '查询所有服务器（下拉框）' })
   @Post()
   async getAllServers(
-    @Body() body: GetAllServersDTO,
+    @Body() { environment }: GetAllServersDTO,
   ): Promise<GetAllServersResponseDTO> {
-    const data = await this.serverService.findAll(body);
+    const data = await this.serverService.findAll({ environment });
     return { data };
   }
 
   @ApiOperation({ summary: '查询服务器列表' })
   @Post('list')
   async queryServerList(
-    @Body() queryParam: QeuryServerListDTO,
+    @Body()
+    { current, pageSize: _pageSize, environment, name, ip }: QeuryServerListDTO,
   ): Promise<QueryServerListResponseDTO> {
-    const { current, pageSize: _pageSize } = queryParam;
     const { page, pageSize } = formatPageParams(current, _pageSize);
     const { list, total } = await this.serverService.findAllByPage({
-      ...queryParam,
+      environment,
+      name,
+      ip,
       current: page,
       pageSize,
     });
@@ -67,8 +77,18 @@ export class ServerController {
 
   @ApiOperation({ summary: '编辑服务器' })
   @Post('modify')
-  async modifyServer(@Body() param: UpdateServerDTO): Promise<IdResponseDto> {
-    const { id } = await this.serverService.update(param);
+  async modifyServer(
+    @Body()
+    { id: _id, environment, name, ip, username, password }: UpdateServerDTO,
+  ): Promise<IdResponseDto> {
+    const { id } = await this.serverService.update({
+      id: _id,
+      environment,
+      name,
+      ip,
+      username,
+      password,
+    });
     return { id };
   }
 

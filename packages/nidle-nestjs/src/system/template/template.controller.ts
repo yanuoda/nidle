@@ -22,21 +22,26 @@ export class TemplateController {
   @ApiOperation({ summary: '添加模板' })
   @Post('add')
   async create(
-    @Body() createTemplateDto: CreateTemplateDto,
+    @Body() { name, description, config }: CreateTemplateDto,
   ): Promise<CreateTemplateResponseDto> {
-    const { id, name } = await this.templateService.create(createTemplateDto);
+    const { id } = await this.templateService.create({
+      name,
+      description,
+      config,
+    });
     return { id, name };
   }
 
   @ApiOperation({ summary: '查询模板列表' })
   @Post('list')
   async findAllByPage(
-    @Body() queryParam: QueryTemplateListDTO,
+    @Body()
+    { current, pageSize: _pageSize, name, description }: QueryTemplateListDTO,
   ): Promise<QueryTemplateListResponseDTO> {
-    const { current, pageSize: _pageSize } = queryParam;
     const { page, pageSize } = formatPageParams(current, _pageSize);
     const { list, total } = await this.templateService.findAllByPage({
-      ...queryParam,
+      name,
+      description,
       current: page,
       pageSize,
     });
@@ -55,9 +60,14 @@ export class TemplateController {
   @ApiOperation({ summary: '编辑模板' })
   @Post('modify')
   async update(
-    @Body() updateTemplateDto: UpdateTemplateDto,
+    @Body() { id: _id, name, description, config }: UpdateTemplateDto,
   ): Promise<UpdateTemplateResponseDto> {
-    const { id, name } = await this.templateService.update(updateTemplateDto);
+    const { id } = await this.templateService.update({
+      id: _id,
+      name,
+      description,
+      config,
+    });
     return { id, name };
   }
 
