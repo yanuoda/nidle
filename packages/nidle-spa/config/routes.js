@@ -79,6 +79,21 @@ export default [
       { component: './404' }
     ]
   },
+  {
+    path: '/apiauth',
+    name: '接口调用权限管理',
+    icon: 'table',
+    routes: [
+      {
+        path: '/apiauth/list',
+        name: '接口调用权限列表',
+        icon: 'smile',
+        component: './Apiauth/List'
+      },
+      { path: '/apiauth', redirect: '/apiauth/list' },
+      { component: './404' }
+    ]
+  },
   { path: '/modifypassword', name: '修改密码', icon: 'edit', component: './User/ModifyPassword' },
   { path: '/associatedAccount', name: '关联账号', icon: 'heart', component: './User/associatedAccount' },
   { path: '/', redirect: '/welcome' },
