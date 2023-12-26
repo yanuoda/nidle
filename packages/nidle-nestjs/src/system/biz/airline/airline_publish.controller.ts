@@ -3,7 +3,7 @@ import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 
 import { formatPageParams } from 'src/utils';
 import { IdQueryRequestDto, IdResponseDto } from 'src/common/base.dto';
-import { AirlineService } from './airline_publish.service';
+import { AirlinePublishService } from './airline_publish.service';
 import {
   CreateAirlinePublishDto,
   QeuryAirlinePublishListDTO,
@@ -13,8 +13,8 @@ import {
 
 @ApiTags('航司-服务器发布配置相关接口')
 @Controller('airline-publish')
-export class AirlineController {
-  constructor(private readonly airlineService: AirlineService) {}
+export class AirlinePublishController {
+  constructor(private readonly airlineService: AirlinePublishService) {}
 
   @Post('add')
   async create(

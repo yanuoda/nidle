@@ -14,7 +14,7 @@ import {
 } from './airline_publish.dto';
 
 @Injectable()
-export class AirlineService {
+export class AirlinePublishService {
   constructor(
     @InjectRepository(AirlinePublish)
     private readonly airlineRepository: Repository<AirlinePublish>,
