@@ -41,6 +41,13 @@ export class QueryProjectListResponseDto extends FormatResponse {
   readonly total: number;
 }
 
+export class RelationIdProjectServer extends OmitType(ProjectServer, [
+  'project',
+  'server',
+]) {
+  project: number;
+  server: number;
+}
 class PickedServerData {
   readonly id: number;
   readonly name?: string;
@@ -49,11 +56,8 @@ class PickedServerData {
   readonly status?: number;
   readonly environment?: string;
 }
-class RelatedProjectServer extends PartialType(
-  OmitType(ProjectServer, ['project', 'server']),
-) {
+class RelatedProjectServer extends PartialType(RelationIdProjectServer) {
   readonly Server?: PickedServerData;
-  readonly server?: number;
 }
 export class ServerList implements Record<Environment, unknown> {
   development: RelatedProjectServer[] = [];

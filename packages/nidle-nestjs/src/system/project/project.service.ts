@@ -24,6 +24,7 @@ import {
   AssembleChangelog,
   PublishEnvListMap,
   QueryPublishListDto,
+  RelationIdProjectServer,
 } from './project.dto';
 import { Project } from './entities/project.entity';
 import { ProjectServer } from './entities/project_server.entity';
@@ -128,14 +129,16 @@ export class ProjectService {
     }
     const { projectServers, ...restColumn } = existProject;
     const serverList = new ServerList();
-    projectServers.forEach(({ server, ...restData }) => {
-      const { id, name, ip, status } = server;
-      serverList[restData.environment as Environment].push({
-        ...restData,
-        server: id,
-        Server: { id, name, ip, status },
-      });
-    });
+    (projectServers as Array<Omit<ProjectServer, 'project'>>).forEach(
+      ({ server, ...restData }) => {
+        const { id, name, ip, status } = server;
+        serverList[restData.environment as Environment].push({
+          ...restData,
+          server: id,
+          Server: { id, name, ip, status },
+        });
+      },
+    );
     let resList: Record<string, any>[];
     if (existProject.repositoryType === 'gitlab') {
       resList = await this.gitlabService.getMembers(existProject.repositoryUrl);
@@ -191,13 +194,21 @@ export class ProjectService {
 
   /** projectServer ↓ */
 
-  async createProjectServer(param: CreateProjectServerDto) {
+  async createProjectServer({
+    project,
+    server,
+    ...param
+  }: CreateProjectServerDto) {
     const newProjectServer = new ProjectServer();
     Object.assign(newProjectServer, param);
-    const newObj: Omit<ProjectServer, 'server'> =
+    newProjectServer.project = await this.findOne({ id: project });
+    const serverData = await this.serverService.findOne(server);
+    newProjectServer.server = serverData;
+
+    const newObj: Omit<ProjectServer, 'project' | 'server'> =
       await this.projectServerRepository.save(newProjectServer);
-    const queryServer = await this.serverService.findOne(param.server);
-    return { ...newObj, Server: queryServer, server: queryServer.id };
+
+    return { ...newObj, Server: serverData, server, project };
   }
 
   async findProjectServerBy(where: FindOptionsWhere<ProjectServer>) {
@@ -205,26 +216,39 @@ export class ProjectService {
     if (!Object.keys(_where).length) {
       throw new Error('findProjectServerBy: findOne 的条件(where)不能为空');
     }
-    const existProjectServer = await this.projectServerRepository.findOne({
-      where: _where,
-      relations: { project: true, server: true },
-    });
+    const existProjectServer: Omit<ProjectServer, 'project' | 'server'> =
+      await this.projectServerRepository.findOne({
+        where: _where,
+        loadRelationIds: true,
+        // relations: { project: true, server: true },
+      });
     if (!existProjectServer) {
       throw new Error(`项目服务器配置不存在 - where:${JSON.stringify(_where)}`);
     }
-    return existProjectServer;
+    return existProjectServer as RelationIdProjectServer;
   }
 
-  async updateProjectServer({ id, ...restParam }: UpdateProjectServerDto) {
-    const existProjectServer = await this.findProjectServerBy({
-      id,
-    });
+  async updateProjectServer({
+    id,
+    project,
+    server,
+    ...restParam
+  }: UpdateProjectServerDto) {
+    const existProjectServer = await this.findProjectServerBy({ id });
     Object.assign(existProjectServer, restParam);
-    const newObj: Omit<ProjectServer, 'server'> =
-      await this.projectServerRepository.save(existProjectServer);
-    if (!restParam.server) return newObj;
-    const queryServer = await this.serverService.findOne(restParam.server);
-    return { ...newObj, Server: queryServer, server: queryServer.id };
+    const projectId = project || existProjectServer.project;
+    const _project = await this.findOne({ id: projectId });
+    const serverId = server || existProjectServer.server;
+    const _server = await this.serverService.findOne(serverId);
+
+    const newObj: Omit<ProjectServer, 'project' | 'server'> =
+      await this.projectServerRepository.save({
+        ...existProjectServer,
+        project: _project,
+        server: _server,
+      });
+
+    return { ...newObj, Server: _server, server: serverId, project: projectId };
   }
 
   async removeProjectServer(id: number) {
@@ -246,10 +270,11 @@ export class ProjectService {
   }
 
   async fetchProjectServerBy(_where: FindOptionsWhere<ProjectServer>) {
-    const list = await this.projectServerRepository.find({
-      where: buildEqualWhere(_where),
-      relations: { server: true },
-    });
+    const list: Array<Omit<ProjectServer, 'project'>> =
+      await this.projectServerRepository.find({
+        where: buildEqualWhere(_where),
+        relations: { server: true },
+      });
     const projectServers = list.map(({ server, ...restData }) => {
       const { id, name, ip, description, status } = server;
       return {

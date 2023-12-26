@@ -473,7 +473,7 @@ export class ChangelogService {
               },
             );
 
-            item.serverId = projectServer.server.id;
+            item.serverId = projectServer.server;
           }
           // 更新服务器被占用
           await this.projectService.setProjectServerOccupation(
