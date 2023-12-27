@@ -1,3 +1,4 @@
+import { PartialType } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
 import { FormatResponse, PageQuery } from 'src/common/base.dto';
@@ -9,9 +10,10 @@ export class CreateApiauthDto {
   readonly status?: number;
   readonly description?: string;
 }
-export class UpdateApiauthDto extends CreateApiauthDto {
+export class UpdateApiauthDto extends PartialType(CreateApiauthDto) {
   @IsNotEmpty()
   readonly id: number;
+  readonly lastInvokeTime?: Date;
 }
 export class QeuryApiauthListDTO extends PageQuery {
   readonly name?: string;

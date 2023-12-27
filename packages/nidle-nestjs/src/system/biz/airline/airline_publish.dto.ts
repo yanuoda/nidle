@@ -1,6 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
 
 import { Environment, FormatResponse, PageQuery } from 'src/common/base.dto';
+import { Server } from 'src/system/server/server.entity';
 import { AirlinePublish } from './airline_publish.entity';
 
 export class CreateAirlinePublishDto {
@@ -25,4 +26,9 @@ export class QeuryAirlinePublishListDTO extends PageQuery {
 export class QueryAirlinePublishListResponseDTO extends FormatResponse {
   readonly data: AirlinePublish[];
   readonly total: number;
+}
+
+export class PublishServer extends AirlinePublish {
+  Server: Server;
+  projectServerOutput: string;
 }

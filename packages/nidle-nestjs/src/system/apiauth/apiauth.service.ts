@@ -49,6 +49,11 @@ export class ApiauthService {
     return existAirlinePublish;
   }
 
+  async findOneByKey(apiKey: string) {
+    if (!apiKey) return null;
+    return await this.apiauthRepository.findOneBy({ apiKey });
+  }
+
   async update({ id, ...restParam }: UpdateApiauthDto) {
     const existApiauth = await this.findOne(id);
     Object.assign(existApiauth, restParam);

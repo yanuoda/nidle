@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Param } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { formatPageParams } from 'src/utils';
 import { IdQueryRequestDto, IdResponseDto } from 'src/common/base.dto';
@@ -11,6 +11,7 @@ import {
   UpdateApiauthDto,
 } from './apiauth.dto';
 
+@ApiTags('接口调用权限相关接口')
 @Controller('apiauth')
 export class ApiauthController {
   constructor(private readonly apiauthService: ApiauthService) {}

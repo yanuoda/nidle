@@ -5,10 +5,12 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 
 import { buildEqualWhere, checkValue } from 'src/utils';
+import { Environment } from 'src/common/base.dto';
 import { ProjectService } from 'src/system/project/project.service';
 import { AirlinePublish } from './airline_publish.entity';
 import {
   CreateAirlinePublishDto,
+  PublishServer,
   QeuryAirlinePublishListDTO,
   UpdateAirlinePublishDto,
 } from './airline_publish.dto';
@@ -68,6 +70,27 @@ export class AirlinePublishService {
       throw new Error(`航司发布配置id:${id}不存在`);
     }
     return existAirlinePublish;
+  }
+
+  async findPublishServerBy(airline: string, environment: Environment) {
+    if (!airline || !environment) return [];
+    let _list = await this.airlineRepository.findBy({ airline, environment });
+    if (_list.length) {
+      const projectServerList = await this.projectService.fetchProjectServerBy({
+        id: In(_list.map(({ projectServer }) => projectServer)),
+      });
+      _list = _list.map((item) => {
+        const _projectServer = projectServerList.find(
+          ({ id }) => id === item.projectServer,
+        );
+        return {
+          ...item,
+          Server: _projectServer.Server,
+          projectServerOutput: _projectServer.output,
+        };
+      });
+    }
+    return _list as PublishServer[];
   }
 
   async update({ id, ...restParam }: UpdateAirlinePublishDto) {

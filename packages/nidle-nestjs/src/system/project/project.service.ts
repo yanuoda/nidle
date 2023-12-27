@@ -276,9 +276,9 @@ export class ProjectService {
         relations: { server: true },
       });
     const projectServers = list.map(({ server, ...restData }) => {
-      const { id, name, ip, description, status } = server;
+      const { id, ...serverRest } = server;
       return {
-        Server: { id, name, ip, description, status },
+        Server: { id, ...serverRest },
         server: id,
         ...restData,
       };

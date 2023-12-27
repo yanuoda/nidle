@@ -47,6 +47,7 @@ export const nidleConfig = registerAs('nidleConfig', () => ({
   config: {
     path: process.env.NIDLE_DIR + '/nidle-output/config/',
   },
+  tempfile: process.env.NIDLE_DIR + '/nidle-output/tempfile/',
   afterManagerWaitSecs: process.env.AFTER_MANAGER_WAIT_SECS,
 }));
 

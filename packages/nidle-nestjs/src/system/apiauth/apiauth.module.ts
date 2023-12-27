@@ -9,5 +9,6 @@ import { Apiauth } from './apiauth.entity';
   controllers: [ApiauthController],
   providers: [ApiauthService],
   imports: [TypeOrmModule.forFeature([Apiauth])],
+  exports: [ApiauthService],
 })
 export class ApiauthModule {}

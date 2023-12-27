@@ -10,6 +10,7 @@ import { OauthModule } from './oauth/oauth.module';
 import { MessageModule } from './message/message.module';
 import { ApiauthModule } from './apiauth/apiauth.module';
 import { AirlineModule } from './biz/airline/airline.module';
+import { OpenModule } from './open/open.module';
 
 const modules = [
   ServerModule,
@@ -22,6 +23,7 @@ const modules = [
   MessageModule,
   AirlineModule,
   ApiauthModule,
+  OpenModule,
 ];
 
 @Module({
