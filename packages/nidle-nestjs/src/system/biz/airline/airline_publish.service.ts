@@ -72,9 +72,13 @@ export class AirlinePublishService {
     return existAirlinePublish;
   }
 
-  async findPublishServerBy(airline: string, environment: Environment) {
+  async findActivePublishServerBy(airline: string, environment: Environment) {
     if (!airline || !environment) return [];
-    let _list = await this.airlineRepository.findBy({ airline, environment });
+    let _list = await this.airlineRepository.findBy({
+      airline,
+      environment,
+      status: 1,
+    });
     if (_list.length) {
       const projectServerList = await this.projectService.fetchProjectServerBy({
         id: In(_list.map(({ projectServer }) => projectServer)),

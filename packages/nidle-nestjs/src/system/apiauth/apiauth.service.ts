@@ -49,9 +49,9 @@ export class ApiauthService {
     return existAirlinePublish;
   }
 
-  async findOneByKey(apiKey: string) {
+  async findActiveOneByKey(apiKey: string) {
     if (!apiKey) return null;
-    return await this.apiauthRepository.findOneBy({ apiKey });
+    return await this.apiauthRepository.findOneBy({ apiKey, status: 1 });
   }
 
   async update({ id, ...restParam }: UpdateApiauthDto) {

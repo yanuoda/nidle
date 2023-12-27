@@ -25,7 +25,7 @@ export class OpenService {
   }
 
   async checkApiAuth(apiKey: string) {
-    const data = await this.apiauthService.findOneByKey(apiKey);
+    const data = await this.apiauthService.findActiveOneByKey(apiKey);
     if (!data) throw new Error('无权限调用此接口，请联系申请');
     return data.id;
   }
@@ -48,10 +48,11 @@ export class OpenService {
     fileName,
   }: AirlineConfigPublishDto) {
     const apiauthId = await this.checkApiAuth(apiKey);
-    const publishList = await this.airlinePublishService.findPublishServerBy(
-      airline,
-      environment,
-    );
+    const publishList =
+      await this.airlinePublishService.findActivePublishServerBy(
+        airline,
+        environment,
+      );
     if (!publishList.length) throw new Error('没有查询到相关的航司发布配置');
 
     try {
