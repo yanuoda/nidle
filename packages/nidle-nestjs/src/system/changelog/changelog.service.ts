@@ -902,7 +902,7 @@ export class ChangelogService {
     if (!this.changelogQueue[method]) {
       throw new Error(`queue [${method}] is undefined.`);
     }
-    const data = await this.changelogQueue[method](...params);
+    const data = (await this.changelogQueue[method](...params)) || {};
     return JSON.stringify(data, Object.getOwnPropertyNames(data), 2);
   }
 
@@ -911,7 +911,7 @@ export class ChangelogService {
     for (const id of ids) {
       const job = await this.changelogQueue.getJob(id);
       if (!job[method]) throw new Error(`job [${method}] is undefined.`);
-      const jobdata = await job[method](...params);
+      const jobdata = (await job[method](...params)) || {};
       data[id] = JSON.stringify(
         jobdata,
         Object.getOwnPropertyNames(jobdata),
