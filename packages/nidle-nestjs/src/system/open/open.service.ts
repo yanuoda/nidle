@@ -85,13 +85,14 @@ export class OpenService {
         await client.uploadFile(tempFilePath, `${destPath}/${fileName}`);
         client.close(); // remember to close connection after you finish
         res.succeed.push(airlinePublish.id);
-      } catch (err) {
+      } catch (_err) {
+        const err = _err || {};
         this.logger.error(
-          `scp failed: airlinePublish id [${airlinePublish.id}]`,
+          `publishAirlineConfig failed: airlinePublish id [${airlinePublish.id}]`,
           {
             targetIp: airlinePublish.Server.ip,
             targetPath: `${destPath}/${fileName}`,
-            err,
+            err: JSON.stringify(err, Object.getOwnPropertyNames(err), 2),
           },
         );
         res.failed.push(airlinePublish.id);
