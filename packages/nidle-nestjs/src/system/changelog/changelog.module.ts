@@ -40,9 +40,9 @@ import { UserModule } from '../user/user.module';
             duration: Number(_queueConfig.changelog.duration),
           },
           settings: {
-            lockDuration: Number(_queueConfig.changelog.lockDuration),
-            stalledInterval: Number(_queueConfig.changelog.stalledInterval),
-            maxStalledCount: Number(_queueConfig.changelog.maxStalledCount),
+            lockDuration: Number(_queueConfig.changelog.lockDuration), // default:30000
+            stalledInterval: Number(_queueConfig.changelog.stalledInterval), // default:30000
+            maxStalledCount: Number(_queueConfig.changelog.maxStalledCount), // default:1
           },
           processors: [
             {
