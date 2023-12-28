@@ -42,7 +42,6 @@ const EditAirlinePublish = ({ open, editData, onClose }) => {
       params.id = editData.id
       reqMethod = modifyAirlinePublishList
     }
-    console.log(params)
     const result = await reqMethod(params)
     const { success } = result || {}
     if (success) {
@@ -123,7 +122,21 @@ const EditAirlinePublish = ({ open, editData, onClose }) => {
             rules={[{ required: true, message: '请选择路径' }]}
             disabled
           />
-          <ProFormText name="relativePath" label="相对路径" placeholder="支持 ../xx " />
+          <ProFormText
+            name="relativePath"
+            label="相对路径"
+            placeholder="请以 ../ 或 ./ 开头"
+            rules={[
+              {
+                validator(_, value) {
+                  if (value && !value.startsWith('../') && !value.startsWith('./')) {
+                    return Promise.reject('相对路径请以 ../ 或 ./ 开头')
+                  }
+                  return Promise.resolve()
+                }
+              }
+            ]}
+          />
           <ProFormText name="description" label="描述" />
         </ProForm>
       </Modal>

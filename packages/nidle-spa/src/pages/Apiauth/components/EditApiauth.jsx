@@ -14,7 +14,6 @@ const EditApiauth = ({ open, editData, onClose }) => {
       params.id = editData.id
       reqMethod = modifyApiauthList
     }
-    console.log(params)
     const result = await reqMethod(params)
     const { success } = result || {}
     if (success) {
