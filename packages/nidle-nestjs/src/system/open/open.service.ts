@@ -72,6 +72,9 @@ export class OpenService {
         airlinePublish.relativePath,
       );
       try {
+        this.airlinePublishService.checkRelativePath(
+          airlinePublish.relativePath,
+        );
         const client = new Client(`client ip:${airlinePublish.Server.ip}`);
         await client.connect({
           host: airlinePublish.Server.ip,
