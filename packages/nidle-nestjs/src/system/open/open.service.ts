@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { Client } from 'node-scp';
+import * as Client from 'ssh2-sftp-client';
 import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService, ConfigType } from '@nestjs/config';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
@@ -72,7 +72,8 @@ export class OpenService {
         airlinePublish.relativePath,
       );
       try {
-        const client = await Client({
+        const client = new Client(`client ip:${airlinePublish.Server.ip}`);
+        await client.connect({
           host: airlinePublish.Server.ip,
           port: 22,
           username: airlinePublish.Server.username,
@@ -80,10 +81,10 @@ export class OpenService {
         });
         const isPathExist = await client.exists(destPath);
         if (!isPathExist) {
-          await client.mkdir(destPath);
+          await client.mkdir(destPath, true);
         }
-        await client.uploadFile(tempFilePath, `${destPath}/${fileName}`);
-        client.close(); // remember to close connection after you finish
+        await client.fastPut(tempFilePath, `${destPath}/${fileName}`);
+        client.end(); // remember to close connection after you finish
         res.succeed.push(airlinePublish.id);
       } catch (_err) {
         const err = _err || {};
