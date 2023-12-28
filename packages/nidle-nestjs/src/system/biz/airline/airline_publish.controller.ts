@@ -28,6 +28,7 @@ export class AirlinePublishController {
       description,
     }: CreateAirlinePublishDto,
   ): Promise<IdResponseDto> {
+    this.airlineService.checkRelativePath(relativePath);
     const { id } = await this.airlineService.create({
       airline,
       environment,
@@ -79,6 +80,7 @@ export class AirlinePublishController {
       description,
     }: UpdateAirlinePublishDto,
   ) {
+    this.airlineService.checkRelativePath(relativePath);
     const { id } = await this.airlineService.update({
       id: _id,
       airline,

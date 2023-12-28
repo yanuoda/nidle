@@ -25,6 +25,12 @@ export class AirlinePublishService {
     private readonly logger: Logger,
   ) {}
 
+  checkRelativePath(path: string) {
+    if (!path.startsWith('../') && !path.startsWith('./')) {
+      throw new Error('relativePath should start with "../" or "./"');
+    }
+  }
+
   async create(param: CreateAirlinePublishDto) {
     const newAirlinePublish = new AirlinePublish();
     Object.assign(newAirlinePublish, param);
