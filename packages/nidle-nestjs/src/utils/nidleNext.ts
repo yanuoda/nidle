@@ -76,24 +76,24 @@ export default function (changelog: PickedChangelog | null, mode?: string) {
   }
 
   if (status === 'FAIL') {
-    // 失败 - 重新开始
+    // 失败
     return {
       next: 'CREATE',
-      label: '重新开始',
+      label: '重建发布',
       quit: status === 'FAIL',
       environment: current,
-      buttonText: '重新开始',
+      buttonText: '重建发布',
       redirectUrl: `/project/${project}/changelog/detail?id=${id}&branch=${branch}&action=CREATE&mode=${current.value}&type=${type}`,
     };
   }
 
   if (status === 'CANCEL') {
-    // 退出发布 - 重新开始
+    // 退出发布
     return {
       next: 'CREATE',
-      label: '重新发布',
+      label: '重建发布',
       environment: environments[0],
-      buttonText: '重新发布',
+      buttonText: '重建发布',
       redirectUrl: `/project/${project}/changelog/detail?id=${id}&branch=${branch}&action=CREATE&mode=${
         type === 'webhook' ? current.value : environments[0].value
       }&type=${type}`,
