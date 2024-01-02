@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Modal, Badge, Button, Popconfirm, message } from 'antd'
-import { ExclamationCircleOutlined, SubnodeOutlined } from '@ant-design/icons'
+import { ExclamationCircleOutlined, SyncOutlined, SubnodeOutlined } from '@ant-design/icons'
 import { Link } from 'umi'
 
 import { deleteByIds, republish } from '@/services/changelog'
@@ -182,7 +182,7 @@ const useColumns = ({ onReload, moreListClick }) => {
       width: 'auto',
       render: (_, record, index) => {
         if (record.totalChilds) return ''
-        const { id, project, status, isChild, nextPublish, pendingMR } = record
+        const { id, project, status, isChild, nextPublish, pendingMR, active, type } = record
         const btnDoms = [
           <Link key="publish" to={`/project/${project}/changelog/detail?id=${id}`}>
             <Button type="link" key="发布详情" className={styles.linkBtn}>
@@ -203,18 +203,18 @@ const useColumns = ({ onReload, moreListClick }) => {
         ]
         // 子发布记录不可操作，直接返回
         if (isChild) return btnDoms
-        // 待发布的 MR，非 新建、取消 状态的记录才展示
-        if (!['NEW', 'CANCEL'].includes(status) && pendingMR) {
+        // 活跃状态的webhook，且是 成功、失败 状态的记录才展示
+        if (type === 'webhook' && active === 0 && ['SUCCESS', 'FAIL'].includes(status)) {
           btnDoms.unshift(
             <Popconfirm
               key="republish"
               placement="top"
               trigger={republishLoading ? 'click' : 'hover'}
-              title="有新的内容，是否直接重新发布？"
+              title={`${pendingMR ? '有新的MR，' : ''}是否直接重新发布？`}
               showCancel={false}
               onConfirm={() => republishConfirm(record)}
             >
-              <Button type="primary" icon={<SubnodeOutlined />}></Button>
+              <Button type="primary" icon={pendingMR ? <SubnodeOutlined /> : <SyncOutlined />}></Button>
             </Popconfirm>
           )
         }
