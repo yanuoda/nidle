@@ -7,7 +7,7 @@ import { Logger } from 'winston';
 import { groupBy } from 'lodash';
 
 import { buildEqualWhere, buildLikeWhere, checkValue } from 'src/utils';
-import nidleNext from 'src/utils/nidleNest';
+import nidleNext from 'src/utils/nidleNext';
 import { Environment, SessionUser } from 'src/common/base.dto';
 import { GitlabService } from 'src/lib/gitlab.service';
 import { ChangelogService } from '../changelog/changelog.service';

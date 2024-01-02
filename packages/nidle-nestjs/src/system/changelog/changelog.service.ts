@@ -29,7 +29,7 @@ import {
   renameFileToBak,
   getFormatNow,
 } from 'src/utils';
-import nidleNext from 'src/utils/nidleNest';
+import nidleNext from 'src/utils/nidleNext';
 import { getDuration, transform } from 'src/utils/log';
 
 import { ProjectService } from '../project/project.service';
