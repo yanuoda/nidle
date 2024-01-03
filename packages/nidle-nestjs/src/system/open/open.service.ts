@@ -88,12 +88,23 @@ export class OpenService {
         }
         await client.fastPut(tempFilePath, `${destPath}/${fileName}`);
         client.end(); // remember to close connection after you finish
+        this.logger.info(
+          `publishAirlineConfig succeed: airlinePublish id [${airlinePublish.id}]`,
+          {
+            airline,
+            environment,
+            targetIp: airlinePublish.Server.ip,
+            targetPath: `${destPath}/${fileName}`,
+          },
+        );
         res.succeed.push(airlinePublish.id);
       } catch (_err) {
         const err = _err || {};
         this.logger.error(
           `publishAirlineConfig failed: airlinePublish id [${airlinePublish.id}]`,
           {
+            airline,
+            environment,
             targetIp: airlinePublish.Server.ip,
             targetPath: `${destPath}/${fileName}`,
             err: JSON.stringify(err, Object.getOwnPropertyNames(err), 2),
