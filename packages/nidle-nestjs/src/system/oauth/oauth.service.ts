@@ -44,6 +44,7 @@ export class OauthService {
       name,
       gitlabUserId,
       githubUserId: currentUser.githubUserId,
+      access_token: tokenRes?.access_token,
     };
   }
 }
