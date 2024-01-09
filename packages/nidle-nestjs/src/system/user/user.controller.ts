@@ -18,8 +18,9 @@ export class UserController {
   @ApiOperation({ summary: '获取用户信息' })
   @Get()
   async getUser(@Session() session: SessionDto) {
-    session.user = { ...session.user, timestamp: Date.now() }; // 对象内容发生变化时会更新 cookie 过期时间
-    return { data: getSessionUser(session) };
+    const user = getSessionUser(session);
+    session.user = { ...user, timestamp: Date.now() }; // 对象内容发生变化时会更新 cookie 过期时间
+    return { data: session.user };
   }
 
   @Post('login')
