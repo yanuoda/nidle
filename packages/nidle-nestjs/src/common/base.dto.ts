@@ -47,6 +47,7 @@ export class SessionUser {
   gitlabUserId: number;
   githubUserId: number;
   access_token?: string;
+  timestamp?: number;
 }
 export class SessionDto {
   user?: SessionUser;

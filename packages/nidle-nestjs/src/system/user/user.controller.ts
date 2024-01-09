@@ -1,6 +1,5 @@
-import { Body, Controller, Get, Post, Session, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Session } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
 
 import { FormatResponse, SessionDto } from 'src/common/base.dto';
 import { getSessionUser } from 'src/utils';
@@ -18,8 +17,8 @@ export class UserController {
 
   @ApiOperation({ summary: '获取用户信息' })
   @Get()
-  async getUser(@Req() req: Request, @Session() session: SessionDto) {
-    req.session.touch(); // 更新 cookie 过期时间
+  async getUser(@Session() session: SessionDto) {
+    session.user = { ...session.user, timestamp: Date.now() }; // 对象内容发生变化时会更新 cookie 过期时间
     return { data: getSessionUser(session) };
   }
 
