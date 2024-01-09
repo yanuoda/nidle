@@ -75,9 +75,9 @@ export class OauthController {
     @Session() session: SessionDto,
     @Res() response: Response,
   ) {
-    const { id, name, gitlabUserId, githubUserId, access_token } =
+    const { id, name, gitlabUserId, gitlabOauth, githubUserId } =
       await this.oauthService.oauthCallback(code);
-    session.user = { id, name, gitlabUserId, githubUserId, access_token };
+    session.user = { id, name, gitlabUserId, gitlabOauth, githubUserId };
     response.redirect('/api/oauth/redirect');
   }
 }

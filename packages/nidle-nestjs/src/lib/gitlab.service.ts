@@ -7,6 +7,14 @@ import { Logger } from 'winston';
 
 import { oauthConfig } from 'src/configuration';
 
+export interface GitlabOauth {
+  access_token?: string;
+  token_type?: string;
+  expires_in?: number;
+  refresh_token?: string;
+  created_at?: number;
+}
+
 const ACCESS_LEVEL_MAP = {
   10: 'Guest',
   20: 'Reporter',
@@ -29,40 +37,112 @@ export class GitlabService {
 
   async request<T = any>({
     url,
-    headers = {},
     ...restParam
   }: AxiosRequestConfig<Record<string, any>>) {
     const _url = this._gitlabConfig.baseUrl + url;
-    // console.log(`GitlabService-request:\n${_url}`);
-    // console.log(`GitlabService-param:\n${JSON.stringify(restParam)}`);
-    const { data, status } = await this.httpService.axiosRef.request<T>({
-      url: _url,
-      headers: { ...headers, 'PRIVATE-TOKEN': this._gitlabConfig.privateToken },
-      ...restParam,
-    });
-    // console.log('GitlabService-response:');
-    // console.log(JSON.stringify(data));
+    const { data, status } = await this.httpService.axiosRef
+      .request<T>({
+        url: _url,
+        ...restParam,
+      })
+      .catch((e) => {
+        const errMsg = `gitlab request err:${e?.message}`;
+        this.logger.error(errMsg, {
+          error: JSON.stringify(e, Object.getOwnPropertyNames(e), 2),
+          info: { url: _url, param: restParam },
+        });
+        throw new Error(errMsg);
+      });
 
     if (status !== 200) {
       const message = `gitlab request not ok, data:${JSON.stringify(data)}`;
       this.logger.error(message, {
         statusCode: status,
-        info: { url: _url, param: restParam, headers },
+        info: { url: _url, param: restParam },
       });
       throw new Error(message);
     }
     return data;
   }
 
-  apiv4get<T = any>(
+  /**
+   * 获取 access_token
+   * @param code
+   * @returns
+   * Example:
+   * {
+   *    "access_token": "64位字符串",
+   *    "token_type": "bearer",
+   *    "expires_in": 7200,
+   *    "refresh_token": "64位字符串",
+   *    "created_at": 1628711391
+   *  }
+   */
+  getOauthToken(code: string): Promise<GitlabOauth> {
+    if (!code) {
+      throw new Error('gitlab authorization_code 不能为空！');
+    }
+    return this.request({
+      url: '/oauth/token',
+      method: 'post',
+      data: {
+        code,
+        grant_type: 'authorization_code',
+        redirect_uri: this._gitlabConfig.redirectUri,
+        client_id: this._gitlabConfig.clientId,
+        client_secret: this._gitlabConfig.clientSecret,
+      },
+    });
+  }
+
+  refreshOauthToken(refresh_token?: string): Promise<GitlabOauth> {
+    if (!refresh_token) {
+      throw new Error('gitlab refresh_token 不能为空！');
+    }
+    return this.request({
+      url: '/oauth/token',
+      method: 'post',
+      data: {
+        refresh_token,
+        grant_type: 'refresh_token',
+        redirect_uri: this._gitlabConfig.redirectUri,
+        client_id: this._gitlabConfig.clientId,
+        client_secret: this._gitlabConfig.clientSecret,
+      },
+    });
+  }
+
+  async apiv4get<T = any>(
     url: string,
-    opt?: Omit<AxiosRequestConfig<Record<string, any>>, 'url' | 'method'>,
+    opt?: Omit<AxiosRequestConfig<Record<string, any>>, 'url' | 'method'> & {
+      accessToken?: string;
+    },
   ) {
-    return this.request<T>({ url: `/api/v4${url}`, method: 'get', ...opt });
+    let headers = { ...(opt?.headers || {}) };
+    if (opt?.accessToken) {
+      headers = {
+        ...headers,
+        Authorization: `Bearer ${opt.accessToken}`,
+      };
+      delete opt.accessToken;
+    }
+    // accessToken 不存在时，用 privateToken
+    if (!headers.Authorization) {
+      headers = {
+        ...headers,
+        'PRIVATE-TOKEN': this._gitlabConfig.privateToken,
+      };
+    }
+    return this.request<T>({
+      url: `/api/v4${url}`,
+      method: 'get',
+      headers,
+      ...opt,
+    });
   }
 
   // 获取应用成员
-  async getMembers(repositoryUrl: string) {
+  async getMembers(repositoryUrl: string, accessToken?: string) {
     const repositoryPath = repositoryUrl.replace(
       `${this._gitlabConfig.baseUrl}/`,
       '',
@@ -73,9 +153,13 @@ export class GitlabService {
 
     let groupMembers;
     if (group) {
-      groupMembers = await this.apiv4get(`/groups/${group}/members`);
+      groupMembers = await this.apiv4get(`/groups/${group}/members`, {
+        accessToken,
+      });
     }
-    const projectMembers = await this.apiv4get(`/projects/${id}/members`);
+    const projectMembers = await this.apiv4get(`/projects/${id}/members`, {
+      accessToken,
+    });
 
     const members = [...(projectMembers || []), ...(groupMembers || [])].map(
       (member) => ({
@@ -86,8 +170,12 @@ export class GitlabService {
     return members;
   }
 
-  async checkMemberAuth(repositoryUrl: string, repositoryUserId: number) {
-    const memberList = await this.getMembers(repositoryUrl);
+  async checkMemberAuth(
+    repositoryUrl: string,
+    repositoryUserId: number,
+    accessToken?: string,
+  ) {
+    const memberList = await this.getMembers(repositoryUrl, accessToken);
     return Boolean(
       memberList.find(
         ({ id, access_level }) => id === repositoryUserId && access_level > 20,
@@ -95,27 +183,31 @@ export class GitlabService {
     );
   }
 
-  getFile(id: number, branch: string, filePath: string) {
+  getFile(id: number, branch: string, filePath: string, accessToken?: string) {
     return this.apiv4get(
       `/projects/${id}/repository/files/${encodeURIComponent(
         filePath,
       )}/raw?ref=${branch}`,
+      {
+        accessToken,
+      },
     );
   }
 
   // 获取某个项目的信息
-  async getProjectDetail(repositoryUrl: string) {
+  getProjectDetail(repositoryUrl: string, accessToken?: string) {
     const repositoryPath = repositoryUrl.replace(
       `${this._gitlabConfig.baseUrl}/`,
       '',
     );
-    const id = encodeURIComponent(repositoryPath);
-    return await this.apiv4get(`/projects/${id}`);
+    return this.apiv4get(`/projects/${encodeURIComponent(repositoryPath)}`, {
+      accessToken,
+    });
   }
 
   // 获取项目分支信息
-  async getBranches(id: number, params?: Record<string, any>) {
-    return await this.apiv4get(
+  getBranches(id: number, params: Record<string, any>, accessToken?: string) {
+    return this.apiv4get(
       /**
        * https://docs.gitlab.com/ee/api/branches.html
        *
@@ -124,13 +216,21 @@ export class GitlabService {
        * search: 模糊搜索
        */
       `/projects/${id}/repository/branches`,
-      { params },
+      { params, accessToken },
     );
   }
 
-  async getBranch(id: number, branch: string) {
-    return await this.apiv4get(
+  getBranch(id: number, branch: string, accessToken?: string) {
+    return this.apiv4get(
       `/projects/${id}/repository/branches/${encodeURIComponent(branch)}`,
+      { accessToken },
     );
+  }
+
+  getUserInfo(accessToken?: string) {
+    if (!accessToken) {
+      throw new Error('gitlab accessToken 不能为空！');
+    }
+    return this.apiv4get('/user', { accessToken });
   }
 }

@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Query, Session } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Query,
+  Session,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 import { formatPageParams, getSessionUser } from 'src/utils';
@@ -8,6 +16,7 @@ import {
   AffectedResponseDto,
   SessionDto,
 } from 'src/common/base.dto';
+import { GitlabOauthGuard } from 'src/guard/gitlab-oauth.guard';
 import { ProjectService } from './project.service';
 import {
   CreateOrUpdateProjectDto,
@@ -36,14 +45,19 @@ export class ProjectController {
 
   @ApiOperation({ summary: '添加/编辑项目' })
   @Post('sync')
+  @UseGuards(GitlabOauthGuard)
   async create(
+    @Session() session: SessionDto,
     @Body() param: CreateOrUpdateProjectDto,
   ): Promise<CreateOrUpdateProjectResponseDto> {
     const { id: _id, repositoryUrl: originRepoUrl, ...restParam } = param;
     const repositoryUrl = originRepoUrl.replace('.git', '');
     const data = _id
       ? await this.projectService.update({ ...param, repositoryUrl })
-      : await this.projectService.create({ ...restParam, repositoryUrl });
+      : await this.projectService.create(
+          { ...restParam, repositoryUrl },
+          session.user,
+        );
     return { data };
   }
 
@@ -64,10 +78,15 @@ export class ProjectController {
 
   @ApiOperation({ summary: '查询项目' })
   @Get('detail')
+  @UseGuards(GitlabOauthGuard)
   async findOne(
+    @Session() session: SessionDto,
     @Query() { id }: IdQueryRequestDto,
   ): Promise<QueryProjectResponseDto> {
-    const data = await this.projectService.findProjectAndRelations(id);
+    const data = await this.projectService.findProjectAndRelations(
+      id,
+      session.user,
+    );
     return { data };
   }
 
@@ -80,10 +99,16 @@ export class ProjectController {
 
   @ApiOperation({ summary: '查询项目分支（size=50）' })
   @Get('branches')
+  @UseGuards(GitlabOauthGuard)
   async branches(
-    @Query() { id, search }: FetchProjectBranchesDto,
+    @Session() session: SessionDto,
+    @Query() { id, search = '' }: FetchProjectBranchesDto,
   ): Promise<Record<string, any>> {
-    const data = await this.projectService.getBranches(id, search);
+    const data = await this.projectService.getBranches(
+      id,
+      search,
+      session.user?.gitlabOauth?.access_token,
+    );
     return { data };
   }
 
@@ -220,6 +245,7 @@ export class ProjectController {
 
   @ApiOperation({ summary: '触发webhooks' })
   @Post('invoke-webhooks')
+  @UseGuards(GitlabOauthGuard)
   async invokeWebhooks(
     @Body() { id, branch }: InvokeWebhooksBodyDto,
     @Session() session: SessionDto,

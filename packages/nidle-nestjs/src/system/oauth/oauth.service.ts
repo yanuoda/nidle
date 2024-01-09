@@ -18,21 +18,12 @@ export class OauthService {
 
   async oauthCallback(code: string) {
     // 获取 access token
-    const tokenRes = await this.gitlabService.request({
-      url: '/oauth/token',
-      method: 'post',
-      data: {
-        code,
-        grant_type: 'authorization_code',
-        redirect_uri: this._oauthConfig.gitlab.redirectUri,
-        client_id: this._oauthConfig.gitlab.clientId,
-        client_secret: this._oauthConfig.gitlab.clientSecret,
-      },
-    });
+    const gitlabOauth = await this.gitlabService.getOauthToken(code);
     // 获取 gitlab 用户信息
-    const userInfo = await this.gitlabService.apiv4get('/user', {
-      headers: { Authorization: `Bearer ${tokenRes?.access_token}` },
-    });
+    const userInfo = await this.gitlabService.getUserInfo(
+      gitlabOauth?.access_token,
+    );
+
     const { id: gitlabUserId, username: name } = userInfo || {};
     /** @check 关联 github 账号 */
     let currentUser = await this.userService.find({ gitlabUserId });
@@ -43,8 +34,8 @@ export class OauthService {
       id: currentUser.id,
       name,
       gitlabUserId,
+      gitlabOauth,
       githubUserId: currentUser.githubUserId,
-      access_token: tokenRes?.access_token,
     };
   }
 }

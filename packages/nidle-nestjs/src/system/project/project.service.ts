@@ -45,7 +45,7 @@ export class ProjectService {
     private readonly logger: Logger,
   ) {}
 
-  async create(createProjectDto: CreateProjectDto) {
+  async create(createProjectDto: CreateProjectDto, user?: SessionUser) {
     const newProject = new Project();
     Object.assign(newProject, createProjectDto);
     const { repositoryType, repositoryUrl } = createProjectDto;
@@ -53,11 +53,17 @@ export class ProjectService {
     let owner = '';
     let gitId: number;
     if (repositoryType === 'gitlab') {
-      const projectMembers = await this.gitlabService.getMembers(repositoryUrl);
+      const projectMembers = await this.gitlabService.getMembers(
+        repositoryUrl,
+        user?.gitlabOauth?.access_token,
+      );
       owner = projectMembers.find(
         (member) => member.access_level === 50,
       )?.username;
-      const { id } = await this.gitlabService.getProjectDetail(repositoryUrl);
+      const { id } = await this.gitlabService.getProjectDetail(
+        repositoryUrl,
+        user?.gitlabOauth?.access_token,
+      );
       gitId = id;
     } else {
       /** @check github getMembers */
@@ -117,7 +123,10 @@ export class ProjectService {
     return existProject;
   }
 
-  async findProjectAndRelations(id: number): Promise<ProjectData> {
+  async findProjectAndRelations(
+    id: number,
+    user?: SessionUser,
+  ): Promise<ProjectData> {
     checkValue(id, '项目id');
     const existProject = await this.projectRepository.findOne({
       where: { id },
@@ -141,7 +150,16 @@ export class ProjectService {
     );
     let resList: Record<string, any>[];
     if (existProject.repositoryType === 'gitlab') {
-      resList = await this.gitlabService.getMembers(existProject.repositoryUrl);
+      resList = await this.gitlabService
+        .getMembers(existProject.repositoryUrl, user?.gitlabOauth?.access_token)
+        .catch((e) => {
+          const errMsg = `findProjectAndRelations gitlabService.getMembers err:${e?.message}`;
+          this.logger.error(errMsg, {
+            error: JSON.stringify(e, Object.getOwnPropertyNames(e), 2),
+            info: { repositoryUrl: existProject.repositoryUrl },
+          });
+          return [];
+        });
     } else {
       /** @check github getMembers */
     }
@@ -175,13 +193,17 @@ export class ProjectService {
     return await this.projectRepository.delete({ id });
   }
 
-  async getBranches(id: number, search?: string) {
+  async getBranches(id: number, search: string, accessToken?: string) {
     const { gitlabId, repositoryType } = await this.findOne({ id });
     const query: Record<string, any> = { per_page: 50 };
     if (search) query.search = search;
     let branches: Record<string, any>;
     if (repositoryType === 'gitlab') {
-      branches = await this.gitlabService.getBranches(gitlabId, query);
+      branches = await this.gitlabService.getBranches(
+        gitlabId,
+        query,
+        accessToken,
+      );
     } else {
       /** @check github getBranches(repositoryUrl) */
     }

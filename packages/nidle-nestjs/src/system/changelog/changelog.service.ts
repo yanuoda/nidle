@@ -218,6 +218,7 @@ export class ChangelogService {
       canUserOperate = await this.gitlabService.checkMemberAuth(
         repositoryUrl,
         repositoryUserId,
+        user.gitlabOauth?.access_token,
       );
     } else {
       /** @todo github */
@@ -270,7 +271,11 @@ export class ChangelogService {
     if (!id || mode === _const.environments[0].value || type === 'webhook') {
       // 从测试环境发布时，取分支的最新commitId，后续发布都基于此commitId
       if (repositoryType === 'gitlab') {
-        const branchInfo = await this.gitlabService.getBranch(gitlabId, branch);
+        const branchInfo = await this.gitlabService.getBranch(
+          gitlabId,
+          branch,
+          user?.gitlabOauth?.access_token,
+        );
         commitId = branchInfo.commit.id;
         committer = branchInfo.commit.committer_name;
       } else {

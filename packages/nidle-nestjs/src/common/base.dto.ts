@@ -1,5 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
 
+import { GitlabOauth } from 'src/lib/gitlab.service';
+
 export class PageQuery {
   readonly current?: number;
   readonly pageSize?: number;
@@ -45,8 +47,8 @@ export class SessionUser {
   id: number;
   name: string;
   gitlabUserId: number;
+  gitlabOauth?: GitlabOauth;
   githubUserId: number;
-  access_token?: string;
   timestamp?: number;
 }
 export class SessionDto {

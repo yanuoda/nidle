@@ -1,9 +1,10 @@
-import { Controller, Post, Body, Session } from '@nestjs/common';
+import { Controller, Post, Body, Session, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { In } from 'typeorm';
 
 import { IdBodyRequestDto, SessionDto } from 'src/common/base.dto';
 import { buildEqualWhere, getSessionUser } from 'src/utils';
+import { GitlabOauthGuard } from 'src/guard/gitlab-oauth.guard';
 
 import { ProjectService } from '../project/project.service';
 import { ChangelogService } from './changelog.service';
@@ -28,6 +29,7 @@ export class ChangelogController {
 
   @ApiOperation({ summary: '创建发布' })
   @Post('create')
+  @UseGuards(GitlabOauthGuard)
   async create(
     @Body() createChangelogDto: CreateChangelogDto,
     @Session() session: SessionDto,
@@ -54,6 +56,7 @@ export class ChangelogController {
 
   @ApiOperation({ summary: '启动发布' })
   @Post('start')
+  @UseGuards(GitlabOauthGuard)
   async start(@Body() body: StartChangelogDto, @Session() session: SessionDto) {
     const sessionUser = getSessionUser(session);
     const { project, environment, type, description } =
@@ -74,6 +77,7 @@ export class ChangelogController {
 
   @ApiOperation({ summary: '基于当前发布创建并运行发布任务' })
   @Post('republish')
+  @UseGuards(GitlabOauthGuard)
   async republish(
     @Body() { id }: IdBodyRequestDto,
     @Session() session: SessionDto,
@@ -94,6 +98,7 @@ export class ChangelogController {
 
   @ApiOperation({ summary: '退出发布' })
   @Post('quit')
+  @UseGuards(GitlabOauthGuard)
   async quit(@Body() { id }: IdBodyRequestDto, @Session() session: SessionDto) {
     const sessionUser = getSessionUser(session);
     const { project, configPath } = await this.changelogService.findOneBy(id);
