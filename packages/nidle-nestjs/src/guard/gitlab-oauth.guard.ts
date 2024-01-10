@@ -27,7 +27,10 @@ export class GitlabOauthGuard implements CanActivate {
         session.user.gitlabOauth;
 
       // 表示已过期
-      if (created_at + expires_in < Date.now()) {
+      if (
+        typeof expires_in === 'number' &&
+        (created_at + expires_in) * 1000 < Date.now()
+      ) {
         const gitlabOauth = await this.gitlabService
           .refreshOauthToken(refresh_token)
           .catch((e) => {

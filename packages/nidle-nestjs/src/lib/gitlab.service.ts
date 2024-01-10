@@ -10,8 +10,10 @@ import { oauthConfig } from 'src/configuration';
 export interface GitlabOauth {
   access_token?: string;
   token_type?: string;
+  /** 过期时间，单位：秒 */
   expires_in?: number;
   refresh_token?: string;
+  /** 创建时间，单位：秒 */
   created_at?: number;
 }
 
