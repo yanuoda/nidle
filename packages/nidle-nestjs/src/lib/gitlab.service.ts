@@ -37,6 +37,30 @@ export class GitlabService {
     this._gitlabConfig = this.configService.get('oauthConfig').gitlab;
   }
 
+  /**
+   * 根据url获取仓库名，支持 ssh / http
+   * #### etc:
+   *  - git@gitbj.haihangyun.com:ava/xxx[.git]
+   *  - http://gitbj.haihangyun.com/ava/xxx[.git]
+   * ##### ps: 尾部的 '.git' 已被截除 @see /src/system/project/project.controller.ts:create()
+   * @param repositoryUrl
+   * @returns etc: 'ava/xxx'
+   */
+  getProjectNameByUrl(repositoryUrl: string) {
+    if (repositoryUrl.startsWith('git@')) {
+      return repositoryUrl.split(':')[1];
+    } else {
+      return repositoryUrl.replace(`${this._gitlabConfig.baseUrl}/`, '');
+    }
+  }
+
+  getCommitUrl(repositoryUrl: string, commitId: string) {
+    const url = `${this._gitlabConfig.baseUrl}/${this.getProjectNameByUrl(
+      repositoryUrl,
+    )}`;
+    return `${url}/commit/${commitId}`;
+  }
+
   async request<T = any>({
     url,
     ...restParam
@@ -145,13 +169,9 @@ export class GitlabService {
 
   // 获取应用成员
   async getMembers(repositoryUrl: string, accessToken?: string) {
-    const repositoryPath = repositoryUrl.replace(
-      `${this._gitlabConfig.baseUrl}/`,
-      '',
-    );
-    const pathArr = repositoryPath.split('/');
+    const projectName = this.getProjectNameByUrl(repositoryUrl);
+    const pathArr = projectName.split('/');
     const group = pathArr.length === 2 ? pathArr[0] : null;
-    const id = encodeURIComponent(repositoryPath);
 
     let groupMembers;
     if (group) {
@@ -159,9 +179,12 @@ export class GitlabService {
         accessToken,
       });
     }
-    const projectMembers = await this.apiv4get(`/projects/${id}/members`, {
-      accessToken,
-    });
+    const projectMembers = await this.apiv4get(
+      `/projects/${encodeURIComponent(projectName)}/members`,
+      {
+        accessToken,
+      },
+    );
 
     const members = [...(projectMembers || []), ...(groupMembers || [])].map(
       (member) => ({
@@ -198,11 +221,8 @@ export class GitlabService {
 
   // 获取某个项目的信息
   getProjectDetail(repositoryUrl: string, accessToken?: string) {
-    const repositoryPath = repositoryUrl.replace(
-      `${this._gitlabConfig.baseUrl}/`,
-      '',
-    );
-    return this.apiv4get(`/projects/${encodeURIComponent(repositoryPath)}`, {
+    const projectName = this.getProjectNameByUrl(repositoryUrl);
+    return this.apiv4get(`/projects/${encodeURIComponent(projectName)}`, {
       accessToken,
     });
   }

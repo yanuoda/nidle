@@ -410,7 +410,10 @@ export class ProjectService {
         return {
           ...changelog,
           developer: currentDeveloper?.name || String(developer || '-'),
-          commitUrl: `${repositoryUrl}/commit/${changelog.commitId}`,
+          commitUrl: this.gitlabService.getCommitUrl(
+            repositoryUrl,
+            changelog.commitId,
+          ),
           nextPublish: nidleNext(changelog),
           children: periodCount > 1 ? [] : undefined,
         } as AssembleChangelog;
@@ -449,7 +452,10 @@ export class ProjectService {
         branch: showInfo ? changelog.branch : undefined,
         description: showInfo ? changelog.description : undefined,
         developer: currentDeveloper?.name || String(developer || '-'),
-        commitUrl: `${repositoryUrl}/commit/${changelog.commitId}`,
+        commitUrl: this.gitlabService.getCommitUrl(
+          repositoryUrl,
+          changelog.commitId,
+        ),
       } as AssembleChangelog;
     });
     return { list, total };
