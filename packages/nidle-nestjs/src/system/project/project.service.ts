@@ -85,7 +85,7 @@ export class ProjectService {
     pageSize,
     order = {},
   }: QueryProjectListDto) {
-    const [list, total] = await this.projectRepository.findAndCount({
+    const [_list, total] = await this.projectRepository.findAndCount({
       select: [
         'id',
         'name',
@@ -103,6 +103,12 @@ export class ProjectService {
         owner,
         repositoryType,
       }),
+    });
+    const list = _list.map((obj) => {
+      const repositoryUrl = this.gitlabService.getProjectInfoByUrl(
+        obj.repositoryUrl,
+      ).url;
+      return { ...obj, repositoryUrl };
     });
     return { list, total };
   }

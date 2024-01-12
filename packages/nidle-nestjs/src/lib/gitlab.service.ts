@@ -46,19 +46,24 @@ export class GitlabService {
    * @param repositoryUrl
    * @returns etc: 'ava/xxx'
    */
-  getProjectNameByUrl(repositoryUrl: string) {
+  getProjectInfoByUrl(repositoryUrl: string) {
+    let name = '';
+    let url = '';
     if (repositoryUrl.startsWith('git@')) {
-      return repositoryUrl.split(':')[1];
+      name = repositoryUrl.split(':')[1];
+      url = `${this._gitlabConfig.baseUrl}/${name}`;
     } else {
-      return repositoryUrl.replace(`${this._gitlabConfig.baseUrl}/`, '');
+      name = repositoryUrl.replace(`${this._gitlabConfig.baseUrl}/`, '');
+      url = repositoryUrl;
     }
+    return { name, url };
   }
 
   getCommitUrl(repositoryUrl: string, commitId: string) {
-    const url = `${this._gitlabConfig.baseUrl}/${this.getProjectNameByUrl(
-      repositoryUrl,
-    )}`;
-    return `${url}/commit/${commitId}`;
+    return `${this.getProjectInfoByUrl(repositoryUrl).url}/commit/${commitId}`;
+  }
+  getTreeUrl(repositoryUrl: string, commitId: string) {
+    return `${this.getProjectInfoByUrl(repositoryUrl).url}/tree/${commitId}`;
   }
 
   async request<T = any>({
@@ -169,7 +174,7 @@ export class GitlabService {
 
   // 获取应用成员
   async getMembers(repositoryUrl: string, accessToken?: string) {
-    const projectName = this.getProjectNameByUrl(repositoryUrl);
+    const projectName = this.getProjectInfoByUrl(repositoryUrl).name;
     const pathArr = projectName.split('/');
     const group = pathArr.length === 2 ? pathArr[0] : null;
 
@@ -221,7 +226,7 @@ export class GitlabService {
 
   // 获取某个项目的信息
   getProjectDetail(repositoryUrl: string, accessToken?: string) {
-    const projectName = this.getProjectNameByUrl(repositoryUrl);
+    const projectName = this.getProjectInfoByUrl(repositoryUrl).name;
     return this.apiv4get(`/projects/${encodeURIComponent(projectName)}`, {
       accessToken,
     });
