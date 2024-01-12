@@ -380,7 +380,7 @@ const App = props => {
             <th>CommitId:</th>
             <td>
               {changelog.commitId ? (
-                <a href={`${config.repository.url}/tree/${changelog.commitId}`} target="_blank" rel="noreferrer">
+                <a href={changelog.commitUrl} target="_blank" rel="noreferrer">
                   {changelog.commitId.slice(0, 10)}
                 </a>
               ) : (
